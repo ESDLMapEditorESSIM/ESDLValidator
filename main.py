@@ -22,10 +22,17 @@ instance = getattr(es, 'instance')
 test = instance[0]
 typeNme = type(test).__name__
 
+# loop all objects in loaded ESDL
 for x in resource.uuid_dict:
     val = resource.uuid_dict[x]
-    if isinstance(val, utils.get_esdl_class_from_string("asset")):
-       print("asset found: " + val.name)
+    if isinstance(val, utils.get_esdl_class_from_string("HeatingDemand")):
+        print("HeatingDemand found: " + getattr(val, "name"))
+        ports = getattr(val, 'port')
+
+        for p in ports.items:
+            connectedPorts = getattr(p, "connectedTo")
+            for connectedPort in connectedPorts:
+                print("port connected to: " + getattr(connectedPort, "id"))
 
     #print(x)
 
