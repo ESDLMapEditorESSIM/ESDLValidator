@@ -30,6 +30,7 @@ class TestUtils(unittest.TestCase):
         expected1 = "Asset"
         expected2 = "Port"
         notExpected1 = "asset"
+
         self.assertIn(expected1, actual,
                       "String 'Asset' should be in class names list")
         self.assertIn(expected2, actual,
