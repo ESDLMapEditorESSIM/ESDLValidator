@@ -1,0 +1,4 @@
+pyecore==0.11.6
+pyecoregen==0.4.3
+lxml==4.5.1
+numpy==1.19.4
