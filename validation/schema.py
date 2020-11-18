@@ -1,5 +1,6 @@
 class Schema:
     """Schema for ruleset"""
+    
     def __init__(self, json):
         self.loadSchema(json)
 

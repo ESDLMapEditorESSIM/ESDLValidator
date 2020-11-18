@@ -28,3 +28,8 @@ pip3 install -r requirements.txt
 pip3 install pyecoregen
 pyecoregen -e esdl.ecore -o ./
 ```
+
+## Run tests
+```
+python -m unittest discover ./
+```

@@ -24,7 +24,7 @@ typeNme = type(test).__name__
 
 for x in resource.uuid_dict:
     val = resource.uuid_dict[x]
-    if isinstance(val, utils.getEsdlClassFromString("asset")):
+    if isinstance(val, utils.get_esdl_class_from_string("asset")):
        print("asset found: " + val.name)
 
     #print(x)
