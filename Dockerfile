@@ -13,4 +13,4 @@ USER appuser
 
 COPY . .
 
-CMD ["waitress-serve", "--listen", "*:8080", "--call", "api.wsgi:create_app"]
+CMD ["waitress-serve", "--listen", "*:8080", "--call", "esdltools.wsgi:create_app"]

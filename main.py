@@ -1,4 +1,6 @@
-"""from validation.validator import EsdlValidator
+# Just some testing
+
+from validation.validator import EsdlValidator
 from validation.schema import Schema
 
 from model import esdl
@@ -38,9 +40,6 @@ print_test_esdl(esh.resource)
 #schema = Schema("My JSON")
 #validator = EsdlValidator(schema)
 #result = validator.validate("My Data")
-"""
-
-
 
 #{
 #	"name": "Defaul schema",

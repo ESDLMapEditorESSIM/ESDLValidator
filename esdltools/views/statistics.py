@@ -1,6 +1,6 @@
 from flask_restx import Api, Resource, fields
 from collections import OrderedDict
-from api.views.api import api, ns_stats
+from views.setup import api, ns_stats
 
 
 STATS = OrderedDict([
@@ -26,10 +26,8 @@ def abort_if_stat_doesnt_exist(statId):
 
 
 parser = api.parser()
-parser.add_argument('name', type=str, required=True,
-                    help='Name of the stat', location='form')
-parser.add_argument('value', type=str, required=True,
-                    help='Value of the stat', location='form')
+parser.add_argument('name', type=str, required=True, help='Name of the stat', location='form')
+parser.add_argument('value', type=str, required=True, help='Value of the stat', location='form')
 
 
 @ns_stats.route('/<string:statId>/')
