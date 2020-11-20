@@ -2,3 +2,7 @@ pyecore==0.11.6
 pyecoregen==0.4.3
 lxml==4.5.1
 numpy==1.19.4
+flask==1.1.2
+flask-cors==1.10.3
+flask-restx==0.2.0
+waitress==1.4.4

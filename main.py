@@ -1,4 +1,4 @@
-from validation.validator import EsdlValidator
+"""from validation.validator import EsdlValidator
 from validation.schema import Schema
 
 from model import esdl
@@ -17,14 +17,14 @@ def load_test_esdl():
 
 def print_test_esdl(resource):
     # loop all objects in loaded ESDL
-    for x in resource.uuid_dict:
-        val = resource.uuid_dict[x]
-        if isinstance(val, utils.get_esdl_class_from_string("HeatingDemand")):
-            print("HeatingDemand found: " + getattr(val, "name"))
-            ports = getattr(val, 'port')
+    for uuid in resource.uuid_dict:
+        esdlObject = resource.uuid_dict[uuid]
+        if isinstance(esdlObject, utils.get_esdl_class_from_string("HeatingDemand")):
+            print("HeatingDemand found: " + getattr(esdlObject, "name"))
+            ports = getattr(esdlObject, 'port')
 
-            for p in ports.items:
-                connectedPorts = getattr(p, "connectedTo")
+            for port in ports.items:
+                connectedPorts = getattr(port, "connectedTo")
                 for connectedPort in connectedPorts:
                     print("port connected to: " + getattr(connectedPort, "id"))
 
@@ -38,3 +38,27 @@ print_test_esdl(esh.resource)
 #schema = Schema("My JSON")
 #validator = EsdlValidator(schema)
 #result = validator.validate("My Data")
+"""
+
+
+
+#{
+#	"name": "Defaul schema",
+#	"description": "A default validation schema to test all ESDL models on",
+#	"rules": [
+#		{
+#			"name": "check_asset_id_notnull",
+#			"desciption": "Check if all assets have an id",
+#			"type": "error"
+#			"message": "Asset does not have an id",
+#			"expression": [
+#				"select",
+#				[
+#					"==",
+#					"type",
+#					"Asset"
+#				],
+#			]
+#		}
+#	]
+#}
