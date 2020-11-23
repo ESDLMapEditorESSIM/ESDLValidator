@@ -1,6 +1,7 @@
 from flask_restx import Api, Resource, fields
 from collections import OrderedDict
-from views.setup import api, ns_stats
+
+from esdltools.api.controller.setup import api, ns_stats
 
 
 STATS = OrderedDict([

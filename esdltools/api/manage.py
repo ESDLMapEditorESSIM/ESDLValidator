@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-from views.setup import apiBlueprint
-from views.statistics import api as statsApi
-from views.validation import api as validationApi
 
+from esdltools.api.controller.setup import apiBlueprint
+from esdltools.api.controller.statistics import api as statsApi
+from esdltools.api.controller.validation import api as validationApi
+from esdltools.api.controller.schema import api as schemaApi
 
 def create_app():
     """Setup and return the flask app"""
@@ -22,8 +23,4 @@ def create_app():
     return app
 
 
-if __name__ == '__main__':
-    """Run ESDL API in debug mode"""
 
-    app = create_app()
-    app.run(debug=True)

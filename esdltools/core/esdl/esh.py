@@ -21,8 +21,8 @@ from pyecore.resources import ResourceSet, URI
 from pyecore.resources import ResourceSet, URI
 from pyecore.utils import alias
 
-from model.resources.xmlresource import XMLResource
-from model import esdl
+from esdltools.core.esdl.resources.xmlresource import XMLResource
+from esdltools.core.esdl import esdl
 
 log = logging.getLogger(__name__)
 

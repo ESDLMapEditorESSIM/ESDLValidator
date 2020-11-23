@@ -2,10 +2,13 @@
 
 from validation.validator import EsdlValidator
 from validation.schema import Schema
+from validation.repository import SchemaRepository
 
-from model import esdl
-from model import utils
-from model.esh import EnergySystemHandler
+from esdltools.core.model import esdl
+from esdltools.core.model import utils
+from esdltools.core.model.esh import EnergySystemHandler
+
+from tinydb import Query
 
 
 def load_test_esdl():
@@ -35,6 +38,7 @@ esh = load_test_esdl()
 energySystem = esh.get_energy_system()
 print("ESDL {0}".format(energySystem.name))
 print_test_esdl(esh.resource)
+
 
 #typeNme = type(test).__name__
 #schema = Schema("My JSON")

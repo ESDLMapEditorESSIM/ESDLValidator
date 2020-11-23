@@ -1,6 +1,6 @@
 import inspect
 
-from model import esdl
+from esdltools.core.esdl import esdl
 
 
 def get_esdl_class_from_string(name):

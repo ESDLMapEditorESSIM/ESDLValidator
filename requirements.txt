@@ -6,3 +6,4 @@ flask==1.1.2
 flask-cors==1.10.3
 flask-restx==0.2.0
 waitress==1.4.4
+tinydb==4.3.0

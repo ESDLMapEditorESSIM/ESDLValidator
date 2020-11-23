@@ -1,7 +1,7 @@
 import unittest
 
-from model import esdl
-from model import utils
+from esdltools.core.esdl import esdl
+from esdltools.core.esdl import utils
 
 
 class TestUtils(unittest.TestCase):
