@@ -31,18 +31,15 @@ pyecoregen -e esdl.ecore -o ./
 
 ## Run tests
 ```
-python -m unittest discover ./
+python3 -m unittest discover ./
 ```
 
+## Run API (Debug)
+```
+python3 app.py
+```
 
-https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/
-
-
-Expressions in Mapbox GL JS
-Mapbox GL JS expressions uses a Lisp-like syntax, using JSON arrays. Expressions in Mapbox GL JS follow this format:
-
-[expression_name, argument_0, argument_1, ...]
-The expression_name is the expression operator. For example, you would use * to multiply two arguments:
-
-['*', ['pi'], ['^', 3, 2]]
-The first argument is pi, which is an expression that returns the mathematical constant pi. The second argument is another expression in which ^ has two arguments of its own. It will return 32, and the result will be multiplied by pi.
+## Run API using waitress
+```
+waitress-serve --listen="*:8080" --call "esdltools.api.manage:create_app"
+```
