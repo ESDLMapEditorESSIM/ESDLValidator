@@ -1,9 +1,5 @@
 # Just some testing
 
-from validation.validator import EsdlValidator
-from validation.schema import Schema
-from validation.repository import SchemaRepository
-
 from esdltools.core.esdl import esdl
 from esdltools.core.esdl import utils
 from esdltools.core.esdl.esh import EnergySystemHandler

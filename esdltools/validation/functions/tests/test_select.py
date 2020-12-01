@@ -23,10 +23,14 @@ class TestSelect(unittest.TestCase):
             print("HeatingDemand found: " + getattr(value, "name"))
 
         #InfluxDBProfile
+        datasets = {}
+
         profiles = FunctionFactory.create_select("get", alias="influx_profiles", data=esh.resource, args={"type": "InfluxDBProfile"})
-        profileAvg = FunctionFactory.create_select("avg", alias="profile_avg", data=profiles.result, args={"property": "multiplier"})
-        profileCount = FunctionFactory.create_select("sum", alias="profile_count", data=profiles.result, args={"property": "multiplier"})
+        datasets[profiles.alias] = profiles.result
+
+        profileAvg = FunctionFactory.create_select("avg", alias="profile_avg", data=datasets, args={"dataset": "influx_profiles", "property": "multiplier"})
+        datasets[profileAvg.alias] = profileAvg.result
+
+        profileSum = FunctionFactory.create_select("sum", alias="profile_count", data=datasets, args={"dataset": "influx_profiles", "property": "multiplier"})
         print(profileAvg.result)
-        print(profileCount.result)
-        #self.assertEqual(schema["name"], "Schema test 1", "Name of loaded schema was unexpected")
-        #self.assertEqual(schema["rules"][0]["name"], "check_asset_id_notnull", "Class string casing should be ignored and return esdl.Asset")
+        print(profileSum.result)

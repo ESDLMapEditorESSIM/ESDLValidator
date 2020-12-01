@@ -6,9 +6,10 @@ class SelectAvg(SelectBase):
 
     def _execute(self, data, args):
         prop = args["property"]
+        dataset = args["dataset"]
         count = 0
 
-        for entry in data:
+        for entry in data[dataset]:
             value = getattr(entry, prop)
             count += value
 
