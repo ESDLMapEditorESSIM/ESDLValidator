@@ -24,9 +24,10 @@ pip3 install -r requirements.txt
 ```
 
 ## Generate static ESDL metamodel code
+To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version and run
 ```
 pip3 install pyecoregen
-pyecoregen -e esdl.ecore -o ./
+pyecoregen -e esdl.ecore -o ./esdltools/cores/esdl
 ```
 
 ## Run tests
