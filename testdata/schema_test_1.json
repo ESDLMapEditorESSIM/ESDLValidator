@@ -1,0 +1,22 @@
+{
+    "name": "Schema test 1",
+    "description": "A schema for testing purpose",
+    "rules": [
+        {
+            "name": "check_asset_id_notnull",
+            "desciption": "Check if all assets have an id",
+            "type": "error",
+            "message": "Asset does not have an id",
+            "selects": [
+                {
+                    "alias": "producers",
+                    "function": "get",
+                    "args": {
+                        "type": "producer"
+                    }
+                }
+            ],
+            "test": {}
+        }
+    ]
+}

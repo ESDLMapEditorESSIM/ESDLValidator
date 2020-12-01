@@ -4,9 +4,9 @@ from validation.validator import EsdlValidator
 from validation.schema import Schema
 from validation.repository import SchemaRepository
 
-from esdltools.core.model import esdl
-from esdltools.core.model import utils
-from esdltools.core.model.esh import EnergySystemHandler
+from esdltools.core.esdl import esdl
+from esdltools.core.esdl import utils
+from esdltools.core.esdl.esh import EnergySystemHandler
 
 from tinydb import Query
 
@@ -39,7 +39,6 @@ energySystem = esh.get_energy_system()
 print("ESDL {0}".format(energySystem.name))
 print_test_esdl(esh.resource)
 
-
 #typeNme = type(test).__name__
 #schema = Schema("My JSON")
 #validator = EsdlValidator(schema)
@@ -54,14 +53,59 @@ print_test_esdl(esh.resource)
 #			"desciption": "Check if all assets have an id",
 #			"type": "error"
 #			"message": "Asset does not have an id",
-#			"expression": [
-#				"select",
-#				[
-#					"==",
-#					"type",
-#					"Asset"
-#				],
-#			]
+#			"selects": [
+#               {
+#                   "alias": "producers",
+#                   "function": "get",
+#                   "args": {
+#                       "type": "producer",
+#                   }
+#               }
+#			],
+#           "test": {
+#           }
 #		}
 #	]
 #}
+
+# select_function -> get, sum, avg, min, max -> returns 1 value or list which can be used in other selects and tests
+# test_function -> null, not_null, equals, greater_than, smaller_than -> returns true/false
+# filter_function
+
+# "select": { 
+#   "alias": "producers",
+#   "function": "get",
+#   "args": {
+#       "type": "producer",
+#   }
+# }
+# "select": {
+#   "alias": "powers_avg",
+#   "function": "avg",
+#   "args": {
+#       "value": "producers"
+#       "property": "power",
+#   }
+# }
+# "test": { 
+#   "value": "producers"
+#   "function": "not_null"
+#   "args": { 
+#       "property": "power"
+#   },
+#   "and": [
+#       {
+#           "function": "not_null"
+#           "args": {
+#               "property": "power"
+#            }
+#       }
+#   ],
+#   "or": [
+#       
+#   ]
+# }
+
+
+# select(as, args(alias), prvious)
+# calculate()
