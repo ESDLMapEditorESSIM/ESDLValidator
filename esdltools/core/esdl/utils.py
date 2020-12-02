@@ -1,6 +1,9 @@
 import inspect
 
+from pathlib import Path
+
 from esdltools.core.esdl import esdl
+from esdltools.core.esdl.esh import EnergySystemHandler
 
 
 def get_esdl_class_from_string(name):
@@ -40,3 +43,53 @@ def get_esdl_class_names():
             classes.append(name)
 
     return classes
+
+def get_esh_from_file(filepath):
+    """Create and get an energy system handler from local file
+
+    Args:
+        filepath (str): Path to the ESDL file 
+
+    Returns:
+        esh: EnergySystemHandler loaded from ESDL file
+
+    Raises:
+        OSError: If ESDL file is not found on disk
+    """
+
+    checkFile = Path(filepath)
+    if not checkFile.is_file():
+        raise OSError("ESDL file not found: {0}".format(filepath))
+
+    with open(filepath, 'r') as file:
+        esdlString = file.read()
+
+    esh = EnergySystemHandler()
+
+    try:
+        esh.load_from_string(esdlString)
+    except:
+        raise
+    
+    return esh
+
+def get_entities_from_esdl_resource_by_type(esdlSource, esdlType):
+    """Loop trough all loaded ESDL entities and return entities for given type
+
+    Args:
+        esdlSource (pyecore.resource): resource of a loaded ESDL
+        esdlType (str): String of the ESDL entity type to retrieve
+
+    Returns:
+        list: list of all ESDL entities for given type
+    """
+
+    esdlClass = get_esdl_class_from_string(esdlType)
+    entities = []
+
+    for uuid in esdlSource.uuid_dict:
+        esdlObject = esdlSource.uuid_dict[uuid]
+        if isinstance(esdlObject, esdlClass):
+            entities.append(esdlObject)
+
+    return entities

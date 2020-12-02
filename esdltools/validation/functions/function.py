@@ -54,7 +54,7 @@ class FunctionFactory:
         given in ``kwargs``.
 
         Args:
-            name (str): The name of the executor to create.
+            name (str): The name of the select function to create.
 
         Returns:
             An instance of the select that is created.

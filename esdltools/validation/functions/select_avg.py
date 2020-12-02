@@ -6,7 +6,7 @@ class SelectAvg(SelectBase):
 
     def _execute(self, data, args):
         prop = args["property"]
-        dataset = args["dataset"]
+        dataset = args["select"]
         total = 0
         count = 0
 
