@@ -92,6 +92,7 @@ class FunctionFactory:
 
 
 class ArgDefinition:
+    """Class to describe a function argument"""
     
     def __init__(self, name, description, mandatory):
         self.name = name
