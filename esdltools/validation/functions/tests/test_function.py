@@ -33,10 +33,20 @@ class TestFunction(unittest.TestCase):
         self.assertEqual(actual["avg"].__class__.__name__, "ABCMeta", "Avg function should be present in the select registry")
 
     def test_instantiate_function_from_factory(self):
-        """Test if the factory is able to create a get function"""
+        """Test if the factory is able to create and initialize a select function"""
 
         mockResource = types.SimpleNamespace()
         mockResource.uuid_dict = {}
 
         actual = FunctionFactory.create_select("get", alias="my_alias", data=mockResource, args={"type": "Port"})
         self.assertIsNotNone(actual, "Create function should not be None")
+        self.assertEqual(actual.alias, "my_alias", "Select function alias should return my_alias")
+        self.assertEqual(actual.args["type"], "Port", "Args type should return Port")
+
+    def test_instantiate_function_from_factory_wrong_param(self):
+        """Test if the factory throws a ValueError when trying to create a function with missing args
+        the get function should have a mandatory arg defined, when initializing without it, it should raise an exception
+        """
+
+        with self.assertRaises(ValueError,):
+            FunctionFactory.create_select("get", alias="my_alias", data=None, args={"this_is_an_arg": "Port"})
