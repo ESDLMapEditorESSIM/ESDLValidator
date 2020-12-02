@@ -16,7 +16,7 @@ def get_esdl_class_from_string(name):
         class: The ESDL class matching the input string
 
     Raises:
-        ValueError: If class wass not found
+        ValueError: If class is not found
 
     ToDo:
         eval: Is the eval safe here, only runs when class is found, also gets prefixed with .esdl

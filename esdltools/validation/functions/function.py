@@ -3,6 +3,8 @@ import logging
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
+from esdltools.validation.functions import utils
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +22,26 @@ class SelectBase(FunctionBase):
         self.alias = kwargs["alias"]
         self.data = kwargs["data"]
         self.args = kwargs["args"]
+        self._run()
+
+    def _run(self):
+        #self._check_args()
         self.result = self._execute(self.data, self.args)
+
+    def _check_args(self):
+        argDefinitions = self.get_arg_definitions()
+        if argDefinitions is None:
+            return
+
+        for arg in argDefinitions.items:
+            if arg.mandatory:
+                _, propFound = utils.get_args_property(self.args, arg.name)
+                if not propFound:
+                    raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
+
+    @abstractmethod
+    def get_arg_definitions(self):
+        pass
 
     @abstractmethod
     def _execute(self, data, args):
@@ -67,3 +88,11 @@ class FunctionFactory:
         exec_class = cls.selectRegistry[name]
         executor = exec_class(**kwargs)
         return executor
+
+
+class ArgDefinition:
+    
+    def __init__(self, name, description, mandatory):
+        self.name = name
+        self.description = description
+        self.mandatory = mandatory
