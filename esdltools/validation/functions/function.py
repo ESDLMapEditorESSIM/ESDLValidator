@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class FunctionBase(metaclass=ABCMeta):
+    """Base class for a function"""
 
     @abstractmethod
     def __init__(self, **kwargs):
@@ -25,7 +26,7 @@ class SelectBase(FunctionBase):
         self._run()
 
     def _run(self):
-        #self._check_args()
+        self._check_args()
         self.result = self._execute(self.data, self.args)
 
     def _check_args(self):
@@ -33,7 +34,7 @@ class SelectBase(FunctionBase):
         if argDefinitions is None:
             return
 
-        for arg in argDefinitions.items:
+        for arg in argDefinitions:
             if arg.mandatory:
                 _, propFound = utils.get_args_property(self.args, arg.name)
                 if not propFound:
@@ -41,11 +42,12 @@ class SelectBase(FunctionBase):
 
     @abstractmethod
     def get_arg_definitions(self):
+        """Abstract method to get function arg defenitions"""
         pass
 
     @abstractmethod
     def _execute(self, data, args):
-        """ Abstract method to run a select command """
+        """Abstract method to run a select function"""
         pass
 
 
@@ -53,7 +55,6 @@ class FunctionFactory:
     """The factory class for creating functions"""
 
     selectRegistry = {}
-    """Internal registry for available select functions"""
 
     @classmethod
     def register_select(cls, name: str) -> Callable:
@@ -69,7 +70,7 @@ class FunctionFactory:
 
     @classmethod
     def create_select(cls, name: str, **kwargs) -> 'FunctionBase':
-        """ Factory command to create the select function.
+        """Factory command to create the select function.
         This method gets the appropriate select class from the registry
         and creates an instance of it, while passing in the parameters
         given in ``kwargs``.

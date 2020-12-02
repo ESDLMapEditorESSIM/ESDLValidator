@@ -117,7 +117,7 @@ print_test_esdl(esh.resource)
 #   "function": "avg",
 #   "args": {
 #       "value": "producers"
-#       "property": "power",
+#       "property": "power.minimum",
 #   }
 # }
 # "test": { 

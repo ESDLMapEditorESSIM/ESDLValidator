@@ -21,8 +21,8 @@ class TestSelect(unittest.TestCase):
         data = {}
         profiles = FunctionFactory.create_select("get", alias="influx_profiles", data=esh.resource, args={"type": "InfluxDBProfile"})
         data[profiles.alias] = profiles.result
-        profileAvg = FunctionFactory.create_select("avg", alias="profile_avg", data=data, args={"select": "influx_profiles", "property": "multiplier"})
+        profileAvg = FunctionFactory.create_select("avg", alias="profile_avg", data=data, args={"dataset": "influx_profiles", "property": "multiplier"})
         data[profileAvg.alias] = profileAvg.result
-        profileSum = FunctionFactory.create_select("sum", alias="profile_count", data=data, args={"select": "influx_profiles", "property": "multiplier"})
+        profileSum = FunctionFactory.create_select("sum", alias="profile_count", data=data, args={"dataset": "influx_profiles", "property": "multiplier"})
         print(profileAvg.result)
         print(profileSum.result)
