@@ -1,8 +1,8 @@
 from esdltools.validation.functions import utils
-from esdltools.validation.functions.function import FunctionFactory, SelectBase, ArgDefinition
+from esdltools.validation.functions.function import FunctionFactory, SelectBase, ArgDefinition, FunctionType
 
 
-@FunctionFactory.register_select("avg")
+@FunctionFactory.register(FunctionType.SELECT, "avg")
 class SelectAvg(SelectBase):
 
     def get_arg_definitions(self):

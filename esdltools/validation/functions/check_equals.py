@@ -2,7 +2,7 @@ from esdltools.validation.functions import utils
 from esdltools.validation.functions.function import FunctionFactory, SelectBase, ArgDefinition, FunctionType
 
 
-@FunctionFactory.register(FunctionType.SELECT, "sum")
+@FunctionFactory.register(FunctionType.CHECK, "avg")
 class SelectAvg(SelectBase):
 
     def get_arg_definitions(self):
@@ -13,11 +13,14 @@ class SelectAvg(SelectBase):
 
     def _execute(self, data, args):
         prop, _ = utils.get_args_property(args, "property")
-        dataset, _ = utils.get_args_property(args, "dataset")
+        select, _ = utils.get_args_property(args, "dataset")
+
+        total = 0
         count = 0
 
-        for entry in data[dataset]:
+        for entry in data[select]:
             value = getattr(entry, prop)
-            count += value
+            total += value
+            count += 1
 
-        return count
+        return total / count

@@ -2,10 +2,10 @@ from esdltools.core.esdl import esdl
 from esdltools.core.esdl import utils as esdlUtils
 
 from esdltools.validation.functions import utils
-from esdltools.validation.functions.function import FunctionFactory, SelectBase, ArgDefinition
+from esdltools.validation.functions.function import FunctionFactory, SelectBase, ArgDefinition, FunctionType
 
 
-@FunctionFactory.register_select("get")
+@FunctionFactory.register(FunctionType.SELECT, "get")
 class SelectGet(SelectBase):
 
     def get_arg_definitions(self):

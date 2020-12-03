@@ -2,10 +2,24 @@ import logging
 
 from abc import ABCMeta, abstractmethod
 from typing import Callable
-
+from enum import Enum
 from esdltools.validation.functions import utils
 
 logger = logging.getLogger(__name__)
+
+
+class FunctionType(Enum):
+    SELECT = "select"
+    CHECK = "check"
+
+    @staticmethod
+    def from_str(typeStr):
+        for f in FunctionType:
+            if f.value == typeStr:
+                return f
+        
+        raise ValueError("FunctionType {0} does not exist".format(typeStr))
+
 
 
 class FunctionBase(metaclass=ABCMeta):
@@ -51,44 +65,98 @@ class SelectBase(FunctionBase):
         pass
 
 
+class CheckBase(FunctionBase):
+    """Base class for a check function"""
+
+    def __init__(self, **kwargs):
+        self.data = kwargs["data"]
+        self.args = kwargs["args"]
+        self._run()
+
+    def _run(self):
+        pass
+
+    def _check_args(self):
+        argDefinitions = self.get_arg_definitions()
+        if argDefinitions is None:
+            return
+
+        for arg in argDefinitions:
+            if arg.mandatory:
+                _, propFound = utils.get_args_property(self.args, arg.name)
+                if not propFound:
+                    raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
+
+    @abstractmethod
+    def get_arg_definitions(self):
+        """Abstract method to get function arg defenitions"""
+        pass
+
+    @abstractmethod
+    def _execute(self, data, args):
+        """Abstract method to run a select function"""
+        pass
+
+
 class FunctionFactory:
     """The factory class for creating functions"""
 
-    selectRegistry = {}
+    registries = {
+        FunctionType.SELECT: {},
+        FunctionType.CHECK: {}
+    }
+
+    baseClasses = {
+        FunctionType.SELECT: SelectBase,
+        FunctionType.CHECK: CheckBase
+    }
 
     @classmethod
-    def register_select(cls, name: str) -> Callable:
+    def get_registry(cls, functionType: FunctionType):
+        return cls.registries.get(functionType)
 
-        def inner_wrapper(wrapped_class: SelectBase) -> Callable:
-            if name in cls.selectRegistry:
-                logger.warning("Select function %s already exists. Will replace it", name)
+    @classmethod
+    def get_base_class(cls, functionType: FunctionType):
+        return cls.baseClasses.get(functionType)
 
-            cls.selectRegistry[name] = wrapped_class
+    @classmethod
+    def register(cls, functionType: FunctionType, name: str) -> Callable:
+        registry = cls.get_registry(functionType)
+        baseClass = cls.get_base_class(functionType)
+
+        def inner_wrapper(wrapped_class: baseClass) -> Callable:
+            if name in registry:
+                logger.warning("function %s already exists. Will replace it", name)
+
+            registry[name] = wrapped_class
             return wrapped_class
 
         return inner_wrapper
 
     @classmethod
-    def create_select(cls, name: str, **kwargs) -> 'FunctionBase':
-        """Factory command to create the select function.
-        This method gets the appropriate select class from the registry
+    def create(cls, functionType: FunctionType, name: str, **kwargs) -> 'FunctionBase':
+        """Factory command to create a function.
+        This method gets the appropriate class from a registry 
         and creates an instance of it, while passing in the parameters
         given in ``kwargs``.
 
         Args:
+            functionType (FunctionType): Type of the function to create
             name (str): The name of the select function to create.
 
         Returns:
-            An instance of the select that is created.
+            An instance of the function that is created.
         """
 
-        if name not in cls.selectRegistry:
-            logger.warning('Select functions %s does not exist in the registry', name)
+        registry = cls.get_registry(functionType)
+
+        if name not in registry:
+            logger.warning('Functions %s does not exist in the registry', name)
             return None
 
-        exec_class = cls.selectRegistry[name]
-        executor = exec_class(**kwargs)
-        return executor
+        function_class = registry[name]
+        function = function_class(**kwargs)
+        return function
 
 
 class ArgDefinition:
