@@ -21,81 +21,80 @@ class FunctionType(Enum):
         raise ValueError("FunctionType {0} does not exist".format(typeStr))
 
 
+class FunctionDefinition:
+    """Class to describe a function"""
+
+    def __init__(self, name, description, argDefinitions):
+        self.name = name
+        self.description = description
+        self.argDefinitions = argDefinitions
+
+
+class ArgDefinition:
+    """Class to describe a function argument"""
+
+    def __init__(self, name, description, mandatory):
+        self.name = name
+        self.description = description
+        self.mandatory = mandatory
+
 
 class FunctionBase(metaclass=ABCMeta):
     """Base class for a function"""
 
+    def super_setup(self, **kwargs):
+        self.data = kwargs["data"]
+        self.args = kwargs["args"]
+        self._check_args()
+        self._before_execute()
+
     @abstractmethod
-    def __init__(self, **kwargs):
+    def get_function_definition(self):
+        """Abstract method to get function defenition"""
         pass
 
+    @abstractmethod
+    def _execute(self):
+        """Abstract method that runs the function specific code"""
+        pass
 
-class SelectBase(FunctionBase):
+    def _before_execute(self):
+        """Abstract method which is called befor execute"""
+        pass
+
+    def _check_args(self):
+        argDefinitions = self.get_function_definition().argDefinitions
+        if argDefinitions is None:
+            return
+
+        for arg in argDefinitions:
+            if arg.mandatory:
+                _, propFound = utils.get_args_property(self.args, arg.name)
+                if not propFound:
+                    raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
+
+
+class FunctionSelect(FunctionBase):
     """Base class for a select function"""
 
     def __init__(self, **kwargs):
+        self.super_setup(**kwargs)
         self.alias = kwargs["alias"]
-        self.data = kwargs["data"]
-        self.args = kwargs["args"]
         self._run()
 
     def _run(self):
-        self._check_args()
-        self.result = self._execute(self.data, self.args)
-
-    def _check_args(self):
-        argDefinitions = self.get_arg_definitions()
-        if argDefinitions is None:
-            return
-
-        for arg in argDefinitions:
-            if arg.mandatory:
-                _, propFound = utils.get_args_property(self.args, arg.name)
-                if not propFound:
-                    raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
-
-    @abstractmethod
-    def get_arg_definitions(self):
-        """Abstract method to get function arg defenitions"""
-        pass
-
-    @abstractmethod
-    def _execute(self, data, args):
-        """Abstract method to run a select function"""
-        pass
+        self.result = self._execute()
 
 
-class CheckBase(FunctionBase):
+class FunctionCheck(FunctionBase):
     """Base class for a check function"""
 
     def __init__(self, **kwargs):
-        self.data = kwargs["data"]
-        self.args = kwargs["args"]
+        self.super_setup(**kwargs)
         self._run()
 
     def _run(self):
-        pass
-
-    def _check_args(self):
-        argDefinitions = self.get_arg_definitions()
-        if argDefinitions is None:
-            return
-
-        for arg in argDefinitions:
-            if arg.mandatory:
-                _, propFound = utils.get_args_property(self.args, arg.name)
-                if not propFound:
-                    raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
-
-    @abstractmethod
-    def get_arg_definitions(self):
-        """Abstract method to get function arg defenitions"""
-        pass
-
-    @abstractmethod
-    def _execute(self, data, args):
-        """Abstract method to run a select function"""
-        pass
+        self.result = self._execute()
 
 
 class FunctionFactory:
@@ -107,8 +106,8 @@ class FunctionFactory:
     }
 
     baseClasses = {
-        FunctionType.SELECT: SelectBase,
-        FunctionType.CHECK: CheckBase
+        FunctionType.SELECT: FunctionSelect,
+        FunctionType.CHECK: FunctionCheck
     }
 
     @classmethod
@@ -157,12 +156,3 @@ class FunctionFactory:
         function_class = registry[name]
         function = function_class(**kwargs)
         return function
-
-
-class ArgDefinition:
-    """Class to describe a function argument"""
-    
-    def __init__(self, name, description, mandatory):
-        self.name = name
-        self.description = description
-        self.mandatory = mandatory

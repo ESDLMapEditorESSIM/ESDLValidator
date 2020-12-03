@@ -17,8 +17,8 @@ class TestSelect(unittest.TestCase):
 
         hdGet = FunctionFactory.create(FunctionType.SELECT, "get", alias="heating_demands", data=esh.resource, args={"type": "HeatingDemand"})
 
-        for value in hdGet.result:
-            print("HeatingDemand found: " + getattr(value, "name"))
+        #for value in hdGet.result:
+        #    print("HeatingDemand found: " + getattr(value, "name"))
 
         data = {}
         profiles = FunctionFactory.create(FunctionType.SELECT, "get", alias="influx_profiles", data=esh.resource, args={"type": "InfluxDBProfile"})
