@@ -15,12 +15,12 @@ class SelectAvg(FunctionSelect):
             ]
         )
 
-    def _execute(self):
+    def execute(self):
         prop, _ = utils.get_args_property(self.args, "property")
         dataset, _ = utils.get_args_property(self.args, "dataset")
         count = 0
 
-        for entry in self.data[dataset]:
+        for entry in self.datasets.get(dataset):
             value = getattr(entry, prop)
             count += value
 

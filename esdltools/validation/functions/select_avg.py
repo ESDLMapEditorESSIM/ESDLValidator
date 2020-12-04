@@ -11,18 +11,20 @@ class SelectAvg(FunctionSelect):
             "Get an average number from previous selected data",
             [
                 ArgDefinition("property", "The name of the propery containing the value to calculate the average for", True),
-                ArgDefinition("dataset", "Which dataset to use, this should be matching an alias given to a previous select query", True)
+                ArgDefinition("dataset", "Which dataset to use, this should be matching an alias given to a previous select query", True),
+                ArgDefinition("ignore", "Ignore values in calculating the average, for example when 0.0 and -1 should not be counted add 'ignore': [0.0, -1]", False)
             ]
         )
 
-    def _execute(self):
+    def execute(self):
+        # args propery and dataset are Mandatory and checked if they are present
         prop, _ = utils.get_args_property(self.args, "property")
-        select, _ = utils.get_args_property(self.args, "dataset")
+        dataset, _ = utils.get_args_property(self.args, "dataset")
         
         total = 0
         count = 0
 
-        for entry in self.data[select]:
+        for entry in self.datasets.get(dataset):
             value = getattr(entry, prop)
             total += value
             count += 1

@@ -1,5 +1,6 @@
 import logging
 
+from typing import List
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 from enum import Enum
@@ -21,32 +22,40 @@ class FunctionType(Enum):
         raise ValueError("FunctionType {0} does not exist".format(typeStr))
 
 
+class ArgDefinition:
+    """Class to describe a function argument"""
+
+    def __init__(self, name: str, description: str, mandatory: bool):
+        self.name = name
+        self.description = description
+        self.mandatory = mandatory
+
+
 class FunctionDefinition:
     """Class to describe a function"""
 
-    def __init__(self, name, description, argDefinitions):
+    def __init__(self, name: str, description: str, argDefinitions: List[ArgDefinition]):
         self.name = name
         self.description = description
         self.argDefinitions = argDefinitions
 
 
-class ArgDefinition:
-    """Class to describe a function argument"""
+class CheckResult:
+    """Return value of a check function"""
 
-    def __init__(self, name, description, mandatory):
-        self.name = name
-        self.description = description
-        self.mandatory = mandatory
+    def __init__(self, ok: bool, message: str = None):
+        self.ok = ok
+        self.message = message
 
 
 class FunctionBase(metaclass=ABCMeta):
     """Base class for a function"""
 
     def super_setup(self, **kwargs):
-        self.data = kwargs["data"]
+        self.datasets = kwargs["datasets"]
         self.args = kwargs["args"]
-        self._check_args()
-        self._before_execute()
+        self.before_execute()
+        self.__check_args()
 
     @abstractmethod
     def get_function_definition(self):
@@ -54,15 +63,18 @@ class FunctionBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _execute(self):
+    def execute(self):
         """Abstract method that runs the function specific code"""
         pass
 
-    def _before_execute(self):
+    def before_execute(self):
         """Abstract method which is called befor execute"""
         pass
 
-    def _check_args(self):
+    def _run(self):
+        self.result = self.execute()
+
+    def __check_args(self):
         argDefinitions = self.get_function_definition().argDefinitions
         if argDefinitions is None:
             return
@@ -82,19 +94,14 @@ class FunctionSelect(FunctionBase):
         self.alias = kwargs["alias"]
         self._run()
 
-    def _run(self):
-        self.result = self._execute()
-
 
 class FunctionCheck(FunctionBase):
     """Base class for a check function"""
 
     def __init__(self, **kwargs):
         self.super_setup(**kwargs)
+        self.value = kwargs["value"]
         self._run()
-
-    def _run(self):
-        self.result = self._execute()
 
 
 class FunctionFactory:

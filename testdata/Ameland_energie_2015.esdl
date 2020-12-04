@@ -116,7 +116,7 @@
             <profile xsi:type="esdl:InfluxDBProfile" filters="" measurement="nedu_aardgas_2015-2018" id="6c9c0626-91ba-4fbb-9c4e-b406072e3002" database="energy_profiles" multiplier="34.01" profileType="ENERGY_IN_TJ" field="G1A" port="8086" host="http://10.30.2.1"/>
           </port>
         </asset>
-        <asset xsi:type="esdl:HeatingDemand" sector="78f77e27-4cc9-4bdc-b16c-a1544dace574" name="Overige bedrijven" id="bff7ac6a-6eb2-46b3-a141-ef9b3197c1dc">
+        <asset xsi:type="esdl:HeatingDemand" sector="78f77e27-4cc9-4bdc-b16c-a1544dace574" id="bff7ac6a-6eb2-46b3-a141-ef9b3197c1dc">
           <geometry xsi:type="esdl:Point" lat="53.452385" lon="5.805931"/>
           <port xsi:type="esdl:InPort" id="6135e488-5775-4cfb-a818-403b2695c1ba" name="In" connectedTo="a5130f70-cb50-4cd2-812e-1a884c74999a" carrier="e903f25f-78e8-4856-8c2e-db9d9fd7f1c8">
             <profile xsi:type="esdl:InfluxDBProfile" filters="" measurement="nedu_aardgas_2015-2018" id="2c33c54b-70b9-47b1-95ca-109657e9d803" database="energy_profiles" multiplier="7.57" profileType="ENERGY_IN_TJ" field="G1A" port="8086" host="http://10.30.2.1"/>
@@ -203,7 +203,7 @@
             <profile xsi:type="esdl:InfluxDBProfile" filters="" measurement="nedu_aardgas_2015-2018" id="ffdabf2a-9fb1-46e1-830f-dc57101b4408" database="energy_profiles" multiplier="9.84" profileType="ENERGY_IN_TJ" field="G1A" port="8086" host="http://10.30.2.1"/>
           </port>
         </asset>
-        <asset xsi:type="esdl:GasHeater" efficiency="0.9" name="Ho_GasHeater_fdd7" id="fdd77b68-cb6d-4f3e-9cae-d169d0b46feb" power="10000000.0" controlStrategy="c5015b4e-504d-4665-b4ca-4ebcfacfff7a">
+        <asset xsi:type="esdl:GasHeater" efficiency="0.9" name="Ho_GasHeater_fdd7" id="fdd77b68-cb6d-4f3e-9cae-d169d0b46feb" controlStrategy="c5015b4e-504d-4665-b4ca-4ebcfacfff7a">
           <geometry xsi:type="esdl:Point" lat="53.443593" lon="5.638218"/>
           <port xsi:type="esdl:InPort" id="ffa7f5e4-e06c-4765-bbb2-00b9ec860def" name="In" connectedTo="26aecda5-115c-4d69-bd8f-d3df0e98587e" carrier="NaturalGas"/>
           <port xsi:type="esdl:OutPort" id="d6eb6279-959d-458d-ab4c-c1264f308ca8" carrier="e903f25f-78e8-4856-8c2e-db9d9fd7f1c8" name="Out" connectedTo="2c6c0963-cc99-4c48-8d50-502110868ce2 4d7b229c-e5b3-4982-95c1-73b832109573 184f53d1-c566-4497-a305-c38297fdddab"/>

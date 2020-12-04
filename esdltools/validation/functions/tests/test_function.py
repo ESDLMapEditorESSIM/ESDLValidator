@@ -32,13 +32,14 @@ class TestFunction(unittest.TestCase):
         self.assertEqual(actual["sum"].__class__.__name__, "ABCMeta", "Sum function should be present in the select registry")
         self.assertEqual(actual["avg"].__class__.__name__, "ABCMeta", "Avg function should be present in the select registry")
 
-    def test_instantiate_function_from_factory(self):
+    def test_instantiate_function_select_from_factory(self):
         """Test if the factory is able to create and initialize a select function"""
 
         mockResource = types.SimpleNamespace()
         mockResource.uuid_dict = {}
+        datasets = { "resource": mockResource }
 
-        actual = FunctionFactory.create(FunctionType.SELECT, "get", alias="my_alias", data=mockResource, args={"type": "Port"})
+        actual = FunctionFactory.create(FunctionType.SELECT, "get", alias="my_alias", datasets=datasets, args={"type": "Port"})
         self.assertIsNotNone(actual, "Create function should not be None")
         self.assertEqual(actual.alias, "my_alias", "Select function alias should return my_alias")
         self.assertEqual(actual.args["type"], "Port", "Args type should return Port")
@@ -49,7 +50,17 @@ class TestFunction(unittest.TestCase):
         """
 
         with self.assertRaises(ValueError,):
-            FunctionFactory.create(FunctionType.SELECT, "get", alias="my_alias", data=None, args={"this_is_an_arg": "Port"})
+            FunctionFactory.create(FunctionType.SELECT, "get", alias="my_alias", datasets=None, args={"this_is_an_arg": "Port"})
+
+    def test_instantiate_function_check_from_factory(self):
+        """Test if the factory is able to create and initialize a check function"""
+
+        mockResource = types.SimpleNamespace()
+        mockResource.uuid_dict = {}
+        datasets = {"resource": mockResource}
+
+        actual = FunctionFactory.create(FunctionType.CHECK, "not_null", datasets=datasets, value=10, args={})
+        self.assertIsNotNone(actual, "Create function should not be None")
 
     def test_function_type_enum(self):
         """Test if the function type enum is working"""

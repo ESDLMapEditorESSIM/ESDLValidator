@@ -123,6 +123,7 @@ print_test_esdl(esh.resource)
 # "test": { 
 #   "value": "producers"
 #   "function": "not_null"
+#   "dataset": "producers"
 #   "args": { 
 #       "property": "power"
 #   },
