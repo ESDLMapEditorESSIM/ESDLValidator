@@ -1,7 +1,7 @@
 class EsdlValidator:
     """Describes the costs to acquire, install and maintain a certain asset."""
-    def __init__(self, schema):
-        self.schema = schema
+    def __init__(self, schemas, data):
+        self.schemas = schemas
     
-    def validate(self, data):
-        return "Validating: " + self.schema.validate()
+    def validate(self):
+        pass

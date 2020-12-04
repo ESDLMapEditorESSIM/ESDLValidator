@@ -17,7 +17,6 @@ class SelectAvg(FunctionSelect):
         )
 
     def execute(self):
-        # args propery and dataset are Mandatory and checked if they are present
         prop, _ = utils.get_args_property(self.args, "property")
         dataset, _ = utils.get_args_property(self.args, "dataset")
         

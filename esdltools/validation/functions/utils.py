@@ -1,5 +1,5 @@
 
-def get_args_property(args, propertyName):
+def get_args_property(args: dict, propertyName: str):
     """Get a property from args send to the function, property name casing will be ignored
 
     Args:

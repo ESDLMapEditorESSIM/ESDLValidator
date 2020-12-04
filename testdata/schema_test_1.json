@@ -9,14 +9,24 @@
             "message": "Asset does not have an id",
             "selects": [
                 {
-                    "alias": "producers",
                     "function": "get",
+                    "alias": "gasheaters",
                     "args": {
-                        "type": "producer"
+                        "type": "GasHeater"
                     }
                 }
             ],
-            "test": {}
+            "check": {
+                "function": "not_null",
+                "dataset": "gasheaters",
+                "args": {
+                    "property": "power",
+                    "counts_as_null": [
+                        0,
+                        0.0
+                    ]
+                }
+            }
         }
     ]
 }
