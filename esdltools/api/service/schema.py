@@ -1,4 +1,4 @@
-from validation.repository import SchemaRepository
+from esdltools.validation.repository import SchemaRepository
 
 
 class SchemaService:
