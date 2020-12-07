@@ -11,3 +11,4 @@ api = Api(apiBlueprint, version='1.0', title='ESDL-Tools', description='ESDL sta
 ns_stats = api.namespace('stats', 'ESDL statistics endpoint')
 ns_validation = api.namespace('validation', 'ESDL validation endpoint')
 ns_schema = api.namespace('schema', 'Validation schema endpoint')
+ns_upload = api.namespace('upload', 'ESDL file upload endpoint')
