@@ -4,7 +4,7 @@
     "validations": [
         {
             "name": "check_asset_id_notnull",
-            "desciption": "Check if all Assets have an id",
+            "description": "Check if all Assets have an id",
             "type": "error",
             "message": "Asset does not have an id",
             "selects": [
@@ -23,45 +23,6 @@
                     "property": "id",
                     "counts_as_null": ["null"]
                 }
-            }
-        },
-        {
-            "name": "check_producer_power_cost_or_profile",
-            "desciption": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
-            "type": "error",
-            "message": "Consumer missing power and marginal costs or no energy profile connected",
-            "selects": [
-                {
-                    "function": "get",
-                    "alias": "producers",
-                    "args": {
-                        "type": "Producer"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_null",
-                "dataset": "producers",
-                "args": {
-                    "property": "power"
-                },
-                "and": [
-                    {
-                        "function": "not_null",
-                        "args": {
-                            "property": "costInformation.marginalCosts",
-                            "counts_as_null": [0, 0.0]
-                        }
-                    }
-                ],
-                "or": [
-                    {
-                        "function": "contains",
-                        "args": {
-                            "property": "port.profile"
-                        }
-                    }
-                ]
             }
         }
     ]
