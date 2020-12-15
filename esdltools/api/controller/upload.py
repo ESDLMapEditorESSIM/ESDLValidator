@@ -1,4 +1,4 @@
-from flask import request, redirect, render_template_string, make_response
+from flask import request, redirect, render_template_string, make_response, Response
 from flask_restx import Resource, Api
 from werkzeug.utils import secure_filename
 import os
@@ -21,13 +21,12 @@ class ESDLFileUploader(Resource):
         <title>Upload new File</title>
         <h1>Upload new File</h1>
         <form method=post enctype=multipart/form-data>
-            <input type=file name=file>
+            <input type=file name="file" accept=".esdl">
             <input type=submit value=Upload>
         </form>
     </body>
 </html>'''), 200, {'Content-Type': 'text/html'})
 
-    #@api.expect(post_body)
     @ns_upload.doc(description='Post an ESDL file')
     def post(self):
         if 'file' not in request.files:
@@ -36,9 +35,12 @@ class ESDLFileUploader(Resource):
         if file.filename == '':
             return make_response(render_template_string('''<!doctype html><html><body>No file uploaded</body></html>'''), 404)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../uploads', filename))
-            return make_response(render_template_string('''<!doctype html><html><body>File uploaded</body></html>'''))
+            data = file.read()
+            #return Response(data, mimetype='application/esdl+xml')
+            return Response(data, mimetype='text/xml')
+            #filename = secure_filename(file.filename)
+            #file.save(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../uploads', filename))
+            #return make_response(render_template_string('''<!doctype html><html><body>File uploaded</body></html>'''))
             #return redirect_url(request.url) #or some location where file will be validated
         return make_response(render_template_string('''<!doctype html><html><body>Upload failed, does the file have extension '.esdl'?</body></html>'''))
         
