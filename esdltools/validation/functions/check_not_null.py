@@ -10,7 +10,7 @@ class ContainsNotNull(FunctionCheck):
     def get_function_definition(self):
         return FunctionDefinition(
             "not_null",
-            "Check if a value is set, ",
+            "Check if a value is set",
             [
                 ArgDefinition("property", "The name of the propery containing the value to check, leave propery out to check directly on input value", False),
                 ArgDefinition("counts_as_null", "Array of values which are seen as null values such as 0.0 for a double, 0 for int, 'NULL' for a string", False)

@@ -3,7 +3,7 @@ from esdltools.validation.functions.function import FunctionFactory, FunctionSel
 
 
 @FunctionFactory.register(FunctionType.SELECT, "sum")
-class SelectAvg(FunctionSelect):
+class SelectSum(FunctionSelect):
 
     def get_function_definition(self):
         return FunctionDefinition(
