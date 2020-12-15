@@ -20,6 +20,12 @@ Enable virtual environment
 source env/bin/activate
 ```
 
+Windows powershell or cmd
+```
+.\env\Scripts\activate.ps1
+.\env\Scripts\activate.bat
+```
+
 ### Install dependencies
 Install project requirements
 ```
