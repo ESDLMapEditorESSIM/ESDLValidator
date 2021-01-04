@@ -209,7 +209,7 @@
           <port xsi:type="esdl:OutPort" id="d6eb6279-959d-458d-ab4c-c1264f308ca8" carrier="e903f25f-78e8-4856-8c2e-db9d9fd7f1c8" name="Out" connectedTo="2c6c0963-cc99-4c48-8d50-502110868ce2 4d7b229c-e5b3-4982-95c1-73b832109573 184f53d1-c566-4497-a305-c38297fdddab"/>
         </asset>
       </area>
-      <area xsi:type="esdl:Area" name="Verspreide huizen Ballum" id="BU00600007" scope="NEIGHBOURHOOD">
+      <area xsi:type="esdl:Area" name="Verspreide huizen Ballum" id="BU00600007">
         <asset xsi:type="esdl:ElectricityDemand" sector="1163d341-aa95-4b44-826a-c07d8e4e98e2" name="Huishoudens" id="60eeccce-0aef-49a8-a57c-614d968b7e61">
           <geometry xsi:type="esdl:Point" lat="53.448794" lon="5.689566"/>
           <port xsi:type="esdl:InPort" id="195d3063-cc90-402c-9878-6f8b430164ec" name="In" connectedTo="a8e9ba14-67b4-4a6f-918c-991d842cb0bc" carrier="Electricity">

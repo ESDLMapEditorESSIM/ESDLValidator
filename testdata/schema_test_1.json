@@ -3,24 +3,24 @@
     "description": "Test validation schema which is used in esdl-tools unit tests",
     "validations": [
         {
-            "name": "check_asset_id_notnull",
-            "description": "Check if all Assets have an id",
+            "name": "check_area_scope_notnull",
+            "description": "Check if all Areas have a scope",
             "type": "error",
-            "message": "Asset does not have an id",
+            "message": "Area does not have a scope",
             "selects": [
                 {
                     "function": "get",
-                    "alias": "assets",
+                    "alias": "areas",
                     "args": {
-                        "type": "Asset"
+                        "type": "Area"
                     }
                 }
             ],
             "check": {
                 "function": "not_null",
-                "dataset": "assets",
+                "dataset": "areas",
                 "args": {
-                    "property": "id",
+                    "property": "scope",
                     "counts_as_null": ["null"]
                 }
             }

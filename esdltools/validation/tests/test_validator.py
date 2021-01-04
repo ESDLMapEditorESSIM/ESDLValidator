@@ -24,11 +24,15 @@ class TestValidator(unittest.TestCase):
         # load ESDL
         esdl = self.get_test_datasets()
         
+        # create validator
         validator = EsdlValidator()
+
+        # validate against 1 schema
         expected = validator.validate(esdl, [schema])
 
-        jsonString = json.dumps(expected.__dict__)
-        print(jsonString)
+        for result in expected:
+            jsonString = result.toJSON()
+            print(jsonString)
 
         self.assertEqual(1, 1, "no")
 

@@ -2,22 +2,24 @@ class ValidationResults:
     """Result of a validation, this is returned to the user as JSON"""
 
     def __init__(self, validation, checks):
+        results = self.__getResults(checks, validation["message"])
+
         self.name = validation["name"]
         self.description = validation["description"]
-        self.message = validation["message"]
+        self.checked = len(checks)
 
-        results = self.__getResults(checks)
         if validation["type"].lower() is "error":
             self.errors = results
         else:
-            self.warnigns = results
+            self.warnings = results
 
-    def __getResults(self, checks):
+
+    def __getResults(self, checks, message):
         results = []
 
         for check in checks:
             if not check.result.ok:
-                results.append(check.result.message)
+                results.append("{0}: {1}".format(message, check.result.message))
 
         return results
 

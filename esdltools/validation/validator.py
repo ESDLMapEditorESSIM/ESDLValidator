@@ -11,7 +11,7 @@ class EsdlValidator:
         pass
     
     def validate(self, esdl, schemas):
-        """Validate an ESDL against one or more multiple schamas
+        """Validate an ESDL against one or more multiple schemas
 
         Args:
             esdl (object): The loaded ESDL
@@ -63,12 +63,14 @@ class EsdlValidator:
         return select
 
     def __run_check(self, check, datasets):
-        dataset = check["dataset"]
+        dataset = datasets[check["dataset"]]
         checkResults = []
 
-        if not isinstance(dataset, list):
+        print("totaal {0}".format(len(dataset)))
+
+        if not isinstance(dataset, (frozenset, list, set, tuple)):
             dataset = [dataset]
-        
+
         for entry in dataset:
             checkResult = FunctionFactory.create(FunctionType.CHECK, check["function"], datasets=datasets, value=entry, args=check["args"])
             checkResults.append(checkResult)

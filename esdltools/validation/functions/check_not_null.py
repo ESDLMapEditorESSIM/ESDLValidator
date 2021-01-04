@@ -22,27 +22,28 @@ class ContainsNotNull(FunctionCheck):
 
     def execute(self):
         prop, propertySet = utils.get_args_property(self.args, "property")
-        include, includeSet = utils.get_args_property(self.args, "counts_as_null")
-
+        include, _ = utils.get_args_property(self.args, "counts_as_null", [])        
+        include.extend(["undefined", "none"])
         value = self.value
 
         if propertySet:
             if not hasattr(value, prop):
-                return CheckResult(False, "property {0} not found".format(prop))
+                msg = "property {0} not found".format(prop)
+                if hasattr(value, "id"):
+                    msg += " for entity {0}".format(getattr(value, "id"))
+
+                return CheckResult(False, msg)
             
             value = getattr(value, prop)
         
         if value is None:
             return CheckResult(False)
         
-        if includeSet:
-            return self.check_includes(include, value)
-
-        return CheckResult(True)
+        return self.check_includes(include, value)
 
     def check_includes(self, include, value):
         for includeValue in include:
-            if str(includeValue) == str(value):
-                return CheckResult(False)
+            if str(includeValue).lower() == str(value).lower():
+                return CheckResult(False, "value equals {0}".format(includeValue))
 
         return CheckResult(True)
