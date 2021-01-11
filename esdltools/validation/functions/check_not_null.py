@@ -22,7 +22,9 @@ class ContainsNotNull(FunctionCheck):
 
     def execute(self):
         prop, propertySet = utils.get_args_property(self.args, "property")
-        include, _ = utils.get_args_property(self.args, "counts_as_null", [])        
+        include, _ = utils.get_args_property(self.args, "counts_as_null", [])    
+
+        # Some esdl entity values have a default of undefined or none when not set
         include.extend(["undefined", "none"])
         value = self.value
 

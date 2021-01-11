@@ -3,6 +3,7 @@ from esdltools.validation.functions.function import FunctionFactory, FunctionTyp
 
 from esdltools.validation.validator_validation_result import ValidationResults
 from esdltools.validation.validator_schema_result import SchemaResult
+from esdltools.validation.validator_result import ValidatorResult
 
 class EsdlValidator:
     """Validate a loaded ESDL against one or multiple validation schemas"""
@@ -17,16 +18,16 @@ class EsdlValidator:
             esdl (object): The loaded ESDL
 
         Returns:
-            result: JSON response containing the results of the validation
+            result: ValidatorResult containing the validation results
         """
 
         schemaResults = []
         for schema in schemas:
             schemaResult = self.__run_schema(schema, esdl)
             schemaResults.append(schemaResult)
-
-        # construct result json
-        return schemaResults
+        
+        result = ValidatorResult(schemaResults)
+        return result
 
     def __run_schema(self, schema, esdl):
         validationResults = []
@@ -76,6 +77,3 @@ class EsdlValidator:
             checkResults.append(checkResult)
 
         return checkResults
-
-    def __construct_response(self, schemaResults):
-        pass

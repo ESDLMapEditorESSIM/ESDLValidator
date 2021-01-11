@@ -1,7 +1,25 @@
 # ESDL-Tools
-Service with tools for the ESDL ecore model, the service currently supports functionality for validating an ESDL model against validation schema's. In the future this service will have more functionalit such as getting statistics from an ESDL.
+Service with tools for the ESDL ecore model, the service currently supports functionality for validating an ESDL model against user defined validation schemas. 
 
-## Setup dev environment
+## Endpoints
+Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
+
+### schema
+This endpoint can be used to manage the validation schemas. Validation schemas are used to validate an ESDL document. Make sure to not open up POST/PUT/PATCH/DELETE to the public.
+
+- retrieve all schemas ```GET /schema```
+- post a new schema ```POST /schema```
+
+### validation
+- validate an esdl document against one or more schemas ```POST /validation```
+
+### stats
+- Not implemented yet
+
+## validation schema
+ToDo: information about validation schemas
+
+## Local development
 Setup a development environment using virtual environment and install the dependencies
 
 ### Virtual environment
@@ -38,7 +56,7 @@ To run all esdl-tools tests run
 python3 -m unittest discover ./
 ```
 
-### Run API in develop/sebug mode
+### Run API in develop/debug mode
 To run the API in debug mode using the build in flask development server
 ```
 python3 app.py
@@ -67,8 +85,6 @@ docker build -t geodan/esdl-tools .
 
 ## Validation
 
-### Endpoints
-
 ### Functions
 
 #### Select
@@ -78,5 +94,3 @@ docker build -t geodan/esdl-tools .
 #### Adding functions
 
 #### Validation Schemas
-
-## Statistics

@@ -29,12 +29,16 @@ class TestValidator(unittest.TestCase):
 
         # validate against 1 schema
         expected = validator.validate(esdl, [schema])
+        schemaResult = expected.schemas[0]
 
-        for result in expected:
-            jsonString = result.toJSON()
-            print(jsonString)
+        #jsonString = schemaResult.toJSON()
+        #print(jsonString)
 
-        self.assertEqual(1, 1, "no")
+        validation = schemaResult.validation[0]
+
+        self.assertEqual(validation.checked, 8, "there should be 8 checked")
+        self.assertEqual(len(validation.warnings), 1, "there should be 1 warning")
+        self.assertEqual(validation.warnings[0], "Area does not have a scope: value equals undefined", "Warning should say: Area does not have a scope: value equals undefined")
 
     def get_test_datasets(self):
         esh = utils.get_esh_from_file("testdata/Ameland_energie_2015.esdl")
