@@ -1,4 +1,4 @@
-from validation.repository import SchemaRepository
+from esdltools.validation.repository import SchemaRepository
 
 class ValidationService:
     """Service for handling all logic related to the validation module"""

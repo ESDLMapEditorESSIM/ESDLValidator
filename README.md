@@ -8,6 +8,7 @@ Swagger documentation of the endpoints can be viewed by navigating to the root o
 This endpoint can be used to manage the validation schemas. Validation schemas are used to validate an ESDL document. Make sure to not open up POST/PUT/PATCH/DELETE to the public.
 
 - retrieve all schemas ```GET /schema```
+- retrieve schema by id ```GET /schema/{id}```
 - post a new schema ```POST /schema```
 
 ### validation
@@ -75,6 +76,11 @@ pyecoregen -e esdl.ecore -o ./esdltools/cores/esdl
 ```
 
 ## Deployment
+
+### Settings
+Settings can be changed using environment variables
+
+DB_LOCATION - location and name of database, default: schemas.db
 
 ### Docker
 

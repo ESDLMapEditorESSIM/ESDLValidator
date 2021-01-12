@@ -1,17 +1,26 @@
 import json
+import logging
+
+from esdltools.core.exceptions import NameAlreadyExists, InvalidJSON, NotFound
 
 from tinydb import TinyDB, Query
 from os import path
+
+logger = logging.getLogger(__name__)
 
 
 class SchemaRepository:
     """Repository for retrieving, adding, deleting validation schemas"""
 
-    def __init__(self, location):
+    def __init__(self, location: str):
         """Create a repository and initialize the 'database' from the given file"""
 
         if not path.exists(location):
-            raise OSError("Database file not found: {0}".format(location))
+            try:
+                f = open(location, "x")
+                logger.info("Created database file {0}".format(location))
+            except:
+                raise OSError("Unable to create database file: {0}".format(location))
 
         self.db = TinyDB(location)
         self.table = self.db.table("schema")
@@ -32,7 +41,7 @@ class SchemaRepository:
         """
 
         if not self.table.contains(doc_id=id):
-            return None
+            raise NotFound
             
         return self.table.get(doc_id=id)
 
@@ -49,7 +58,7 @@ class SchemaRepository:
         Schema = Query()
         schemas = self.table.search(Schema.name == name)
 
-        if len(schemas) is 0:
+        if len(schemas) == 0:
             return None
 
         # return schema 0 since name should be unique and there should be no other schemas
@@ -65,20 +74,18 @@ class SchemaRepository:
             schemaID: The created id for the schema, can be used to retrieve the schema
 
         Raises:
-            ValueError: If json is not a valid json string or schema name already exist
-
-        ToDo:
-            Check if the json is a valid schema
+            InvalidJSON: If json is not a valid json string or schema name already exist
+            NameAlreadyExists: If database already contains a document with the same name
         """
 
         try:
             document = json.loads(jsonString)
         except:
-            raise ValueError("Schema is not a valid JSON document")
+            raise InvalidJSON
 
         schema = self.get_by_name(document["name"])
         if not schema is None:
-            raise ValueError("Duplicate schema name: {}".format(document["name"]))
+            raise NameAlreadyExists
 
         schemaID = self.table.insert(document)
         return schemaID

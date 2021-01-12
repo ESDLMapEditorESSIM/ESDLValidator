@@ -8,3 +8,4 @@ flask-restx==0.2.0
 waitress==1.4.4
 tinydb==4.3.0
 autodiscover==0.0.3
+environ-config==20.1.0
