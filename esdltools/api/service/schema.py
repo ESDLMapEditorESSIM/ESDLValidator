@@ -19,5 +19,11 @@ class SchemaService:
     def get_by_name(self, name: str):
         return self.repo.get_by_name(name)
 
-    def insert(self, schema):
+    def insert(self, schema: str):
         return self.repo.insert(json.dumps(schema))
+
+    def delete(self, id: int):
+        return self.repo.remove_by_id(id)
+
+    def update(self, id: int, schema: str):
+        return self.repo.update(id, json.dumps(schema))

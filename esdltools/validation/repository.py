@@ -1,7 +1,7 @@
 import json
 import logging
 
-from esdltools.core.exceptions import NameAlreadyExists, InvalidJSON, NotFound
+from esdltools.core.exceptions import NameAlreadyExists, InvalidJSON, SchemaNotFound
 
 from tinydb import TinyDB, Query
 from os import path
@@ -37,11 +37,14 @@ class SchemaRepository:
             id (int): ID of the schema
 
         Returns:
-            schema: None if not found else it returns the schema
+            schema: Validation schema
+
+        Raises:
+            SchemaNotFound: Validation schema was not found
         """
 
         if not self.table.contains(doc_id=id):
-            raise NotFound
+            raise SchemaNotFound
             
         return self.table.get(doc_id=id)
 
@@ -52,14 +55,17 @@ class SchemaRepository:
             name (string): Name of the schema
 
         Returns:
-            schema: None if not found else it returns the schema
+            schema: Validation schema
+
+        Raises:
+            SchemaNotFound: Validation schema was not found
         """
 
         Schema = Query()
         schemas = self.table.search(Schema.name == name)
 
         if len(schemas) == 0:
-            return None
+            raise SchemaNotFound
 
         # return schema 0 since name should be unique and there should be no other schemas
         return schemas[0]
@@ -83,8 +89,9 @@ class SchemaRepository:
         except:
             raise InvalidJSON
 
-        schema = self.get_by_name(document["name"])
-        if not schema is None:
+        Schema = Query()
+        schemas = self.table.search(Schema.name == document["name"])
+        if len(schemas) != 0:
             raise NameAlreadyExists
 
         schemaID = self.table.insert(document)
@@ -97,11 +104,40 @@ class SchemaRepository:
             id (int): Schema id
 
         Returns:
-            schemaID: Returns none if schema was not found, schema id when found
+            schemaID: schema id when found
+
+        Raises:
+            SchemaNotFound: Validation schema was not found
         """
 
         if not self.table.contains(doc_id=id):
-            return None
+            raise SchemaNotFound
 
         removed = self.table.remove(doc_ids=[id])
         return removed[0]
+
+    def update(self, id: int, jsonString: str):
+        """Update schema by id
+
+        Args:
+            id (int): Schema id
+            jsonString (string): schema json string
+
+        Returns:
+            schemaID: The updated id of the schema
+
+        Raises:
+            InvalidJSON: If json is not a valid json string or schema name already exist
+            SchemaNotFound: Validation schema was not found
+        """
+
+        if not self.table.contains(doc_id=id):
+            raise SchemaNotFound
+
+        try:
+            document = json.loads(jsonString)
+        except:
+            raise InvalidJSON
+
+        self.table.update(document, doc_ids=[id])
+        return id

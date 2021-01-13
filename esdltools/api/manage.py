@@ -12,6 +12,7 @@ def create_app():
 
     app = Flask(__name__)
     app.register_blueprint(apiBlueprint, url_prefix='')
+    app.config["ERROR_404_HELP"] = False
     CORS(app, resources={r"*": {"origins": "*"}})
 
     @app.after_request

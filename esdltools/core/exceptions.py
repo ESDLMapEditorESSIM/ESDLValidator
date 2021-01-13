@@ -19,6 +19,6 @@ class InvalidJSON(ApiException):
     def __init__(self, msg = "JSON is invalid", statusCode = 400):
         super().__init__(msg, statusCode)
 
-class NotFound(ApiException):    
-    def __init__(self, msg = "Not found", statusCode = 404):
+class SchemaNotFound(ApiException):    
+    def __init__(self, msg = "Schema not found", statusCode = 404):
         super().__init__(msg, statusCode)
