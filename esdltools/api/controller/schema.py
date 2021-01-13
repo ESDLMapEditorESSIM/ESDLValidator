@@ -1,10 +1,7 @@
-import json
-import urllib
-
 import esdltools.api.controller.models as models
 
-from flask import request, make_response
-from flask_restx import Api, Resource, fields
+from flask import request
+from flask_restx import Resource
 
 from esdltools.api.controller.setup import api, ns_schema
 from esdltools.api.service.schema import SchemaService
@@ -23,7 +20,7 @@ class SchemaListController(Resource):
     @api.marshal_with(models.schema_summary)
     def get(self):
         """Return a summary of all schemas in the database"""
-        
+
         return schemaService.get_all(), 200
 
     @ns_schema.doc(description="Post a new validation schema", responses={201: "Created", 409: "Name already exists", 400: "Invalid JSON"})
@@ -33,6 +30,7 @@ class SchemaListController(Resource):
 
         schemaID = schemaService.insert(request.json)
         return {}, 201, {"location": "/schema/{0}".format(schemaID)}
+
 
 @ns_schema.route('/<int:schemaID>/')
 class SchemaController(Resource):
@@ -44,7 +42,6 @@ class SchemaController(Resource):
 
         return schemaService.get_by_id(schemaID), 200
 
-    
     @api.doc(description="Delete a schema by ID", responses={200: "Ok, schema was deleted", 404: "Schema not found"})
     def delete(self, schemaID):
         """Delete a validation schema from the database"""

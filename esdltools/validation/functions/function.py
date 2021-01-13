@@ -18,7 +18,7 @@ class FunctionType(Enum):
         for f in FunctionType:
             if f.value == typeStr:
                 return f
-        
+
         raise ValueError("FunctionType {0} does not exist".format(typeStr))
 
 
