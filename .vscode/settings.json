@@ -1,10 +1,12 @@
 {
-    "python.linting.enabled": true,
-    "python.formatting.provider": "autopep8",
-    "python.formatting.autopep8Args": [
-        "--max-line-length",
-        "179",
-        "--experimental"
-    ],
-    "python.pythonPath": "env\\Scripts\\python.exe"
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.formatting.provider": "autopep8",
+  "python.formatting.autopep8Args": ["--max-line-length", "179", "--experimental", "--ignore=E501"],
+  "python.pythonPath": "${workspaceFolder}/env/bin/python3",
+  "python.autoComplete.extraPaths": ["${workspaceFolder}"],
+  "editor.formatOnSave": true,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}"
+  ]
 }
