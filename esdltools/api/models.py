@@ -1,5 +1,5 @@
 from flask_restx import fields
-from esdltools.api.setup import api
+from esdltools.api import api
 
 schema_summary = api.model('SchemaSummary', {
     "id": fields.Integer(required=False, description="ID of the schema"),

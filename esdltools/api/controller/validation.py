@@ -1,16 +1,15 @@
-from flask import request, Response
-from flask_restx import Resource, reqparse
+from flask import request
+from flask_restx import Resource
 from werkzeug.datastructures import FileStorage
 
-from esdltools.api.setup import api, ns_validation
+from esdltools.api import api, ns_validation, config
 from esdltools.api.service.validation import ValidationService
-from esdltools.settings.config import AppConfig
 
 parser = api.parser()
 parser.add_argument("file", type=FileStorage, location="files", required=True)
 parser.add_argument("schemas", type=list, help="List of schema id's", location="form", required=True)
 
-validationService = ValidationService(AppConfig.db_location)
+validationService = ValidationService(config.db_location)
 
 
 @ ns_validation.route('/')
