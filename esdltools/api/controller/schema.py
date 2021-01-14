@@ -3,7 +3,7 @@ import esdltools.api.controller.models as models
 from flask import request
 from flask_restx import Resource
 
-from esdltools.api.controller.setup import api, ns_schema
+from esdltools.api.setup import api, ns_schema
 from esdltools.api.service.schema import SchemaService
 
 from esdltools.settings.config import AppConfig

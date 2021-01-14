@@ -87,7 +87,11 @@ pyecoregen -e esdl.ecore -o ./esdltools/cores/esdl
 ### Settings
 Settings can be changed using environment variables
 
-DB_LOCATION - location and name of database, default: schemas.db
+ESDLTOOLS_TITLE - Title of the service, shown in swagger. default: "ESDL-Tools"
+ESDLTOOLS_DESCRIPTION - Description of the service, shown in swagger. default: "ESDL statistics and validation API"
+ESDLTOOLS_ENDPOINT_PREFIX - Prefix of the endpoint, for example /api. default: ""
+ESDLTOOLS_DB_LOCATION - location and name of database, default: schemas.db
+ESDLTOOLS_DEFAULT_CORS - Enable CORS. default: False
 
 ### Docker
 

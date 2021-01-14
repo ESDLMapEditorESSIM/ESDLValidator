@@ -2,7 +2,7 @@ from flask import request, Response
 from flask_restx import Resource, reqparse
 from werkzeug.datastructures import FileStorage
 
-from esdltools.api.controller.setup import api, ns_validation
+from esdltools.api.setup import api, ns_validation
 from esdltools.api.service.validation import ValidationService
 from esdltools.settings.config import AppConfig
 

@@ -1,10 +1,16 @@
 Dockerfile
 .dockerignore
+.gitignore
 .git
 .cache
 *.pyc
-requirements.txt
-testdata
+*.swp
+obj
+bin
+out
+__pycache__
+.coverage
+.vscode
 
 test_*
 _test.py
@@ -19,4 +25,7 @@ ENV/
 env.bak/
 venv.bak/
 
-.vscode
+requirements.txt
+testdata
+esdl.ecore
+README.md

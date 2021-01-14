@@ -5,11 +5,11 @@ RUN apk add --update --no-cache g++ gcc libxslt-dev
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-RUN addgroup -g 1000 appgroup
-RUN adduser -u 1000 -G appgroup -h /home/appuser -D appuser
+RUN addgroup -g 1000 esdlgroup
+RUN adduser -u 1000 -G esdlgroup -h /home/esdluser -D esdluser
 
-WORKDIR /home/appuser
-USER appuser
+WORKDIR /home/esdluser
+USER esdluser
 
 COPY . .
 
