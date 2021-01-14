@@ -1,4 +1,5 @@
 from esdltools.validation.repository import SchemaRepository
+from esdltools.core.exceptions import UnknownESDLFileType
 
 
 class ValidationService:
@@ -8,13 +9,14 @@ class ValidationService:
         self.repo = SchemaRepository(dbLocation)
 
     def validate(self, file):
-        # if file and self.allowed_file(file.filename):
+        if not self.allowed_file(file.filename):
+            raise UnknownESDLFileType
+
         #    data = file.read()
-        #    return Response(data, mimetype='text/xml')
 
         schemas = self.repo.get_all()
         return [{"id": schema.doc_id, "name": schema["name"], "description": schema["description"]} for schema in schemas]
 
     def allowed_file(self, filename):
         return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in ['esdl']
+            filename.rsplit('.', 1)[1].lower() in ["esdl", "xml"]

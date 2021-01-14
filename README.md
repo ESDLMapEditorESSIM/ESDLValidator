@@ -5,7 +5,7 @@ Service with tools for the ESDL ecore model, the service currently supports func
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
 
 ### schema
-This endpoint can be used to manage the validation schemas. Validation schemas are used to validate an ESDL document. Make sure to not open up POST/PUT/PATCH/DELETE to the public.
+This endpoint can be used to manage the validation schemas. Validation schemas are used to validate an ESDL document.
 
 - retrieve all schemas ```GET /schema```
 - retrieve schema by id ```GET /schema/{id}```
