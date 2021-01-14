@@ -1,9 +1,14 @@
+import logging
+
 from flask import Flask, make_response, render_template_string
 from flask_cors import CORS
 
 from esdlvalidator.api import app as esdlvalidator
 from esdlvalidator.api.controller.validation import app as validationApi
 from esdlvalidator.api.controller.schema import app as schemaApi
+from esdlvalidator.core.exceptions import ApiException
+
+logger = logging.getLogger(__name__)
 
 
 def create_app():
@@ -16,6 +21,11 @@ def create_app():
     @app.errorhandler(404)
     def page_not_found(e):
         return make_response(render_template_string('''<!doctype html><html><head><style>*{transition: all 0.6s;}html {height: 100%;}body{font-family: 'Lato', sans-serif;color: #888;margin: 0;}#main{display: table;width: 100%;height: 100vh;text-align: center;}.fof{display: table-cell;vertical-align: middle;}.fof h1{font-size: 50px;display: inline-block;padding-right: 12px;animation: type .5s alternate infinite;}@keyframes type{from{box-shadow: inset -3px 0px 0px #888;}to{box-shadow: inset -3px 0px 0px transparent;}}</style></head><body><div id="main"><div class="fof"><h1>Error 404</h1></div></div></body></html>'''))
+
+    @app.errorhandler(ApiException)
+    def handle_api_exception(error):
+        logger.info("{0} raised, statusCode: {1}, message: {2}".format(error.__class__.__name__, error.statusCode, error.message))
+        return {"message": error.message}, error.statusCode
 
     if esdlvalidator.settings.useDefaultCors:
         CORS(app, resources={r"*": {"origins": "*"}})

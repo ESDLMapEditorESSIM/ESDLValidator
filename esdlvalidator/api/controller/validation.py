@@ -14,7 +14,10 @@ parser.add_argument("schemas", type=list, help="List of schema id's, comma separ
 class ValidationController(Resource):
     """Validate an ESDL file"""
 
-    @app.ns_validation.doc(description="Post a new validation schema", responses={200: "Ok", 404: "Schema not found", 400: "Unknown filetype, Invalid ESDL"})
+    @app.ns_validation.doc(description="Post a new validation schema", responses={
+        200: "Ok",
+        404: "Schema not found",
+        400: "Unknown filetype, Invalid ESDL"})
     @app.api.expect(parser, validate=True)
     def post(self):
         """Validate an ESDL file against one or more validation schemas"""

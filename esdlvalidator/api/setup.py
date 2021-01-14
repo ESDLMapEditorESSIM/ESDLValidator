@@ -4,9 +4,6 @@ import logging
 from flask import Blueprint
 from flask_restx import Api
 
-from esdlvalidator.api import config
-from esdlvalidator.core.exceptions import ApiException
-
 logger = logging.getLogger(__name__)
 
 
@@ -46,9 +43,3 @@ class AppConfig:
         self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title, description=self.settings.description)
         self.ns_validation = self.api.namespace("validation", "ESDL validation endpoint")
         self.ns_schema = self.api.namespace("schema", "Validation schema endpoint")
-
-        # Setup our ApiException handler
-        @self.api.errorhandler(ApiException)
-        def handle_api_exception(error):
-            logger.info("{0} raised, statusCode: {1}, message: {2}".format(error.__class__.__name__, error.statusCode, error.message))
-            return {"message": error.message}, error.statusCode
