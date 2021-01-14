@@ -1,5 +1,4 @@
 import unittest
-import json
 
 from esdltools.core.exceptions import InvalidJSON, NameAlreadyExists, SchemaNotFound
 from esdltools.validation.repository import SchemaRepository

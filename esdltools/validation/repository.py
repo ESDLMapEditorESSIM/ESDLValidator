@@ -45,7 +45,7 @@ class SchemaRepository:
 
         if not self.table.contains(doc_id=id):
             raise SchemaNotFound
-            
+
         return self.table.get(doc_id=id)
 
     def get_by_name(self, name: str):

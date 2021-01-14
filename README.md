@@ -21,7 +21,7 @@ This endpoint can be used to manage the validation schemas. Validation schemas a
 ToDo: information about validation schemas
 
 ## Local development
-Setup a development environment using virtual environment and install the dependencies
+Setup a development environment using virtual environment and install the dependencies. For vscode a default settings.json can be found under .vscode/settings.json.default paste these settings into a new file settings.json under the .vscode folder.
 
 ### Virtual environment
 Install virtual environment if not installed yet
@@ -29,24 +29,19 @@ Install virtual environment if not installed yet
 apt-get install python3-venv
 ```
 
-Create virtual environment
+Create a virtual environment
 ```
 python3 -m venv env
 ```
 
-Enable virtual environment
+Enable virtual environment with one of the following commands
 ```
-source env/bin/activate
-```
-
-Windows powershell or cmd
-```
-.\env\Scripts\activate.ps1
-.\env\Scripts\activate.bat
+source env/bin/activate    (Linux)
+.\env\Scripts\activate.ps1 (Windows Powershell)
+.\env\Scripts\activate.bat (Windows CMD)
 ```
 
-### Install dependencies
-Install project requirements
+### Install project dependencies
 ```
 pip3 install -r requirements.txt
 ```
