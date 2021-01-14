@@ -24,12 +24,19 @@ def setup_logger(logLevel: str):
     """Setup the logger"""
 
     logLevel = logging.getLevelName(logLevel)
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logLevel)
+
+    werkzeug = logging.getLogger('werkzeug')
+    waitress = logging.getLogger('waitress')
+
+    werkzeug.setLevel(logLevel)
+    waitress.setLevel(logLevel)
+
     logging.basicConfig(level=logLevel, format="%(asctime)s | %(name)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z")
 
 
 class AppConfig:
+    """Application config and initialization"""
+
     def __init__(self):
         # Load config
         self.settings = Settings.from_environ()

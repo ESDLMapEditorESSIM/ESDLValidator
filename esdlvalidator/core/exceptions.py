@@ -1,9 +1,10 @@
 
 class ApiException(Exception):
-    """Exception raised for errors in the input salary.
+    """Exception raised for errors in esdlvalidator.
 
-    Attributes:
-        message -- explanation of the error
+    Args:
+        message (str): Message to display to the user.
+        statusCode (int): Status code to return from the API.
     """
 
     def __init__(self, message, statusCode):
