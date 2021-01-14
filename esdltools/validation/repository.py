@@ -20,7 +20,9 @@ class SchemaRepository:
                 f = open(location, "x")
                 logger.info("Created database file {0}".format(location))
             except:
-                raise OSError("Unable to create database file: {0}".format(location))
+                msg = "Unable to create database file: {0}".format(location)
+                logger.critical(msg)
+                raise OSError(msg)
 
         self.db = TinyDB(location)
         self.table = self.db.table("schema")
@@ -44,7 +46,7 @@ class SchemaRepository:
         """
 
         if not self.table.contains(doc_id=id):
-            raise SchemaNotFound
+            raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))
 
         return self.table.get(doc_id=id)
 
@@ -64,7 +66,7 @@ class SchemaRepository:
         schemas = []
         for id in ids:
             if not self.table.contains(doc_id=id):
-                raise SchemaNotFound(msg="Schema with id {0} not found".format(id))
+                raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))
 
             schemas.append(self.table.get(doc_id=id))
 
@@ -87,7 +89,7 @@ class SchemaRepository:
         schemas = self.table.search(Schema.name == name)
 
         if len(schemas) == 0:
-            raise SchemaNotFound
+            raise SchemaNotFound(msg="Requested schema with name {0} not found".format(name))
 
         # return schema 0 since name should be unique and there should be no other schemas
         return schemas[0]
@@ -133,7 +135,7 @@ class SchemaRepository:
         """
 
         if not self.table.contains(doc_id=id):
-            raise SchemaNotFound
+            raise SchemaNotFound(msg="Unable to remove, no schema found for id: {0}".format(id))
 
         removed = self.table.remove(doc_ids=[id])
         return removed[0]

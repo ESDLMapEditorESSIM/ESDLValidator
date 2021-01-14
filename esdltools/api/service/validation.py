@@ -38,16 +38,15 @@ class ValidationService:
         esdl = self.__load_esdl(file)
         result = self.__validator.validate(esdl, schemas)
 
-        # ToDo: This is a bit weird, restx cannot convert result into json, doing it ourself will
-        # result in a returned string of the JSON. convert to JSON and loading it works for now
+        # ToDo: fix need for toJSON and then back
         jsonString = result.toJSON()
         return json.loads(jsonString)
 
     def __allowed_file(self, filename):
         """Allowed esdl file extensions"""
 
-        return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in ["esdl", "xml"]
+        return "." in filename and \
+            filename.rsplit(".", 1)[1].lower() in ["esdl", "xml"]
 
     def __load_esdl(self, file):
         """Get the string of the uploaded file, load it as energy system handler and return the resource"""

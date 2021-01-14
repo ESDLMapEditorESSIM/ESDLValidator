@@ -1,16 +1,6 @@
 # ESDL-Tools V1.0
 Service with tools for the ESDL ecore model, the service currently supports functionality for validating an ESDL model against user defined validation schemas. 
 
-## ToDo
-[ ] Better logging setup
-[ ] Validate also should check against xsd
-[ ] More unit tests
-[ ] Unit tests for api controllers and services (mock)
-[ ] More select functions
-[ ] More check functions
-[ ] Default 404 handling
-[ ] Validation/checking of posted validation schemas
-
 ## Endpoints
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
 
@@ -92,6 +82,7 @@ ESDLTOOLS_DESCRIPTION - Description of the service, shown in swagger. default: "
 ESDLTOOLS_ENDPOINT_PREFIX - Prefix of the endpoint, for example /api. default: ""
 ESDLTOOLS_DB_LOCATION - location and name of database, default: schemas.db
 ESDLTOOLS_DEFAULT_CORS - Enable CORS. default: False
+ESDLTOOLS_LOG_LEVEL - Set the log level (CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET) default: INFO
 
 ### Docker
 
