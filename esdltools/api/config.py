@@ -4,7 +4,8 @@ import environ
 @environ.config()
 class AppConfig:
     """App config, with variables loaded from environment variables
-    this config can be accessed using esdltools.api.config"""
+    this config can be accessed using esdltools.api.config
+    """
 
     version = "0.1"
     title = environ.var("ESDL-Tools", name="ESDLTOOLS_TITLE")

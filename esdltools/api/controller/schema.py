@@ -1,10 +1,8 @@
 from flask import request
 from flask_restx import Resource
 
-from esdltools.api import api, ns_schema, models, config
-from esdltools.api.service.schema import SchemaService
-
-schemaService = SchemaService(config.db_location)
+from esdltools.api import api, ns_schema, models
+from esdltools.api.controller import schemaService
 
 
 @ns_schema.route('/')

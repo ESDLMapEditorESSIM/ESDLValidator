@@ -1,17 +1,18 @@
 import json
 
 from werkzeug.datastructures import FileStorage
-from esdltools.validation.repository import SchemaRepository
+
 from esdltools.validation.validator import EsdlValidator
 from esdltools.core.exceptions import UnknownESDLFileType
 from esdltools.core.esdl import utils
+from esdltools.validation.repository import SchemaRepository
 
 
 class ValidationService:
     """Service for handling all requests to the validation endpoint"""
 
-    def __init__(self, dbLocation):
-        self.__repo = SchemaRepository(dbLocation)
+    def __init__(self, schemaRepository: SchemaRepository):
+        self.__repo = schemaRepository
         self.__validator = EsdlValidator()
 
     def validate(self, file: FileStorage, schemaIds: list):

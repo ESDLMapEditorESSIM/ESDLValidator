@@ -2,14 +2,12 @@ from flask import request
 from flask_restx import Resource
 from werkzeug.datastructures import FileStorage
 
-from esdltools.api import api, ns_validation, config
-from esdltools.api.service.validation import ValidationService
+from esdltools.api import api, ns_validation
+from esdltools.api.controller import validationService
 
 parser = api.parser()
 parser.add_argument("file", type=FileStorage, location="files", required=True)
 parser.add_argument("schemas", type=list, help="List of schema id's", location="form", required=True)
-
-validationService = ValidationService(config.db_location)
 
 
 @ ns_validation.route('/')
