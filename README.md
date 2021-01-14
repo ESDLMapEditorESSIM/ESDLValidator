@@ -21,12 +21,12 @@ This endpoint can be used to manage the validation schemas. Validation schemas a
 ToDo: information about validation schemas
 
 ## Local development
-Setup a development environment using virtual environment and install the dependencies. For vscode a default settings.json can be found under .vscode/settings.json.default paste these settings into a new file settings.json under the .vscode folder.
+Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The default settings file exclude some unwanted files and folders, styling and discovery and settings for unit tests.
 
 ### Virtual environment
 Install virtual environment if not installed yet
 ```
-apt-get install python3-venv
+python3 -m pip install --user virtualenv
 ```
 
 Create a virtual environment
@@ -37,8 +37,8 @@ python3 -m venv env
 Enable virtual environment with one of the following commands
 ```
 source env/bin/activate    (Linux)
-.\env\Scripts\activate.ps1 (Windows Powershell)
-.\env\Scripts\activate.bat (Windows CMD)
+env\Scripts\activate.ps1 (Windows Powershell)
+env\Scripts\activate.bat (Windows CMD)
 ```
 
 ### Install project dependencies
@@ -47,7 +47,7 @@ pip3 install -r requirements.txt
 ```
 
 ### Testing
-To run all esdl-tools tests run
+Use the 'Test' tab is vscode or execute the following command from the root folder
 ```
 python3 -m unittest discover ./
 ```
