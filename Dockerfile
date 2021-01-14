@@ -1,16 +1,15 @@
 FROM python:3-alpine
 
+ENV ESDLVALIDATOR_DB_LOCATION=/storage/schemas.db
 RUN apk add --update --no-cache g++ gcc libxslt-dev
-
 COPY requirements.txt /tmp/
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-RUN addgroup -g 1000 esdlgroup
-RUN adduser -u 1000 -G esdlgroup -h /home/esdluser -D esdluser
-
+RUN pip install --no-cache-dir -r /tmp/requirements.txt &&\
+    addgroup -g 1000 esdlgroup &&\
+    adduser -u 1000 -G esdlgroup -h /home/esdluser -D esdluser &&\
+    mkdir /storage &&\
+    chown esdluser: /storage
 WORKDIR /home/esdluser
 USER esdluser
-
 COPY . .
-
-CMD ["waitress-serve", "--listen", "*:8080", "--call", "esdltools.api.manage:create_app"]
+EXPOSE 80
+CMD ["waitress-serve", "--listen", "*:80", "--call", "esdlvalidator.api.manage:create_app"]

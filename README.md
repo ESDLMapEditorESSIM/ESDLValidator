@@ -1,5 +1,5 @@
-# ESDL-Tools V1.0
-Service with tools for the ESDL ecore model, the service currently supports functionality for validating an ESDL model against user defined validation schemas. 
+# ESDL-Validator
+Service for validating an ESDL model against user defined validation schemas. 
 
 ## Endpoints
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
@@ -15,9 +15,6 @@ This endpoint can be used to manage the validation schemas. Validation schemas a
 validation endpoint expects multipart/form-data since we want to send an ESDL file with extra request parameters such as schema id's, posting json with the ESDL as base64 string will have too much overhead with larger ESDL files.
 
 - validate an esdl document against one or more schemas ```POST /validation```
-
-### stats
-- Not implemented yet
 
 ## validation schema
 ToDo: information about validation schemas
@@ -62,14 +59,15 @@ python3 app.py
 
 ### Run API using waitress
 ```
-waitress-serve --listen="*:8080" --call "esdltools.api.manage:create_app"
+waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ```
 
 ### Update static ESDL metamodel code
 To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version and run
+
 ```
 pip3 install pyecoregen
-pyecoregen -e esdl.ecore -o ./esdltools/cores/esdl
+pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
 ```
 
 ## Deployment
@@ -77,28 +75,44 @@ pyecoregen -e esdl.ecore -o ./esdltools/cores/esdl
 ### Settings
 Settings can be changed using environment variables
 
-ESDLTOOLS_TITLE - Title of the service, shown in swagger. default: "ESDL-Tools"
-ESDLTOOLS_DESCRIPTION - Description of the service, shown in swagger. default: "ESDL statistics and validation API"
-ESDLTOOLS_ENDPOINT_PREFIX - Prefix of the endpoint, for example /api. default: ""
-ESDLTOOLS_DB_LOCATION - location and name of database, default: schemas.db
-ESDLTOOLS_DEFAULT_CORS - Enable CORS. default: False
-ESDLTOOLS_LOG_LEVEL - Set the log level (CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET) default: INFO
+ESDLVALIDATOR_TITLE - Title of the service, shown in swagger. default: "ESDL-Validator"
+ESDLVALIDATOR_DESCRIPTION - Description of the service, shown in swagger. default: "ESDL statistics and validation API"
+ESDLVALIDATOR_ENDPOINT_PREFIX - Prefix of the endpoint, for example /api. default: ""
+ESDLVALIDATOR_DB_LOCATION - location and name of database, default: schemas.db
+ESDLVALIDATOR_DEFAULT_CORS - Enable CORS. default: False
+ESDLVALIDATOR_LOG_LEVEL - Set the log level (CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET) default: INFO
 
 ### Docker
 
-#### Build
+Build
 ```
-docker build -t geodan/esdl-tools .
+docker build -t esdl-validator .
 ```
+
+The docker image is by default configured to create/read the database file from /storage/schemas.db, this can be updated by setting ESDLVALIDATOR_DB_LOCATION
+
+Run example
+```
+docker run -p 8080:80 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
+```
+This spins up the service with logging set to "DEBUG" and makes it available on port 8080, maps the storage folder to the local machine so the database file is kept outside of the container.
+
+The service can now be accessed on ```localhost:8080```
 
 ## Validation
+ToDo 
 
 ### Functions
+ToDo 
 
 #### Select
+ToDo 
 
 #### Check
+ToDo 
 
 #### Adding functions
+ToDo 
 
 #### Validation Schemas
+ToDo 

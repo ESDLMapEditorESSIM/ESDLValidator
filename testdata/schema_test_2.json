@@ -1,6 +1,6 @@
 {
     "name": "Test validation schema 1",
-    "description": "Test validation schema which is used in esdl-tools unit tests",
+    "description": "Test validation schema which is used in esdl-validator unit tests",
     "validations": [
         {
             "name": "check_asset_id_notnull",
@@ -21,7 +21,9 @@
                 "dataset": "assets",
                 "args": {
                     "property": "id",
-                    "counts_as_null": ["null"]
+                    "counts_as_null": [
+                        "null"
+                    ]
                 }
             }
         },
@@ -50,7 +52,10 @@
                         "function": "not_null",
                         "args": {
                             "property": "costInformation.marginalCosts",
-                            "counts_as_null": [0, 0.0]
+                            "counts_as_null": [
+                                0,
+                                0.0
+                            ]
                         }
                     }
                 ],

@@ -1,6 +1,6 @@
 {
     "name": "Test validation schema 1",
-    "description": "Test validation schema which is used in esdl-tools unit tests",
+    "description": "Test validation schema which is used in esdl-validator unit tests",
     "validations": [
         {
             "name": "check_area_scope_notnull",
@@ -21,7 +21,9 @@
                 "dataset": "areas",
                 "args": {
                     "property": "scope",
-                    "counts_as_null": ["null"]
+                    "counts_as_null": [
+                        "null"
+                    ]
                 }
             }
         }
