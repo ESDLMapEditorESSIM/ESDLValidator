@@ -37,7 +37,7 @@ class SchemaRepository:
             id (int): ID of the schema
 
         Returns:
-            schema: Validation schema
+            schema (Document): Validation schema
 
         Raises:
             SchemaNotFound: Validation schema was not found

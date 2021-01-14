@@ -26,4 +26,4 @@ class ValidationController(Resource):
         schemas = [int(x) for x in request.form["schemas"].split(',')]
         result = validationService.validate(file, schemas)
 
-        return result
+        return result, 200
