@@ -5,13 +5,14 @@ from esdltools.validation.validator_validation_result import ValidationResults
 from esdltools.validation.validator_schema_result import SchemaResult
 from esdltools.validation.validator_result import ValidatorResult
 
+
 class EsdlValidator:
     """Validate a loaded ESDL against one or multiple validation schemas"""
 
     def __init__(self):
         pass
-    
-    def validate(self, esdl, schemas):
+
+    def validate(self, esdl, schemas: list):
         """Validate an ESDL against one or more multiple schemas
 
         Args:
@@ -25,7 +26,7 @@ class EsdlValidator:
         for schema in schemas:
             schemaResult = self.__run_schema(schema, esdl)
             schemaResults.append(schemaResult)
-        
+
         result = ValidatorResult(schemaResults)
         return result
 
@@ -49,7 +50,7 @@ class EsdlValidator:
         validationResult = ValidationResults(validation, checkResults)
 
         return validationResult
-    
+
     def __constructDatasets(self, selects, esdl):
         datasets = {"resource": esdl}
 

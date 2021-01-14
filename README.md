@@ -1,5 +1,15 @@
-# ESDL-Tools
+# ESDL-Tools V1.0
 Service with tools for the ESDL ecore model, the service currently supports functionality for validating an ESDL model against user defined validation schemas. 
+
+## ToDo
+[ ] Better logging setup
+[ ] Validate also should check against xsd
+[ ] More unit tests
+[ ] Unit tests for api controllers and services (mock)
+[ ] More select functions
+[ ] More check functions
+[ ] Default 404 handling
+[ ] Validation/checking of posted validation schemas
 
 ## Endpoints
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
@@ -12,6 +22,8 @@ This endpoint can be used to manage the validation schemas. Validation schemas a
 - post a new schema ```POST /schema```
 
 ### validation
+validation endpoint expects multipart/form-data since we want to send an ESDL file with extra request parameters such as schema id's, posting json with the ESDL as base64 string will have too much overhead with larger ESDL files.
+
 - validate an esdl document against one or more schemas ```POST /validation```
 
 ### stats

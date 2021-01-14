@@ -4,9 +4,9 @@ from esdltools.validation.repository import SchemaRepository
 
 
 class SchemaService:
-    """Service for handling all logic related to the validation module"""
+    """Service for handling all requests to schema endpoint"""
 
-    def __init__(self, dbLocation):
+    def __init__(self, dbLocation: str):
         self.repo = SchemaRepository(dbLocation)
 
     def get_all(self):

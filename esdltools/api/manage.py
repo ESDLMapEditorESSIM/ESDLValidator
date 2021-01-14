@@ -4,7 +4,6 @@ from flask_cors import CORS
 from esdltools.api.controller.setup import apiBlueprint
 from esdltools.api.controller.validation import api as validationApi
 from esdltools.api.controller.schema import api as schemaApi
-from esdltools.api.controller.upload import api as uploadApi
 
 
 def create_app():

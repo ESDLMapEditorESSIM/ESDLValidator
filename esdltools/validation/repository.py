@@ -48,6 +48,28 @@ class SchemaRepository:
 
         return self.table.get(doc_id=id)
 
+    def get_by_ids(self, ids: list):
+        """Retrieve multiple schemas by a list of id's
+
+        Args:
+            ids (list): List with schema id's
+
+        Returns:
+            schemas: One or more validation schema
+
+        Raises:
+            SchemaNotFound: One of the validation schemas was not found
+        """
+
+        schemas = []
+        for id in ids:
+            if not self.table.contains(doc_id=id):
+                raise SchemaNotFound(msg="Schema with id {0} not found".format(id))
+
+            schemas.append(self.table.get(doc_id=id))
+
+        return schemas
+
     def get_by_name(self, name: str):
         """Retrieve a schema by name
 

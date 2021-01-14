@@ -4,6 +4,7 @@ from pathlib import Path
 
 from esdltools.core.esdl import esdl
 from esdltools.core.esdl.esh import EnergySystemHandler
+from esdltools.core.exceptions import InvalidESDL
 
 
 def get_esdl_class_from_string(name):
@@ -44,6 +45,7 @@ def get_esdl_class_names():
 
     return classes
 
+
 def get_esh_from_file(filepath):
     """Create and get an energy system handler from local file
 
@@ -64,14 +66,31 @@ def get_esh_from_file(filepath):
     with open(filepath, 'r') as file:
         esdlString = file.read()
 
+    return get_esh_from_string(esdlString)
+
+
+def get_esh_from_string(esdlString: str):
+    """Create and get an energy system handler from a string containing the ESDL
+
+    Args:
+        esdlString (str): String containing the ESDL
+
+    Returns:
+        esh: EnergySystemHandler loaded from ESDL file
+
+    Raises:
+        InvalidESDL: If the system was unable to read the data as ESDL
+    """
+
     esh = EnergySystemHandler()
 
     try:
         esh.load_from_string(esdlString)
     except:
-        raise
-    
+        raise InvalidESDL
+
     return esh
+
 
 def get_entities_from_esdl_resource_by_type(esdlSource, esdlType):
     """Loop trough all loaded ESDL entities and return entities for given type

@@ -19,19 +19,28 @@ class TestRepository(unittest.TestCase):
     def test_add_get(self):
         repo = self.getRepo()
         validJSON = "{\"name\": \"test\", \"description\": \"bla\"}"
-        expected = repo.insert(validJSON)
-        expected1 = repo.get_by_id(expected)
-        expected2 = repo.get_by_name("test")
+        validJSON2 = "{\"name\": \"test2\", \"description\": \"bla2\"}"
 
-        self.assertEqual(1, expected, "Inserting JSON to TinyDB should have returned id 1")
-        self.assertEqual("test", expected1["name"], "Retrieved document by ID should have name test")
-        self.assertEqual("test", expected2["name"], "Get By name should have returned a schema with name test")
+        expected1 = repo.insert(validJSON)
+        expected2 = repo.insert(validJSON2)
+        expected3 = repo.get_by_id(expected1)
+        expected4 = repo.get_by_name("test")
+        expected5 = repo.get_by_ids([1, 2])
+
+        self.assertEqual(1, expected1, "Inserting JSON to TinyDB should have returned id 1")
+        self.assertEqual(2, expected2, "Inserting JSON to TinyDB should have returned id 2")
+        self.assertEqual("test", expected3["name"], "Retrieved document by ID should have name test")
+        self.assertEqual("test", expected4["name"], "Get By name should have returned a schema with name test")
+        self.assertEqual(2, len(expected5), "Get By ids should have returned 2 schemas")
 
         with self.assertRaises(InvalidJSON,):
             repo.insert("{name: test, description: bla}")
 
         with self.assertRaises(NameAlreadyExists,):
             repo.insert(validJSON)
+
+        with self.assertRaises(SchemaNotFound,):
+            repo.get_by_ids([100, 101])
 
     def test_remove(self):
         repo = self.getRepo()
