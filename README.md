@@ -1,15 +1,18 @@
 # ESDL-Validator
-Service for validating ESDL files against validation schemas. 
+Service for validating ESDL files against validation schemas  
+
+## Status
+**work in progress** 
 
 # ToDo
-The current ToDo list
+Probably a lot more but this is what comes to mind
 - [ ] Handle 'and', 'or' in checks
 - [ ] Add xsd validation
 - [ ] Fix waitress logging
-- [ ] Option to log to file instead of stdout
-- [ ] Versioning?
 - [ ] More select functions
 - [ ] More check functions
+- [ ] Option to log to file instead of stdout
+- [ ] Versioning?
 - [ ] More unit test (currently no test for api package)
 - [ ] Endpoint for getting an overview of registered functions
 - [ ] Simple frontend tool in a separate project
@@ -103,9 +106,7 @@ pip3 install pyecoregen
 pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
 ```
 
-## Deployment
-
-### Docker
+## Docker
 
 Build example
 ```
