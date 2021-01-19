@@ -1,18 +1,21 @@
+from esdlvalidator.validation.functions import utils
+
+
 class ValidationResults:
     """Result of a validation, this is returned to the user as JSON"""
 
     def __init__(self, validation, checks):
-        results = self.__getResults(checks, validation["message"])
+        msg = utils.get_attribute(validation, "message", "No message defined")
 
-        self.name = validation["name"]
-        self.description = validation["description"]
+        results = self.__getResults(checks, msg)
+        self.name = utils.get_attribute(validation, "name", "No name given")
+        self.description = utils.get_attribute(validation, "description", "No description given")
         self.checked = len(checks)
 
         if validation["type"].lower() is "error":
             self.errors = results
         else:
             self.warnings = results
-
 
     def __getResults(self, checks, message):
         results = []
@@ -22,4 +25,3 @@ class ValidationResults:
                 results.append("{0}: {1}".format(message, check.result.message))
 
         return results
-

@@ -16,8 +16,8 @@ class SelectSum(FunctionSelect):
         )
 
     def execute(self):
-        prop, _ = utils.get_args_property(self.args, "property")
-        dataset, _ = utils.get_args_property(self.args, "dataset")
+        prop = utils.get_attribute(self.args, "property")
+        dataset = utils.get_attribute(self.args, "dataset")
         count = 0
 
         for entry in self.datasets.get(dataset):

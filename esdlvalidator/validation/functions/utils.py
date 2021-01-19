@@ -1,21 +1,42 @@
+import builtins
 
-def get_args_property(args: dict, propertyName: str, default=None):
+from pyecore.ecore import EValue
+
+
+def has_attribute(obj, name: str) -> bool:
+    # give a default "nothing_found" since None can be the actual returned value
+    result = get_attribute(obj, name, "nothing_found")
+    return False if result is "nothing_found" else True
+
+
+def get_attribute(obj, name: str, default=None) -> bool:
     """Get a property from args send to the function, property name casing will be ignored
 
     Args:
-        args (dict): Dictionary of args send to the function
-        propertyName (str): Name of the property to retrieve the value for
+        obj: List, class or dictionary to get a property value from
+        name (str): The property to get
         default (Object): Optional default value that will return when property not found, defaults to None
 
     Returns:
-        property value: The object matching the input string, default if not found
-        found (Boolean): If the property was found or not
+        property value: The property value found for given name, default if not found
     """
 
-    arguments = {k.lower(): v for k, v in args.items()}
-    key = propertyName.lower()
+    parts = name.split(".", 1)
+    value = default
 
-    if key in arguments.keys():
-        return arguments[key], True
+    if not isinstance(obj, dict):
+        for a in dir(obj):
+            if a.lower() == parts[0].lower():
+                value = builtins.getattr(obj, a, default)
+    else:
+        attributes = {k.lower(): v for k, v in obj.items()}
+        key = parts[0].lower()
+        value = attributes[key] if key in attributes.keys() else default
 
-    return default, False
+    if value is not None and value != default and len(parts) > 1:
+        value = get_attribute(value, parts[1])
+
+    if isinstance(value, EValue):
+        value = value._value
+
+    return value

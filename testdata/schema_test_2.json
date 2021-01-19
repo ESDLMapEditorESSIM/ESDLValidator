@@ -1,32 +1,7 @@
 {
-    "name": "Test validation schema 1",
+    "name": "Test validation schema 2",
     "description": "Test validation schema which is used in esdl-validator unit tests",
     "validations": [
-        {
-            "name": "check_asset_id_notnull",
-            "desciption": "Check if all Assets have an id",
-            "type": "error",
-            "message": "Asset does not have an id",
-            "selects": [
-                {
-                    "function": "get",
-                    "alias": "assets",
-                    "args": {
-                        "type": "Asset"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_null",
-                "dataset": "assets",
-                "args": {
-                    "property": "id",
-                    "counts_as_null": [
-                        "null"
-                    ]
-                }
-            }
-        },
         {
             "name": "check_producer_power_cost_or_profile",
             "desciption": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
@@ -45,13 +20,16 @@
                 "function": "not_null",
                 "dataset": "producers",
                 "args": {
-                    "property": "power"
+                    "property": "power",
+                    "counts_as_null": [
+                        0.0
+                    ]
                 },
                 "and": [
                     {
                         "function": "not_null",
                         "args": {
-                            "property": "costInformation.marginalCosts",
+                            "property": "costinformation.marginalcosts.value",
                             "counts_as_null": [
                                 0,
                                 0.0
@@ -61,7 +39,7 @@
                 ],
                 "or": [
                     {
-                        "function": "contains",
+                        "function": "not_null",
                         "args": {
                             "property": "port.profile"
                         }

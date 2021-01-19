@@ -21,31 +21,34 @@ class ContainsNotNull(FunctionCheck):
         pass
 
     def execute(self):
-        prop, propertySet = utils.get_args_property(self.args, "property")
-        include, _ = utils.get_args_property(self.args, "counts_as_null", [])
+        hasProp = utils.has_attribute(self.args, "property")
+        prop = utils.get_attribute(self.args, "property", None)
+        include = utils.get_attribute(self.args, "counts_as_null", [])
 
         # Some esdl entity values have a default of undefined or none when not set
         include.extend(["undefined", "none"])
         value = self.value
 
-        if propertySet:
-            if not hasattr(value, prop):
-                msg = "property {0} not found".format(prop)
-                if hasattr(value, "id"):
-                    msg += " for entity {0}".format(getattr(value, "id"))
+        if hasProp:
+            if not utils.has_attribute(value, prop):
+                return CheckResult(False, self.__create_message("property {0} not found".format(prop), value))
 
-                return CheckResult(False, msg)
-
-            value = getattr(value, prop)
+            value = utils.get_attribute(value, prop)
 
         if value is None:
             return CheckResult(False)
 
-        return self.check_includes(include, value)
+        return self.check_includes(include, value, self.value)
 
-    def check_includes(self, include, value):
+    def check_includes(self, include, value, originalValue):
         for includeValue in include:
             if str(includeValue).lower() == str(value).lower():
-                return CheckResult(False, "value equals {0}".format(includeValue))
+                return CheckResult(False, self.__create_message("value equals {0}".format(includeValue), originalValue))
 
         return CheckResult(True)
+
+    def __create_message(self, msg, value):
+        if utils.has_attribute(value, "id"):
+            msg += " for entity {0}".format(utils.get_attribute(value, "id"))
+
+        return msg

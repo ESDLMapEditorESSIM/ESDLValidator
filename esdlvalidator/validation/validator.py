@@ -1,9 +1,13 @@
-from esdlvalidator.validation.repository import SchemaRepository
-from esdlvalidator.validation.functions.function import FunctionFactory, FunctionType
+import logging
+import copy
+
+from esdlvalidator.validation.functions.function import CheckResult, FunctionFactory, FunctionType
 
 from esdlvalidator.validation.validator_validation_result import ValidationResults
 from esdlvalidator.validation.validator_schema_result import SchemaResult
 from esdlvalidator.validation.validator_result import ValidatorResult
+
+logger = logging.getLogger(__name__)
 
 
 class EsdlValidator:
@@ -65,16 +69,70 @@ class EsdlValidator:
         return select
 
     def __run_check(self, check, datasets):
-        dataset = datasets[check["dataset"]]
+        datasetName = check["dataset"]
+        dataset = datasets[datasetName]
         checkResults = []
-
-        print("totaal {0}".format(len(dataset)))
 
         if not isinstance(dataset, (frozenset, list, set, tuple)):
             dataset = [dataset]
 
+        print("running checks for {0} found entries in dataset '{1}'".format(len(dataset), datasetName))
+
         for entry in dataset:
-            checkResult = FunctionFactory.create(FunctionType.CHECK, check["function"], datasets=datasets, value=entry, args=check["args"])
+            cleanCheck = copy.deepcopy(check)
+            checkResult = self.__run_get_check_result(cleanCheck, datasets, entry)
             checkResults.append(checkResult)
+            print("check done, result: {0}".format(checkResult.result.ok))
+            print("-------------------------")
 
         return checkResults
+
+    def __run_get_check_result(self, check, datasets, entry):
+        functionName = check["function"]
+        args = check["args"]
+        print("check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
+
+        checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry, args=args)
+        andList = check["and"] if "and" in check else None
+        orList = check["or"] if "or" in check else None
+
+        # result is ok and no 'and' found
+        if checkResult.result.ok == True and andList is None:
+            print("result == True, and no 'and' options found")
+            return checkResult
+
+        # result is not ok and there is no or
+        if checkResult.result.ok == False and orList is None:
+            print("result == False, no 'or' options found, returning result")
+            return checkResult
+
+        # result is ok but there are more and's defined
+        if checkResult.result.ok == True and andList is not None:
+            print("result == True 'and' options found")
+            andFailed = False
+            for a in andList:
+                checkResult = self.__run_get_check_result(a, datasets, entry)
+                if checkResult.result.ok == False:
+                    andFailed = True
+                    break
+
+            # and resulted in ok == false and there is no or
+            if andFailed == True and orList is None:
+                print("and is not ok, no 'or' options found, returning result")
+                return andFailed
+
+        # result is not ok but there are or's defined
+        if checkResult.result.ok == False and orList is not None:
+            print("executing 'or' function")
+            orSuccess = False
+            for o in orList:
+                checkResult = self.__run_get_check_result(o, datasets, entry)
+                if checkResult.result.ok == True:
+                    orSuccess = True
+                    break
+
+            if orSuccess == True:
+                print("result == True, returning result")
+                return checkResult
+
+        return checkResult

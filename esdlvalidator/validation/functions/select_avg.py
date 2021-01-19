@@ -17,8 +17,8 @@ class SelectAvg(FunctionSelect):
         )
 
     def execute(self):
-        prop, _ = utils.get_args_property(self.args, "property")
-        dataset, _ = utils.get_args_property(self.args, "dataset")
+        prop = utils.get_attribute(self.args, "property")
+        dataset = utils.get_attribute(self.args, "dataset")
 
         total = 0
         count = 0

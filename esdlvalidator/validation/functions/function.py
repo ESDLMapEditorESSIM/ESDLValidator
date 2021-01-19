@@ -81,7 +81,7 @@ class FunctionBase(metaclass=ABCMeta):
 
         for arg in argDefinitions:
             if arg.mandatory:
-                _, propFound = utils.get_args_property(self.args, arg.name)
+                propFound = utils.has_attribute(self.args, arg.name)
                 if not propFound:
                     raise ValueError("Mandatory property not found in args: {0}".format(arg.name))
 

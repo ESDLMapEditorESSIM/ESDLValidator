@@ -18,7 +18,7 @@ class SelectGet(FunctionSelect):
 
     def execute(self):
         dataset = self.datasets.get("resource")
-        getType, _ = utils.get_args_property(self.args, "type")
+        getType = utils.get_attribute(self.args, "type")
         entities = esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
 
         return entities

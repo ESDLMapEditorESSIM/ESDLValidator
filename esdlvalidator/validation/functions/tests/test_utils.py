@@ -1,5 +1,4 @@
 import unittest
-import json
 
 from esdlvalidator.validation.functions import utils
 
@@ -7,20 +6,35 @@ from esdlvalidator.validation.functions import utils
 class TestUtils(unittest.TestCase):
     """Tests for function utils"""
 
-    def test_get_args_property(self):
-        """Test if get_args_property returns the correct values"""
+    def test_has_attribute(self):
+        "Test if has_attribute works with lower case, single values and child values"
 
-        jsonArgs = "{\"my_property_1\": \"my_value\", \"My_Property_2\": 2}"
-        testArgs = json.loads(jsonArgs)
+        obj = self.get_test_obj()
 
-        actual, found = utils.get_args_property(testArgs, "my_property_1")
-        self.assertEqual(actual, "my_value", "function should have returned string my_value")
-        self.assertEqual(found, True, "found should have returned True")
+        actual1 = utils.has_attribute(obj, "value")
+        actual2 = utils.has_attribute(obj, "one.value")
+        actual3 = utils.has_attribute(obj, "one.two.Three.value")
 
-        actual, found = utils.get_args_property(testArgs, "my_property_2")
-        self.assertEqual(actual, 2, "function should have returned 2, casing should be ignored")
-        self.assertEqual(found, True, "found should have returned True")
+        self.assertEqual(actual1, True, "value attribute should be there")
+        self.assertEqual(actual2, True, "one.value attribute should be there")
+        self.assertEqual(actual3, True, "one.two.three.value attribute should be there")
 
-        actual2, found2 = utils.get_args_property(testArgs, "non_existant_property_name")
-        self.assertEqual(actual2, None, "function should have returned None since propery does not exist")
-        self.assertEqual(found2, False, "found should have returned False")
+    def test_get_attribute(self):
+        "Test if get_attribute works with lower case, single values and child values"
+
+        obj = self.get_test_obj()
+
+        actual1 = utils.get_attribute(obj, "value")
+        actual2 = utils.get_attribute(obj, "one.value")
+        actual3 = utils.get_attribute(obj, "one.two.three.value")
+
+        self.assertEqual(actual1, 44, "value attribute should be 44")
+        self.assertEqual(actual2, 45, "one.value attribute should 45")
+        self.assertEqual(actual3, 47, "one.two.three.value attribute should be 47")
+
+    def get_test_obj(self):
+        child3 = type('obj', (object,), {'value': 45, 'value': 47})
+        child2 = type('obj', (object,), {'three': child3, 'value': 46})
+        child1 = type('obj', (object,), {'Two': child2, 'value': 45})
+        obj = type('obj', (object,), {'one': child1, 'value': 44})
+        return obj
