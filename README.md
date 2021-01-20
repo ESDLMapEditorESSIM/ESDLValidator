@@ -8,6 +8,7 @@ Service for validating ESDL files against validation schemas
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
 - [ ] Add xsd validation
 - [ ] Fix waitress logging
+- [ ] Better output messages for current checks
 - [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
 - [ ] More select functions
 - [ ] More check functions
