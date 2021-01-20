@@ -76,21 +76,21 @@ class EsdlValidator:
         if not isinstance(dataset, (frozenset, list, set, tuple)):
             dataset = [dataset]
 
-        print("running checks for {0} found entries in dataset '{1}'".format(len(dataset), datasetName))
+        logger.debug("running checks for {0} found entries in dataset '{1}'".format(len(dataset), datasetName))
 
         for entry in dataset:
             cleanCheck = copy.deepcopy(check)
             checkResult = self.__run_get_check_result(cleanCheck, datasets, entry)
             checkResults.append(checkResult)
-            print("check done, result: {0}".format(checkResult.result.ok))
-            print("-------------------------")
+            logger.debug("check done, result: {0}".format(checkResult.result.ok))
+            logger.debug("-------------------------")
 
         return checkResults
 
     def __run_get_check_result(self, check, datasets, entry):
         functionName = check["function"]
         args = check["args"]
-        print("check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
+        logger.debug("check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
 
         checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry, args=args)
         andList = check["and"] if "and" in check else None
@@ -98,17 +98,17 @@ class EsdlValidator:
 
         # result is ok and no 'and' found
         if checkResult.result.ok == True and andList is None:
-            print("result == True, and no 'and' options found")
+            logger.debug("result == True, and no 'and' options found")
             return checkResult
 
         # result is not ok and there is no or
         if checkResult.result.ok == False and orList is None:
-            print("result == False, no 'or' options found, returning result")
+            logger.debug("result == False, no 'or' options found, returning result")
             return checkResult
 
         # result is ok but there are more and's defined
         if checkResult.result.ok == True and andList is not None:
-            print("result == True 'and' options found")
+            logger.debug("result == True 'and' options found")
             andFailed = False
             for a in andList:
                 checkResult = self.__run_get_check_result(a, datasets, entry)
@@ -118,12 +118,12 @@ class EsdlValidator:
 
             # and resulted in ok == false and there is no or
             if andFailed == True and orList is None:
-                print("and is not ok, no 'or' options found, returning result")
+                logger.debug("and is not ok, no 'or' options found, returning result")
                 return andFailed
 
         # result is not ok but there are or's defined
         if checkResult.result.ok == False and orList is not None:
-            print("executing 'or' function")
+            logger.debug("executing 'or' function")
             orSuccess = False
             for o in orList:
                 checkResult = self.__run_get_check_result(o, datasets, entry)
@@ -132,7 +132,7 @@ class EsdlValidator:
                     break
 
             if orSuccess == True:
-                print("result == True, returning result")
+                logger.debug("result == True, returning result")
                 return checkResult
 
         return checkResult
