@@ -16,7 +16,7 @@ class TestValidator(unittest.TestCase):
         cls.esdlHybrid = get_test_dataset_hybrid()
 
     def test_validate_schema_1(self):
-        """test running the validator"""
+        """test running the validator for test schema 1 and ameland test esdl"""
 
         # prepare
         validator = EsdlValidator()
@@ -31,7 +31,7 @@ class TestValidator(unittest.TestCase):
         self.assertEqual(validationAreaScope.warnings[0], "Area does not have a scope: value equals undefined for entity BU00600007", "Warning should say: Area does not have a scope: value equals undefined for entity BU00600007")
 
     def test_validate_schema_2(self):
-        """test running the validator on test schema 2 with a real world scenario with multiple validations including and + or"""
+        """test running the validator on test schema 2 on dynamic test esdl with a real world scenario, multiple validations including and + or"""
 
         # prepare
         validator = EsdlValidator()
@@ -40,6 +40,8 @@ class TestValidator(unittest.TestCase):
         result = validator.validate(self.esdlHybrid, [self.schemaTwo])
         validationProducer = result.schemas[0].validations[0]
         validationStorage = result.schemas[0].validations[1]
+        validationGasHeater = result.schemas[0].validations[2]
+        validationHeatpump = result.schemas[0].validations[3]
 
         # assert
         self.assertEqual(validationProducer.checked, 3, "there should be 3 checked since there are only 3 producers")
@@ -48,6 +50,12 @@ class TestValidator(unittest.TestCase):
 
         self.assertEqual(validationStorage.checked, 1, "there should be 1 checked storage")
         self.assertEqual(len(validationStorage.errors), 0, "there should be 0 errors, storage should be correct")
+
+        self.assertEqual(validationGasHeater.checked, 1, "there should be 1 checked GasHeater")
+        self.assertEqual(len(validationGasHeater.warnings), 0, "there should be 0 warnings, gasheater should be correct")
+
+        self.assertEqual(validationHeatpump.checked, 1, "there should be 1 checked HeatPump")
+        self.assertEqual(len(validationHeatpump.warnings), 1, "there should be 1 warnings, heatpump should be missing a control strategy")
 
     def test_validate_multiple_schemas(self):
         """Test if the validator works with checking multiple schemas"""

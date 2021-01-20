@@ -3,7 +3,7 @@
     "description": "Test validation schema 2 contains a real world scenario with multiple validations, containing 'and' 'or' definitions in the check",
     "validations": [
         {
-            "name": "check_producer_power_cost_or_profile",
+            "name": "producer_power_cost_or_profile",
             "desciption": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
             "type": "error",
             "message": "Consumer missing power and marginal costs or no energy profile connected",
@@ -47,8 +47,8 @@
             }
         },
         {
-            "name": "storage_has_capacity_and_controlstrategy",
-            "description": "A storage asset needs to have a filled in capacity attribute and a StorageStrategy with 2 marginal costs for charge/decharge",
+            "name": "storage_capacity_and_controlstrategy",
+            "description": "A storage asset needs to have a filled in capacity attribute and a StorageStrategy with charge and discharge costs",
             "type": "error",
             "message": "Storage missing capacity or StoreStrategy including 2 marginal costs",
             "selects": [
@@ -80,6 +80,66 @@
                         "function": "not_null",
                         "args": {
                             "property": "controlstrategy.marginalDischargeCosts"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "gas_heater_marginal_costs_and_driven_by_demand",
+            "desciption": "Check if a gas heater has marginal cost and driven by demand",
+            "type": "warning",
+            "message": "Gas heater has no marginal cost defined or no driven by demand found",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "gasheaters",
+                    "args": {
+                        "type": "GasHeater"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "gasheaters",
+                "args": {
+                    "property": "costinformation.marginalcosts"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlStrategy"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heat_pump_marginal_costs_and_driven_by_demand",
+            "desciption": "Check if a heat pump has marginal cost and driven by demand",
+            "type": "warning",
+            "message": "Heat pump has no marginal cost defined or no driven by demand found",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatpumps",
+                    "args": {
+                        "type": "HeatPump"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "heatpumps",
+                "args": {
+                    "property": "costinformation.marginalcosts"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlStrategy"
                         }
                     }
                 ]

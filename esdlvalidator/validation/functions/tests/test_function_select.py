@@ -41,5 +41,5 @@ class TestFunctionSelect(unittest.TestCase):
         self.assertEqual(profileAvg.result, 12.319999999999999, "Avg profile multiplier should be")
 
     def get_test_datasets(self):
-        esh = utils.get_esh_from_file("testdata/Ameland_energie_2015.esdl")
+        esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
         return {"resource": esh.resource}

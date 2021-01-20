@@ -39,5 +39,5 @@ class TestFunctionCheck(unittest.TestCase):
         self.assertEqual(powerNullCount, 1, "There should be 1 power with a null value (0.0)")
 
     def get_test_datasets(self):
-        esh = utils.get_esh_from_file("testdata/Ameland_energie_2015.esdl")
+        esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
         return {"resource": esh.resource}

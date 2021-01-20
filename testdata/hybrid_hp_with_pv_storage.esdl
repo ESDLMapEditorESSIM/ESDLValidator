@@ -9,7 +9,7 @@
   </energySystemInformation>
   <services xsi:type="esdl:Services">
     <service xsi:type="esdl:DrivenByDemand" outPort="b67cdfeb-bf43-486c-9414-32f760a00a5f" name="DrivenByDemand for GasHeater_a011" energyAsset="a0114e9d-5bf3-4cd3-adb8-6781e00d78d4" id="94e0bba4-da8b-429e-b017-d6e8a135a291"/>
-    <service xsi:type="esdl:DrivenByDemand" outPort="6b88194f-9943-44cc-a3cc-ffe0f19acafe" name="DrivenByDemand for HeatPump_88f1" energyAsset="88f1a514-98d5-4120-8aa9-f303c552a6a5" id="87479c57-bfd2-4303-bd08-058bf1b29eb5"/>
+    <service xsi:type="esdl:DrivenByDemand" outPort="6b88194f-9943-44cc-a3cc-ffe0f19acafe" name="DrivenByDemand for HeatPump_88f1" id="87479c57-bfd2-4303-bd08-058bf1b29eb5"/>
     <service xsi:type="esdl:StorageStrategy" energyAsset="d474f60b-41fc-490a-b52e-198a2e4ff780" id="9e33b513-0adb-4e47-9b21-306d27ed2dca" name="StorageStrategy for Battery_d474">
       <marginalDischargeCosts xsi:type="esdl:SingleValue" value="0.8" name="marginalChargeCosts for Battery_d474" id="5e9b33b6-8f5b-4590-9f7b-01d74cfbe6eb"/>
       <marginalChargeCosts xsi:type="esdl:SingleValue" value="0.2" name="marginalChargeCosts for Battery_d474" id="7ff5672b-03f2-417b-b9e4-28267ba45b4f"/>
@@ -57,7 +57,7 @@
         </port>
         <geometry xsi:type="esdl:Point" CRS="WGS84" lat="53.282596397982836" lon="5.64422559873282"/>
       </asset>
-      <asset xsi:type="esdl:HeatPump" efficiency="1.0" power="3000.0" id="88f1a514-98d5-4120-8aa9-f303c552a6a5" controlStrategy="87479c57-bfd2-4303-bd08-058bf1b29eb5" name="HeatPump_88f1" COP="4.0">
+      <asset xsi:type="esdl:HeatPump" efficiency="1.0" power="3000.0" id="88f1a514-98d5-4120-8aa9-f303c552a6a5" name="HeatPump_88f1" COP="4.0">
         <costInformation xsi:type="esdl:CostInformation">
           <marginalCosts xsi:type="esdl:SingleValue" value="0.2" name="HeatPump_88f1-MarginalCosts" id="912af525-fe07-47f0-835e-f00e4de2b5a9"/>
         </costInformation>

@@ -20,7 +20,7 @@ def get_test_schema_id(schemaData):
 
 
 def get_test_dataset_ameland():
-    esh = utils.get_esh_from_file("testdata/Ameland_energie_2015.esdl")
+    esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
     return esh.resource
 
 

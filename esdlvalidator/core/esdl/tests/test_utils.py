@@ -4,7 +4,7 @@ from esdlvalidator.core.esdl import esdl
 from esdlvalidator.core.esdl.esh import EnergySystemHandler
 from esdlvalidator.core.esdl import utils
 
-testESDL = "testdata/Ameland_energie_2015.esdl"
+testESDL = "testdata/ameland_energie_2015.esdl"
 
 
 class TestUtils(unittest.TestCase):

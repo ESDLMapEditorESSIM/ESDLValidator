@@ -4,14 +4,16 @@ Service for validating ESDL files against validation schemas
 ## Status
 **work in progress** 
 
-# ToDo
+# ToDo V1.0
 Probably a lot more but this is what comes to mind
-- [ ] Handle 'and', 'or' in checks
+- [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
 - [ ] Add xsd validation
 - [ ] Fix waitress logging
 - [ ] More select functions
 - [ ] More check functions
+- [ ] More interesting validation rules to test with
 - [ ] Option to log to file instead of stdout
+- [ ] Accept multiple types in get function so a check can be done on multiple entities but not the parent, for example GasHeater and HeatPump 
 - [ ] Versioning?
 - [ ] More unit test (currently no test for api package)
 - [ ] Endpoint for getting an overview of registered functions
