@@ -4,7 +4,7 @@
     "validations": [
         {
             "name": "producer_power_cost_or_profile",
-            "desciption": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
+            "description": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
             "type": "error",
             "message": "Consumer missing power and marginal costs or no energy profile connected",
             "selects": [
@@ -87,7 +87,7 @@
         },
         {
             "name": "gas_heater_marginal_costs_and_driven_by_demand",
-            "desciption": "Check if a gas heater has marginal cost and driven by demand",
+            "description": "Check if a gas heater has marginal cost and driven by demand",
             "type": "warning",
             "message": "Gas heater has no marginal cost defined or no driven by demand found",
             "selects": [
@@ -117,7 +117,7 @@
         },
         {
             "name": "heat_pump_marginal_costs_and_driven_by_demand",
-            "desciption": "Check if a heat pump has marginal cost and driven by demand",
+            "description": "Check if a heat pump has marginal cost and driven by demand",
             "type": "warning",
             "message": "Heat pump has no marginal cost defined or no driven by demand found",
             "selects": [
@@ -147,7 +147,7 @@
         },
         {
             "name": "marginal_cost_in_range",
-            "desciption": "Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1",
+            "description": "Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1",
             "type": "warning",
             "message": "Marginalcost not in range",
             "selects": [
