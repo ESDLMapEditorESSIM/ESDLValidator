@@ -1,6 +1,6 @@
 {
     "name": "Test validation schema 1",
-    "description": "Test validation schema which is used in esdl-validator unit tests",
+    "description": "Test validation schema 1, used in esdl-validator unit tests",
     "validations": [
         {
             "name": "check_area_scope_notnull",
