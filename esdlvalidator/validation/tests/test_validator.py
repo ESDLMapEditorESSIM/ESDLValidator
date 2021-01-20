@@ -58,7 +58,7 @@ class TestValidator(unittest.TestCase):
         self.assertEqual(validationHeatpump.checked, 1, "there should be 1 checked HeatPump")
         self.assertEqual(len(validationHeatpump.warnings), 1, "there should be 1 warnings, heatpump should be missing a control strategy")
 
-        self.assertEqual(validationCostsInRange.checked, 3, "there should be 1 checked cost")
+        self.assertEqual(validationCostsInRange.checked, 3, "there should be 3 checked costs")
         self.assertEqual(len(validationCostsInRange.warnings), 1, "there should be 1 warnings")
 
     def test_validate_multiple_schemas(self):
