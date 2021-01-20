@@ -59,7 +59,7 @@
       </asset>
       <asset xsi:type="esdl:HeatPump" efficiency="1.0" power="3000.0" id="88f1a514-98d5-4120-8aa9-f303c552a6a5" name="HeatPump_88f1" COP="4.0">
         <costInformation xsi:type="esdl:CostInformation">
-          <marginalCosts xsi:type="esdl:SingleValue" value="0.2" name="HeatPump_88f1-MarginalCosts" id="912af525-fe07-47f0-835e-f00e4de2b5a9"/>
+          <marginalCosts xsi:type="esdl:SingleValue" value="1.2" name="HeatPump_88f1-MarginalCosts" id="912af525-fe07-47f0-835e-f00e4de2b5a9"/>
         </costInformation>
         <port xsi:type="esdl:InPort" name="In" connectedTo="fd573056-9967-4dca-8b89-cc714118cc8f" carrier="7ba9c9db-3360-465c-8560-b3b429447f17" id="e61ed4c2-f2ec-4037-90ab-8c0a481cff68"/>
         <port xsi:type="esdl:OutPort" name="Out" carrier="06d528ac-3dfc-44c2-a624-504e3cc2e46f" id="6b88194f-9943-44cc-a3cc-ffe0f19acafe" connectedTo="075cb7d3-9079-4d14-9266-02b8f963fd6c"/>

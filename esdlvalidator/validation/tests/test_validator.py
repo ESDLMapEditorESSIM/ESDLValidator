@@ -42,6 +42,7 @@ class TestValidator(unittest.TestCase):
         validationStorage = result.schemas[0].validations[1]
         validationGasHeater = result.schemas[0].validations[2]
         validationHeatpump = result.schemas[0].validations[3]
+        validationCostsInRange = result.schemas[0].validations[4]
 
         # assert
         self.assertEqual(validationProducer.checked, 3, "there should be 3 checked since there are only 3 producers")
@@ -56,6 +57,9 @@ class TestValidator(unittest.TestCase):
 
         self.assertEqual(validationHeatpump.checked, 1, "there should be 1 checked HeatPump")
         self.assertEqual(len(validationHeatpump.warnings), 1, "there should be 1 warnings, heatpump should be missing a control strategy")
+
+        self.assertEqual(validationCostsInRange.checked, 3, "there should be 1 checked cost")
+        self.assertEqual(len(validationCostsInRange.warnings), 1, "there should be 1 warnings")
 
     def test_validate_multiple_schemas(self):
         """Test if the validator works with checking multiple schemas"""

@@ -144,6 +144,38 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "marginal_cost_in_range",
+            "desciption": "Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1",
+            "type": "warning",
+            "message": "Marginalcost not in range",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": "Asset"
+                    }
+                },
+                {
+                    "function": "filter_has_property",
+                    "alias": "assets_with_marginalcosts",
+                    "args": {
+                        "dataset": "assets",
+                        "property": "costinformation.marginalcosts"
+                    }
+                }
+            ],
+            "check": {
+                "function": "in_range",
+                "dataset": "assets_with_marginalcosts",
+                "args": {
+                    "property": "costInformation.marginalCosts.value",
+                    "min": 0,
+                    "max": 1
+                }
+            }
         }
     ]
 }
