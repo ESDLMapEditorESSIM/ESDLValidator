@@ -1,6 +1,7 @@
 # esdl-validator
 schemas.db
 .vscode/settings.json
+testdata/validation_test.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
