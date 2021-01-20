@@ -1,6 +1,6 @@
 {
     "name": "Test validation schema 2",
-    "description": "Test validation schema 2, used in esdl-validator unit tests",
+    "description": "Test validation schema 2 contains a real world scenario with multiple validations, containing 'and' 'or' definitions in the check",
     "validations": [
         {
             "name": "check_producer_power_cost_or_profile",
@@ -31,7 +31,6 @@
                         "args": {
                             "property": "costinformation.marginalcosts.value",
                             "counts_as_null": [
-                                0,
                                 0.0
                             ]
                         }
@@ -42,6 +41,45 @@
                         "function": "not_null",
                         "args": {
                             "property": "port.profile"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "storage_has_capacity_and_controlstrategy",
+            "description": "A storage asset needs to have a filled in capacity attribute and a StorageStrategy with 2 marginal costs for charge/decharge",
+            "type": "error",
+            "message": "Storage missing capacity or StoreStrategy including 2 marginal costs",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "storages",
+                    "args": {
+                        "type": "storage"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "storages",
+                "args": {
+                    "property": "capacity",
+                    "counts_as_null": [
+                        0.0
+                    ]
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlstrategy.marginalChargeCosts"
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlstrategy.marginalDischargeCosts"
                         }
                     }
                 ]

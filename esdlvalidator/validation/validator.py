@@ -119,7 +119,7 @@ class EsdlValidator:
             # and resulted in ok == false and there is no or
             if andFailed == True and orList is None:
                 logger.debug("and is not ok, no 'or' options found, returning result")
-                return andFailed
+                return checkResult
 
         # result is not ok but there are or's defined
         if checkResult.result.ok == False and orList is not None:
