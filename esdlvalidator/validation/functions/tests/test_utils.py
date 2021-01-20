@@ -33,8 +33,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(actual3, 47, "one.two.three.value attribute should be 47")
 
     def get_test_obj(self):
-        child3 = type('obj', (object,), {'value': 45, 'value': 47})
-        child2 = type('obj', (object,), {'three': child3, 'value': 46})
-        child1 = type('obj', (object,), {'Two': child2, 'value': 45})
-        obj = type('obj', (object,), {'one': child1, 'value': 44})
+        child3 = type("obj", (object,), {"value": 47})
+        child2 = type("obj", (object,), {"three": child3, "value": 46})
+        child1 = type("obj", (object,), {"Two": child2, "value": 45})
+        obj = type("obj", (object,), {"one": child1, "value": 44})
         return obj

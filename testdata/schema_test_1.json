@@ -5,7 +5,7 @@
         {
             "name": "check_area_scope_notnull",
             "description": "Check if all Areas have a scope",
-            "type": "error",
+            "type": "warning",
             "message": "Area does not have a scope",
             "selects": [
                 {

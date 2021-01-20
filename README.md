@@ -82,8 +82,9 @@ pip3 install -r requirements.txt
 ```
 
 ### Testing
-Use the 'Test' tab is vscode or execute the following command from the root folder
+Use the 'Test' tab is vscode or execute one of the following commands from the root folder
 ```
+pytest
 python3 -m unittest discover ./
 ```
 

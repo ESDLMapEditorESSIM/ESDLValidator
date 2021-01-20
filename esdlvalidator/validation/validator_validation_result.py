@@ -12,7 +12,7 @@ class ValidationResults:
         self.description = utils.get_attribute(validation, "description", "No description given")
         self.checked = len(checks)
 
-        if validation["type"].lower() is "error":
+        if validation["type"].lower() == "error":
             self.errors = results
         else:
             self.warnings = results
