@@ -1,9 +1,6 @@
 import unittest
-import json
 import types
 
-from esdlvalidator.core.esdl import utils
-from esdlvalidator.core.esdl.esh import EnergySystemHandler
 from esdlvalidator.validation.functions.function import FunctionFactory, ArgDefinition, FunctionType
 
 

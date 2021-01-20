@@ -498,7 +498,7 @@
       </asset>
       <asset xsi:type="esdl:GenericConsumer" name="Elektriciteitsconsumptie vaste land" power="1000000000.0" id="4e4699e5-4450-4382-9356-ccdc886c5659">
         <costInformation xsi:type="esdl:CostInformation">
-          <marginalCosts xsi:type="esdl:SingleValue" value="0.1" name="GenericConsumer_4e46-MarginalCosts" id="19b73fd2-8edb-4f51-871e-26c72c51dad9"/>
+          <marginalCosts xsi:type="esdl:SingleValue" value="1.1" name="GenericConsumer_4e46-MarginalCosts" id="19b73fd2-8edb-4f51-871e-26c72c51dad9"/>
         </costInformation>
         <geometry xsi:type="esdl:Point" lat="53.378413" lon="5.912361"/>
         <port xsi:type="esdl:InPort" id="c05c0390-434a-4d85-b4ae-4b67bc7185b1" name="In" connectedTo="bba6eee8-0f66-44f7-b57b-3d5ca52539f9" carrier="Electricity"/>

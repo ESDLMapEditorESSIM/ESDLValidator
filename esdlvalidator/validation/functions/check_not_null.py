@@ -1,5 +1,3 @@
-from numbers import Number
-
 from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, ArgDefinition, FunctionType, CheckResult
 

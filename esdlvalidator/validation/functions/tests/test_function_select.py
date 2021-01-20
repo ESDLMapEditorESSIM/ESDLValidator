@@ -40,6 +40,18 @@ class TestFunctionSelect(unittest.TestCase):
 
         self.assertEqual(profileAvg.result, 12.319999999999999, "Avg profile multiplier should be")
 
+    def test_select_filter_has_property(self):
+        """Test if selecting a subset based on containg property is working"""
+
+        datasets = self.get_test_datasets()
+        assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=datasets, args={"type": "Asset"})
+        datasets[assets.alias] = assets.result
+
+        filtered = FunctionFactory.create(FunctionType.SELECT, "filter_has_property", alias="subselect", datasets=datasets, args={"dataset": "assets", "property": "costinformation.marginalcosts"})
+
+        self.assertEqual(len(assets.result), 79, "There should be 100 assets")
+        self.assertEqual(len(filtered.result), 2, "There should be 2 filtered")
+
     def get_test_datasets(self):
         esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
         return {"resource": esh.resource}
