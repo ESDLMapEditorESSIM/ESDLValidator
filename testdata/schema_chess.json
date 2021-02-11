@@ -44,7 +44,53 @@
         "dataset": "joints",
         "args": {
           "assetType": "Joint",
-          "resultMsgJSON": false
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "diameter_undefined",
+      "description": "Find if both innerDiameter and diameter are not defined",
+      "type": "error",
+      "message": "Diameter not defined",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "pipes",
+          "args": {
+            "type": "Pipe"
+          }
+        }
+      ],
+      "check": {
+        "function": "multi_cond",
+        "dataset": "pipes",
+        "args": {
+          "properties": ["diameter", "innerDiameter"],
+          "violations": ["VALUE_SPECIFIED", 0.0],
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "unconnected_port",
+      "description": "Find if any port is left unconnected",
+      "type": "warning",
+      "message": "Unconnected port",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "assets",
+          "args": {
+            "type": "EnergyAsset"
+          }
+        }
+      ],
+      "check": {
+        "function": "unconnected_port",
+        "dataset": "assets",
+        "args": {
+          "resultMsgJSON": true
         }
       }
     }

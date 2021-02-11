@@ -195,7 +195,7 @@
         <port xsi:type="esdl:InPort" connectedTo="1e92f4cb-6d4f-4094-b649-8dd3a3d7e1f4" name="In" id="d276b89d-d29d-4812-a2ea-07cf2a466096" carrier="HeatSupply"/>
         <port xsi:type="esdl:OutPort" name="Out" connectedTo="7abadf5a-0e24-4b70-8eb2-91d9a58123e1" id="d9617199-bbc9-4cda-bed6-91f4ad2c5560" carrier="HeatSupply"/>
       </asset>
-      <asset xsi:type="esdl:Pipe" diameter="DN100" length="500.0" name="Pipe5" id="Pipe5">
+      <asset xsi:type="esdl:Pipe" length="500.0" name="Pipe5" id="Pipe5">
         <costInformation xsi:type="esdl:CostInformation" id="efc75637-befd-46c5-99d9-a6885e970a09">
           <installationCosts xsi:type="esdl:SingleValue" id="d231b267-69e3-4701-81f3-da9bfe335047" value="950.0">
             <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" physicalQuantity="COST" unit="EURO" id="202f2cc9-d6ff-4a75-b359-fbeec2c25745" description="Cost in EUR/m" perUnit="METRE"/>
@@ -211,7 +211,7 @@
         <port xsi:type="esdl:InPort" connectedTo="1e92f4cb-6d4f-4094-b649-8dd3a3d7e1f4" name="In" id="6118e7d2-9e3c-422a-9488-cd2c56348b4e" carrier="HeatSupply"/>
         <port xsi:type="esdl:OutPort" name="Out" connectedTo="bc731861-2be1-4ee0-80f4-b8feb27747be" id="40b48712-44a5-4402-8ab6-889764a8d5bc" carrier="HeatSupply"/>
       </asset>
-      <asset xsi:type="esdl:Pipe" diameter="DN100" length="400.0" name="Pipe21" id="Pipe21">
+      <asset xsi:type="esdl:Pipe" innerDiameter="0.201" length="400.0" name="Pipe21" id="Pipe21">
         <costInformation xsi:type="esdl:CostInformation" id="aeb33c71-be0c-41b4-b6a1-49bfae28b083">
           <installationCosts xsi:type="esdl:SingleValue" id="331cbe66-f4df-46a2-997d-7cb6aebad568" value="950.0">
             <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" physicalQuantity="COST" unit="EURO" id="32885572-9e1d-4756-9aff-202c3126dc38" description="Cost in EUR/m" perUnit="METRE"/>
@@ -225,7 +225,7 @@
         <port xsi:type="esdl:InPort" connectedTo="5ecf0847-22ff-471e-a568-cdf5ff6e56c2" name="In" id="fdd1413c-756d-439d-9fcf-a9e19846c4de" carrier="HeatSupply"/>
         <port xsi:type="esdl:OutPort" name="Out" connectedTo="7abadf5a-0e24-4b70-8eb2-91d9a58123e1" id="4b1b236d-65af-4ded-a60c-dc1f966d569b" carrier="HeatSupply"/>
       </asset>
-      <asset xsi:type="esdl:Pipe" diameter="DN100" length="500.0" name="Pipe17" id="Pipe17">
+      <asset xsi:type="esdl:Pipe" innerDiameter="0.201" length="500.0" name="Pipe17" id="Pipe17">
         <costInformation xsi:type="esdl:CostInformation" id="0837c541-71c4-424b-8805-84479371cc8b">
           <installationCosts xsi:type="esdl:SingleValue" id="32fe1e99-2662-4f3b-ad2a-99c71b7e5b57" value="950.0">
             <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" physicalQuantity="COST" unit="EURO" id="9d11f54a-ad88-4149-ac3d-23948a4f78cb" description="Cost in EUR/m" perUnit="METRE"/>

@@ -1,5 +1,9 @@
 import logging
 import copy
+import os
+from concurrent import futures
+from concurrent.futures.thread import ThreadPoolExecutor
+from threading import Barrier
 
 from esdlvalidator.validation.functions.function import CheckResult, FunctionFactory, FunctionType
 
@@ -65,7 +69,8 @@ class EsdlValidator:
         return datasets
 
     def __run_select(self, select, datasets):
-        select = FunctionFactory.create(FunctionType.SELECT, select["function"], alias=select["alias"], datasets=datasets, args=select["args"])
+        select = FunctionFactory.create(FunctionType.SELECT, select["function"], alias=select["alias"],
+                                        datasets=datasets, args=select["args"])
         return select
 
     def __run_check(self, check, datasets):
@@ -90,9 +95,11 @@ class EsdlValidator:
     def __run_get_check_result(self, check, datasets, entry):
         functionName = check["function"]
         args = check["args"]
-        logger.debug("check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
+        logger.debug(
+            "check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
 
-        checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry, args=args)
+        checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry,
+                                             args=args)
         andList = check["and"] if "and" in check else None
         orList = check["or"] if "or" in check else None
 

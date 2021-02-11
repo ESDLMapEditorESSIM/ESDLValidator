@@ -12,7 +12,8 @@ class ContainsNotConnectedTo(FunctionCheck):
             "not_connected_to",
             "Check if an asset is not connected to",
             [
-                ArgDefinition("assetType", "The type of asset to which selected asset must not be connected to", True)
+                ArgDefinition("assetType", "The type of asset to which selected asset must not be connected to", True),
+                ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
             ]
         )
 
@@ -24,7 +25,7 @@ class ContainsNotConnectedTo(FunctionCheck):
         for port in self.value.port:
             for connected_port in port.connectedTo:
                 if connected_port.energyasset.__class__.__name__ == self.args['assetType']:
-                    result = "{} is connected to {}".format(self.value.id, connected_port.energyasset.id)
+                    result = "{} cannot be connected to {}".format(self.value.id, connected_port.energyasset.id)
                     if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                         msg["message"] = result
                         return CheckResult(False, msg)

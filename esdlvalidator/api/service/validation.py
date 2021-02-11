@@ -14,6 +14,7 @@ class ValidationService:
     def __init__(self, schemaRepository: SchemaRepository):
         self.__repo = schemaRepository
         self.__validator = EsdlValidator()
+        self.esdl = None
 
     def validate(self, file: FileStorage, schemaIds: list):
         """Validate an uploaded file against the given schemas
@@ -35,8 +36,8 @@ class ValidationService:
             raise UnknownESDLFileType
 
         schemas = self.__repo.get_by_ids(schemaIds)
-        esdl = self.__load_esdl(file)
-        result = self.__validator.validate(esdl, schemas)
+        self.esdl = self.__load_esdl(file)
+        result = self.__validator.validate(self.esdl, schemas)
 
         # ToDo: fix need for toJSON and then back
         jsonString = result.toJSON()

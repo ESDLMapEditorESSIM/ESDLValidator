@@ -6,6 +6,7 @@ from flask_cors import CORS
 from esdlvalidator.api import app as esdlvalidator
 from esdlvalidator.api.controller.validation import app as validationApi
 from esdlvalidator.api.controller.schema import app as schemaApi
+from esdlvalidator.api.controller.validationToNotes import app as validationToNotesApi
 from esdlvalidator.core.exceptions import ApiException
 
 logger = logging.getLogger(__name__)
