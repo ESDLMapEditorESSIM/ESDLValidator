@@ -43,7 +43,7 @@ class FunctionDefinition:
 class CheckResult:
     """Return value of a check function"""
 
-    def __init__(self, ok: bool, message: str = None):
+    def __init__(self, ok: bool, message=None):
         self.ok = ok
         self.message = message
 

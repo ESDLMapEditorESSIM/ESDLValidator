@@ -1,0 +1,52 @@
+{
+  "name": "Test validation schema 3",
+  "description": "Test validation schema 3 contains checks for CHESS",
+  "validations": [
+    {
+      "name": "pipe_not_connected_to_pipe",
+      "description": "Find if no Pipes are connected to other Pipes",
+      "type": "error",
+      "message": "Pipe connected to another pipe",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "pipes",
+          "args": {
+            "type": "Pipe"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_connected_to",
+        "dataset": "pipes",
+        "args": {
+          "assetType": "Pipe",
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "joint_not_connected_to_joint",
+      "description": "Find if no joints are connected to other Joints",
+      "type": "error",
+      "message": "Joint connected to another joint",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "joints",
+          "args": {
+            "type": "Joint"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_connected_to",
+        "dataset": "joints",
+        "args": {
+          "assetType": "Joint",
+          "resultMsgJSON": false
+        }
+      }
+    }
+  ]
+}

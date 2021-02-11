@@ -22,6 +22,9 @@ class ValidationResults:
 
         for check in checks:
             if not check.result.ok:
-                results.append("{0}: {1}".format(message, check.result.message))
+                if isinstance(check.result.message, dict):
+                    results.append(check.result.message)
+                else:
+                    results.append("{0}: {1}".format(message, check.result.message))
 
         return results

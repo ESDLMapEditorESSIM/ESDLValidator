@@ -31,7 +31,7 @@ class SchemaListController(Resource):
         """Post a new validation schema"""
 
         schemaID = schemaService.insert(request.json)
-        return {}, 201, {"location": "/schema/{0}".format(schemaID)}
+        return {"location": "/schema/{0}".format(schemaID)}, 201, {"location": "/schema/{0}".format(schemaID)}
 
 
 @app.ns_schema.route('/<int:schemaID>/')
