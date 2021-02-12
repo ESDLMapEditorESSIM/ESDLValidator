@@ -4,10 +4,14 @@ from math import cos, sin, atan2, sqrt, radians, degrees
 
 from flask import request, Response
 from flask_restx import Resource
+from pyecore.resources import ResourceSet
+from pyecore.resources.resource import HttpURI
+
 from esdlvalidator.api import app
 from esdlvalidator.api.controller import validationService
 from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point, Polygon, Note
 from esdlvalidator.core.esdl.esh import StringURI
+from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
 
 parser = app.api.parser()
 
@@ -31,31 +35,21 @@ class ValidationToNotesController(Resource):
         result = validationService.validateContents(file, schema_list)
 
         esdl_resource = validationService.esdl
-        self.update_esdl(esdl_resource, result)
+        notes = self.update_esdl(esdl_resource, result)
         uri = StringURI('to_string.esdl')
+        esdl_resource.remove(esdl_resource.contents[0])
+        esdl_resource.append(notes)
         esdl_resource.save(uri)
 
         return Response(response=uri.getvalue(), status=200, mimetype='text/xml')
 
     def update_esdl(self, resource, results: dict):
         asset_notes = {}
-        es = resource.contents[0]
-        es.id = es.id + "_val"
-        es.name = es.name + " (validated)"
-        esi = es.energySystemInformation
         now = dt.now()
-        if esi is None:
-            esi = EnergySystemInformation()
-            es.energySystemInformation = esi
-            esi.id = str(uuid.uuid4())
-            esi.name = "EnergySystemInformation"
 
-        notes = esi.notes
-        if notes is None:
-            notes = Notes()
-            esi.notes = notes
-            notes.id = str(uuid.uuid4())
-            notes.name = "Validation Notes"
+        notes = Notes()
+        notes.id = str(uuid.uuid4())
+        notes.name = "Validation Notes"
 
         for schema in results['schemas']:
             for validation in schema['validations']:
@@ -89,7 +83,8 @@ class ValidationToNotesController(Resource):
                                 asset_notes[asset_id] = note
         for n in asset_notes.values():
             notes.note.append(n)
-        return es
+
+        return notes
 
     @staticmethod
     def get_center_point(asset):
