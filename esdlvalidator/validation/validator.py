@@ -1,138 +1,46 @@
-import logging
-import copy
+from esdlvalidator.core.esdl import utils
 
-from esdlvalidator.validation.functions.function import CheckResult, FunctionFactory, FunctionType
-
-from esdlvalidator.validation.validator_validation_result import ValidationResults
-from esdlvalidator.validation.validator_schema_result import SchemaResult
+from esdlvalidator.validation.validator_esdl import EsdlValidator
+from esdlvalidator.validation.validator_xsd import XsdValidator
 from esdlvalidator.validation.validator_result import ValidatorResult
 
-logger = logging.getLogger(__name__)
 
-
-class EsdlValidator:
-    """Validate a loaded ESDL against one or multiple validation schemas"""
+class Validator:
+    """Validator to check ESDL files"""
 
     def __init__(self):
-        pass
+        self.__esdlValidator = EsdlValidator()
+        self.__xsdValidator = XsdValidator()
 
-    def validate(self, esdl, schemas: list):
-        """Validate an ESDL against one or more multiple schemas
+    def validate(self, file, schemas: list[str], validateXsd: bool):
+        """Validator to ESDL against xsd and user schemas
 
         Args:
-            esdl (object): The loaded ESDL
+            file : Loaded ESDL file
+            schemas list[str]: Schemas in string format to check against
+            validateXsd bool: If the validator should check against xsd
 
         Returns:
-            result: ValidatorResult containing the validation results
+            result ValidatorResult: containing the validator results
         """
 
-        schemaResults = []
-        for schema in schemas:
-            schemaResult = self.__run_schema(schema, esdl)
-            schemaResults.append(schemaResult)
+        esdlString = self.__get_esdl_string(file)
+        esdl = self.__load_esdl(esdlString)
 
-        result = ValidatorResult(schemaResults)
+        xsdResult = None if validateXsd == False else self.__xsdValidator.validate(esdlString)
+        esdlResult = self.__esdlValidator.validate(esdl, schemas)
+        result = ValidatorResult(xsdResult, esdlResult)
         return result
 
-    def __run_schema(self, schema, esdl):
-        validationResults = []
+    def __get_esdl_string(self, file):
+        """Get a string from the uploaded file"""
 
-        # schema can consist of multiple validations
-        for validation in schema["validations"]:
-            validationResult = self.__run_validation(validation, esdl)
-            validationResults.append(validationResult)
+        fileBytes = file.read()
+        esdlString = fileBytes.decode("utf-8")
+        return esdlString
 
-        schemaResult = SchemaResult(schema, validationResults)
+    def __load_esdl(self, esdlString: str):
+        """Get the string of the uploaded file, load it as energy system handler and return the resource"""
 
-        return schemaResult
-
-    def __run_validation(self, validation, esdl):
-        selects = validation["selects"]
-        check = validation["check"]
-        datasets = self.__constructDatasets(selects, esdl)
-        checkResults = self.__run_check(check, datasets)
-        validationResult = ValidationResults(validation, checkResults)
-
-        return validationResult
-
-    def __constructDatasets(self, selects, esdl):
-        datasets = {"resource": esdl}
-
-        for s in selects:
-            select = self.__run_select(s, datasets)
-            datasets[select.alias] = select.result
-
-        return datasets
-
-    def __run_select(self, select, datasets):
-        select = FunctionFactory.create(FunctionType.SELECT, select["function"], alias=select["alias"], datasets=datasets, args=select["args"])
-        return select
-
-    def __run_check(self, check, datasets):
-        datasetName = check["dataset"]
-        dataset = datasets[datasetName]
-        checkResults = []
-
-        if not isinstance(dataset, (frozenset, list, set, tuple)):
-            dataset = [dataset]
-
-        logger.debug("running checks for {0} found entries in dataset '{1}'".format(len(dataset), datasetName))
-
-        for entry in dataset:
-            cleanCheck = copy.deepcopy(check)
-            checkResult = self.__run_get_check_result(cleanCheck, datasets, entry)
-            checkResults.append(checkResult)
-            logger.debug("check done, result: {0}".format(checkResult.result.ok))
-            logger.debug("-------------------------")
-
-        return checkResults
-
-    def __run_get_check_result(self, check, datasets, entry):
-        functionName = check["function"]
-        args = check["args"]
-        logger.debug("check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
-
-        checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry, args=args)
-        andList = check["and"] if "and" in check else None
-        orList = check["or"] if "or" in check else None
-
-        # result is ok and no 'and' found
-        if checkResult.result.ok == True and andList is None:
-            logger.debug("result == True, and no 'and' options found")
-            return checkResult
-
-        # result is not ok and there is no or
-        if checkResult.result.ok == False and orList is None:
-            logger.debug("result == False, no 'or' options found, returning result")
-            return checkResult
-
-        # result is ok but there are more and's defined
-        if checkResult.result.ok == True and andList is not None:
-            logger.debug("result == True 'and' options found")
-            andFailed = False
-            for a in andList:
-                checkResult = self.__run_get_check_result(a, datasets, entry)
-                if checkResult.result.ok == False:
-                    andFailed = True
-                    break
-
-            # and resulted in ok == false and there is no or
-            if andFailed == True and orList is None:
-                logger.debug("and is not ok, no 'or' options found, returning result")
-                return checkResult
-
-        # result is not ok but there are or's defined
-        if checkResult.result.ok == False and orList is not None:
-            logger.debug("executing 'or' function")
-            orSuccess = False
-            for o in orList:
-                checkResult = self.__run_get_check_result(o, datasets, entry)
-                if checkResult.result.ok == True:
-                    orSuccess = True
-                    break
-
-            if orSuccess == True:
-                logger.debug("result == True, returning result")
-                return checkResult
-
-        return checkResult
+        esh = utils.get_esh_from_string(esdlString)
+        return esh.resource

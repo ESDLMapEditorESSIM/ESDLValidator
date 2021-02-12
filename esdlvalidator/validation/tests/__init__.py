@@ -27,3 +27,10 @@ def get_test_dataset_ameland():
 def get_test_dataset_hybrid():
     esh = utils.get_esh_from_file("testdata/hybrid_hp_with_pv_storage.esdl")
     return esh.resource
+
+
+def get_test_xml_string():
+    with open("testdata/hybrid_hp_with_pv_storage.esdl", 'r') as file:
+        esdlString = file.read()
+
+    return esdlString

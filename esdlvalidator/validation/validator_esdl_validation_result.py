@@ -1,7 +1,7 @@
 from esdlvalidator.validation.functions import utils
 
 
-class ValidationResults:
+class EsdlValidationResults:
     """Result of a validation, this is returned to the user as JSON"""
 
     def __init__(self, validation, checks):

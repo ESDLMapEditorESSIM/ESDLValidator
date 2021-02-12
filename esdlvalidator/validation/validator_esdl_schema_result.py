@@ -1,7 +1,7 @@
 import json
 
 
-class SchemaResult:
+class EsdlSchemaResult:
     """Result of a schema validation, this is returned to the user as JSON"""
 
     def __init__(self, schema, validations):

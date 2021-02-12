@@ -69,7 +69,7 @@ class EnergySystemHandler:
             return self.resource
         except Exception as e:
             log.error("Exception when loading resource: {}: {}".format(name, e))
-            raise
+            raise e
 
     def get_energy_system(self):
         return self.energy_system

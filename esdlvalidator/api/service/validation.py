@@ -2,10 +2,10 @@ import json
 
 from werkzeug.datastructures import FileStorage
 
-from esdlvalidator.validation.validator import EsdlValidator
+
 from esdlvalidator.core.exceptions import UnknownESDLFileType
-from esdlvalidator.core.esdl import utils
 from esdlvalidator.validation.repository import SchemaRepository
+from esdlvalidator.validation.validator import Validator
 
 
 class ValidationService:
@@ -13,14 +13,15 @@ class ValidationService:
 
     def __init__(self, schemaRepository: SchemaRepository):
         self.__repo = schemaRepository
-        self.__validator = EsdlValidator()
+        self.__validator = Validator()
 
-    def validate(self, file: FileStorage, schemaIds: list):
+    def validate(self, file: FileStorage, schemaIds: list, validateXsd: bool):
         """Validate an uploaded file against the given schemas
 
         Args:
             file (FileStorage): Uploaded file
             schemaIds: List of schema id's to validate against. example [1,2]
+            validateXsd bool: If the validator should also check against xsd
 
         Returns:
             result: JSON result of the validation
@@ -35,11 +36,9 @@ class ValidationService:
             raise UnknownESDLFileType
 
         schemas = self.__repo.get_by_ids(schemaIds)
-        esdl = self.__load_esdl(file)
-        result = self.__validator.validate(esdl, schemas)
-
-        # ToDo: fix need for toJSON and then back
+        result = self.__validator.validate(file, schemas, validateXsd)
         jsonString = result.toJSON()
+
         return json.loads(jsonString)
 
     def __allowed_file(self, filename):
@@ -47,11 +46,3 @@ class ValidationService:
 
         return "." in filename and \
             filename.rsplit(".", 1)[1].lower() in ["esdl", "xml"]
-
-    def __load_esdl(self, file):
-        """Get the string of the uploaded file, load it as energy system handler and return the resource"""
-
-        fileBytes = file.read()
-        esdlString = fileBytes.decode("utf-8")
-        esh = utils.get_esh_from_string(esdlString)
-        return esh.resource

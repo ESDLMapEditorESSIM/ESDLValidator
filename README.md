@@ -6,7 +6,7 @@ Service for validating ESDL files against validation schemas
 
 # ToDo V1.0
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
-- [ ] Add xsd validation
+- [x] Add xsd validation
 - [ ] Fix waitress logging
 - [ ] Better output messages for current checks
 - [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
@@ -41,7 +41,7 @@ validation endpoint expects multipart/form-data since we want to send an ESDL fi
 
 | Endpoints |  Operation  | Description |
 | ------------- |:-------------| :-----|
-| /validation | POST | Validate an ESDL against given schemas |
+| /validation | POST | Validate an ESDL against given schemas and xsd |
 
 ### Settings
 esdl-validator can be configured using the following environment variables.
