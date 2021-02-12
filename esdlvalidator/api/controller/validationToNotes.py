@@ -1,18 +1,15 @@
 import uuid
+from datetime import datetime as dt
 from math import cos, sin, atan2, sqrt, radians, degrees
 
 from flask import request, Response
 from flask_restx import Resource
-from werkzeug.datastructures import FileStorage
 from esdlvalidator.api import app
 from esdlvalidator.api.controller import validationService
-from esdlvalidator.core.esdl import utils, EnergySystem, EnergySystemInformation, Notes, Line, Point, Geometry, Polygon, \
-    Note
+from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point, Polygon, Note
 from esdlvalidator.core.esdl.esh import StringURI
-from datetime import datetime as dt
 
 parser = app.api.parser()
-parser.add_argument("file", type=FileStorage, location="files", required=True)
 
 
 @app.ns_validation_to_notes.route('/')
@@ -27,11 +24,11 @@ class ValidationToNotesController(Resource):
     def post(self):
         """Validate an ESDL file against one or more validation schemas"""
 
-        file = request.files["file"]
+        file = request.data.decode('utf-8')
         if "schemas" not in request.args:
-            return "Bad Request: Required 'schemas' parameter missing"
+            return "Bad Request: Required 'schemas' parameter missing", 400
         schema_list = [int(id) for id in request.args['schemas'].split(',')]
-        result = validationService.validate(file, schema_list)
+        result = validationService.validateContents(file, schema_list)
 
         esdl_resource = validationService.esdl
         self.update_esdl(esdl_resource, result)
