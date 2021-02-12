@@ -40,6 +40,8 @@ class ValidationToNotesController(Resource):
     def update_esdl(self, resource, results: dict):
         asset_notes = {}
         es = resource.contents[0]
+        es.id = es.id + "_val"
+        es.name = es.name + " (validated)"
         esi = es.energySystemInformation
         now = dt.now()
         if esi is None:
