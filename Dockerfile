@@ -8,8 +8,9 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt &&\
     adduser -u 1000 -G esdlgroup -h /home/esdluser -D esdluser &&\
     mkdir /storage &&\
     chown esdluser: /storage
+VOLUME /storage
 WORKDIR /home/esdluser
 USER esdluser
 COPY . .
-EXPOSE 80
-CMD ["waitress-serve", "--listen", "*:80", "--call", "esdlvalidator.api.manage:create_app"]
+EXPOSE 3011
+CMD ["waitress-serve", "--listen", "*:3011", "--call", "esdlvalidator.api.manage:create_app"]

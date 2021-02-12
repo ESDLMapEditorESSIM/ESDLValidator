@@ -1,0 +1,17 @@
+version: '3'
+
+networks:
+  essim_net:
+
+services:
+  esdlValidator:
+    image: esdlvalidator:latest
+    ports:
+      - "5000:80"
+    volumes:
+      - validator-storage:/storage
+    networks:
+      - essim_net
+
+volumes:
+  validator-storage:
