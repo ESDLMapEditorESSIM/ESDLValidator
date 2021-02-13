@@ -1,7 +1,7 @@
 import unittest
 
 from esdlvalidator.core.exceptions import InvalidJSON, NameAlreadyExists, SchemaNotFound
-from esdlvalidator.validation.repository import SchemaRepository
+from esdlvalidator.validation.file_repository import FileSchemaRepository
 
 
 class TestRepository(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestRepository(unittest.TestCase):
         self.assertIsNotNone(repo, "Loaded db is None")
 
         with self.assertRaises(OSError,):
-            SchemaRepository("/location-does-not-exists/mydb.db")
+            FileSchemaRepository("/location-does-not-exists/mydb.db")
 
     def test_add_get(self):
         repo = self.getRepo()
@@ -55,4 +55,4 @@ class TestRepository(unittest.TestCase):
             repo.remove_by_id(schemaID)
 
     def getRepo(self):
-        return SchemaRepository("./testdata/validation_test.db")
+        return FileSchemaRepository("./testdata/validation_test.db")

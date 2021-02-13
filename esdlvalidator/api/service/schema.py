@@ -1,6 +1,7 @@
 import json
 
-from esdlvalidator.validation.repository import SchemaRepository
+from esdlvalidator.validation.abstract_repository import SchemaRepository
+from esdlvalidator.validation.file_repository import FileSchemaRepository
 
 
 class SchemaService:
@@ -17,7 +18,8 @@ class SchemaService:
         """
 
         schemas = self.repo.get_all()
-        return [{"id": schema.doc_id, "name": schema["name"], "description": schema["description"]} for schema in schemas]
+        return [{"id": str(schema["id"]), "name": schema["name"], "description": schema["description"]} for schema in
+                schemas]
 
     def get_by_id(self, id: int):
         """Get a schema by schema id

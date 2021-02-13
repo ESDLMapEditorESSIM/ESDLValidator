@@ -12,6 +12,7 @@ from esdlvalidator.api.controller import validationService
 from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point, Polygon, Note
 from esdlvalidator.core.esdl.esh import StringURI
 from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
+from esdlvalidator.core.exceptions import SchemaNotFound
 
 parser = app.api.parser()
 
@@ -31,8 +32,11 @@ class ValidationToNotesController(Resource):
         file = request.data.decode('utf-8')
         if "schemas" not in request.args:
             return "Bad Request: Required 'schemas' parameter missing", 400
-        schema_list = [int(id) for id in request.args['schemas'].split(',')]
-        result = validationService.validateContents(file, schema_list)
+        schema_list = [id for id in request.args['schemas'].split(',')]
+        try:
+            result = validationService.validateContents(file, schema_list)
+        except SchemaNotFound as e:
+            return e.message, 400
 
         esdl_resource = validationService.esdl
         notes = self.update_esdl(esdl_resource, result)

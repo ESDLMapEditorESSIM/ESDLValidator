@@ -2,10 +2,10 @@ import json
 
 from werkzeug.datastructures import FileStorage
 
-from esdlvalidator.validation.validator import EsdlValidator
-from esdlvalidator.core.exceptions import UnknownESDLFileType
 from esdlvalidator.core.esdl import utils
-from esdlvalidator.validation.repository import SchemaRepository
+from esdlvalidator.core.exceptions import UnknownESDLFileType
+from esdlvalidator.validation.abstract_repository import SchemaRepository
+from esdlvalidator.validation.validator import EsdlValidator
 
 
 class ValidationService:

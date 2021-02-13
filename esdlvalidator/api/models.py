@@ -2,7 +2,7 @@ from flask_restx import fields
 from esdlvalidator.api import app
 
 schema_summary = app.api.model('SchemaSummary', {
-    "id": fields.Integer(required=False, description="ID of the schema"),
+    "id": fields.String(required=False, description="ID of the schema"),
     "name": fields.String(required=False, description="Name of the schema"),
     "description": fields.String(required=False, description="Description of the schema")
 })
@@ -29,6 +29,7 @@ schema_validation = app.api.model("validation", {
 })
 
 schema = app.api.model("schema", {
+    "id": fields.String(required=False, description="ID of the validation schema", example="6027a402e658599189817ba2"),
     "name": fields.String(required=True, description="Name of the validation schema", example="My validation schema"),
     "description": fields.String(required=True, description="Description of the validation schema", example='The is a user defined validation schema'),
     "validations": fields.List(fields.Nested(schema_validation), required=True, description="List of validations")

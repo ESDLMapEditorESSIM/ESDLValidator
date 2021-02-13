@@ -6,10 +6,12 @@ from esdlvalidator.core.exceptions import NameAlreadyExists, InvalidJSON, Schema
 from tinydb import TinyDB, Query
 from os import path
 
+from esdlvalidator.validation.abstract_repository import SchemaRepository
+
 logger = logging.getLogger(__name__)
 
 
-class SchemaRepository:
+class FileSchemaRepository(SchemaRepository):
     """Repository for retrieving, adding, deleting validation schemas"""
 
     def __init__(self, location: str):
@@ -30,7 +32,10 @@ class SchemaRepository:
     def get_all(self):
         """Retrieve all schema's"""
 
-        return self.table.all()
+        documents = self.table.all()
+        for doc in documents:
+            doc["id"] = doc.doc_id
+        return documents
 
     def get_by_id(self, id: int):
         """Retrieve a schema by ID
@@ -68,7 +73,9 @@ class SchemaRepository:
             if not self.table.contains(doc_id=id):
                 raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))
 
-            schemas.append(self.table.get(doc_id=id))
+            schema = self.table.get(doc_id=id)
+            schema['id'] = id
+            schemas.append(schema)
 
         return schemas
 

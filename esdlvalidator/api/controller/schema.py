@@ -5,6 +5,7 @@ from flask_restx import Resource
 
 from esdlvalidator.api import app, models
 from esdlvalidator.api.controller import schemaService
+from esdlvalidator.core.exceptions import SchemaNotFound
 
 logger = logging.getLogger(__name__)
 
@@ -30,37 +31,55 @@ class SchemaListController(Resource):
     def post(self):
         """Post a new validation schema"""
 
-        schemaID = schemaService.insert(request.json)
-        return {"location": "/schema/{0}".format(schemaID)}, 201, {"location": "/schema/{0}".format(schemaID)}
+        schema_id = schemaService.insert(request.json)
+        return {"location": "/schema/{0}".format(schema_id)}, 201, {"location": "/schema/{0}".format(schema_id)}
 
 
-@app.ns_schema.route('/<int:schemaID>/')
+@app.ns_schema.route('/<string:schema_id_or_name>/')
 class SchemaController(Resource):
     """GET/UPDATE/DELETE validation schemas"""
 
     @app.api.doc(description="Get a schema by ID", responses={
         200: "Ok",
         404: "Schema not found"})
-    def get(self, schemaID):
+    def get(self, schema_id_or_name):
         """Get a validation schema by ID"""
 
-        return schemaService.get_by_id(schemaID), 200
+        try:
+            doc = schemaService.get_by_id(schema_id_or_name)
+        except SchemaNotFound:
+            try:
+                doc = schemaService.get_by_name(schema_id_or_name)
+            except SchemaNotFound:
+                return "Requested schema with name/id '{}' not found".format(schema_id_or_name), 404
+
+        return doc, 200
 
     @app.api.doc(description="Delete a schema by ID", responses={
         200: "Ok, schema was deleted",
         404: "Schema not found"})
-    def delete(self, schemaID):
+    def delete(self, schema_id_or_name):
         """Delete a validation schema from the database"""
 
-        return schemaService.delete(schemaID), 200
+        try:
+            schemaService.get_by_id(schema_id_or_name)
+        except SchemaNotFound:
+            return "Requested schema with name/id '{}' not found".format(schema_id_or_name), 404
+
+        return schemaService.delete(schema_id_or_name), 200
 
     @app.api.doc(description="Update a validation schema", responses={
         200: "Ok, schema was updated",
         404: "Schema not found",
         400: "Invalid JSON"})
     @app.api.expect(models.schema, validate=True)
-    def put(self, schemaID):
+    def put(self, schema_id_or_name):
         """Delete a validation schema from the database"""
 
-        schemaID = schemaService.update(schemaID, request.json)
-        return {}, 200, {"location": "/schema/{0}".format(schemaID)}
+        try:
+            schemaService.get_by_id(schema_id_or_name)
+        except SchemaNotFound:
+            return "Requested schema with name/id '{}' not found".format(schema_id_or_name), 404
+
+        schema_id = schemaService.update(schema_id_or_name, request.json)
+        return {"location": "/schema/{0}".format(schema_id)}, 200, {"location": "/schema/{0}".format(schema_id)}
