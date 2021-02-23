@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  esdl_val_net:
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-storage:/data/db
+    networks:
+      - esdl_val_net
+
+volumes:
+  validator-storage:
+  mongo-storage:

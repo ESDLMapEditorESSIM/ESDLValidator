@@ -1,6 +1,6 @@
 {
-  "name": "Test validation schema 3",
-  "description": "Test validation schema 3 contains checks for CHESS",
+  "name": "CHESS validation schema",
+  "description": "CHESS validation schema contains checks for CHESS",
   "validations": [
     {
       "name": "pipe_not_connected_to_pipe",
@@ -66,8 +66,14 @@
         "function": "multi_cond",
         "dataset": "pipes",
         "args": {
-          "properties": ["diameter", "innerDiameter"],
-          "violations": ["VALUE_SPECIFIED", 0.0],
+          "properties": [
+            "diameter",
+            "innerDiameter"
+          ],
+          "violations": [
+            "VALUE_SPECIFIED",
+            0.0
+          ],
           "resultMsgJSON": true
         }
       }
@@ -90,6 +96,32 @@
         "function": "unconnected_port",
         "dataset": "assets",
         "args": {
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "producer_power_cost_or_profile",
+      "description": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
+      "type": "error",
+      "message": "Consumer missing power and marginal costs or no energy profile connected",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "producers",
+          "args": {
+            "type": "Producer"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_null",
+        "dataset": "producers",
+        "args": {
+          "property": "power",
+          "counts_as_null": [
+            0.0
+          ],
           "resultMsgJSON": true
         }
       }

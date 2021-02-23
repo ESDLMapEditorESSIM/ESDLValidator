@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  essim_net:
+  esdl_val_net:
 
 services:
   esdlValidator:
@@ -14,7 +14,7 @@ services:
     volumes:
       - validator-storage:/storage
     networks:
-      - essim_net
+      - esdl_val_net
 
   mongo:
     image: mongo:latest
@@ -23,7 +23,7 @@ services:
     volumes:
       - mongo-storage:/data/db
     networks:
-      - essim_net
+      - esdl_val_net
 
 volumes:
   validator-storage:
