@@ -19,7 +19,7 @@ Service for validating ESDL files against validation schemas
 - [ ] More unit test (currently no test for api package)
 - [ ] Endpoint for getting an overview of registered functions
 - [ ] Simple frontend tool in a separate project
-- [ ] Postman example file
+- [x] Postman example file
 - [ ] Tutorial
 
 ## Endpoints
@@ -87,7 +87,6 @@ pip3 install -r requirements.txt
 ### Testing
 Use the 'Test' tab is vscode or execute one of the following commands from the root folder
 ```
-pytest
 python3 -m unittest discover ./
 ```
 
@@ -109,6 +108,11 @@ To update the ESDL code to work with the latest version of the ESDL ecore model,
 pip3 install pyecoregen
 pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
 ```
+
+## Postman
+A Postman collection with some examples how to use the ESDLValidator can be found at ```testdata/ESDLValidator.postman_collection.json``` This collection can be imported into Postman using the ```import``` button in the top left corner of the application. All requests start with {{host}} this is a variable declared in the collection and is set to ```127.0.0.1:5000``` When running the ESDLValidator service somewhere else, update the ```host``` variable in the collection or add and use a [Postman environment](https://learning.postman.com/docs/sending-requests/managing-environments/) with a ```host``` variable.  
+
+For the request ```validation/POST validation``` make sure to update the file value in the body tab with your own ESDL or the test ESDL ```testdata/hybrid_hp_with_pv_storage.esdl``` which can be found in this repo. 
 
 ## Docker
 
