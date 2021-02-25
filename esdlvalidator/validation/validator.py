@@ -12,7 +12,7 @@ class Validator:
         self.__esdlValidator = EsdlValidator()
         self.__xsdValidator = XsdValidator()
 
-    def validate(self, file, schemas: list[str], validateXsd: bool):
+    def validate(self, file, schemas: "list[str]", validateXsd: bool):
         """Validator to ESDL against xsd and user schemas
 
         Args:

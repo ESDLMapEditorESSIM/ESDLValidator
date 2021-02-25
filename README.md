@@ -56,7 +56,7 @@ esdl-validator can be configured using the following environment variables.
 | ESDLVALIDATOR_LOG_LEVEL | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO |
 
 ## validation schema
-ToDo: information on how a validatio schema is constructed
+ToDo: information on how a validation schema is constructed
 
 ## Local development
 Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The default settings file excludes some unwanted files and folders, styling and discovery and settings for unit tests.
