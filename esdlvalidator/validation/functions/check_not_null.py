@@ -53,8 +53,15 @@ class ContainsNotNull(FunctionCheck):
     def check_includes(self, include, prop, value, originalValue):
         msg = {"offending_asset": self.value.id}
         for includeValue in include:
-            if str(includeValue).lower() == str(value).lower():
-                result = self.__create_message("{0} cannot be {1}".format(prop, includeValue), originalValue)
+            if isinstance(value, list):
+                ret = []
+                for v in value:
+                    ret.append(self.check_includes(include, prop, v, originalValue))
+                for r in ret:
+                    if not r.ok:
+                        return r
+            elif str(includeValue).lower() == str(value).lower():
+                result = self.__create_message("{0} cannot be null".format(prop), originalValue)
                 if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                     msg["message"] = result
                     return CheckResult(False, msg)

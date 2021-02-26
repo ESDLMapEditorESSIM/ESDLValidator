@@ -13,6 +13,7 @@ from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point,
 from esdlvalidator.core.esdl.esh import StringURI
 from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
 from esdlvalidator.core.exceptions import SchemaNotFound
+from esdlvalidator.validation.functions import utils
 
 parser = app.api.parser()
 
@@ -92,12 +93,15 @@ class ValidationToNotesController(Resource):
 
     @staticmethod
     def get_center_point(asset):
-        geometry = asset.geometry
+        a = asset
+        while not utils.has_attribute(a, 'geometry'):
+            a = a.eContainer()
+        geometry = a.geometry
         points = None
         if isinstance(geometry, Polygon):
-            points = geometry.exterior
+            points = geometry.exterior[0:2]
         elif isinstance(geometry, Line):
-            points = geometry.point
+            points = geometry.point[0:2]
         elif isinstance(geometry, Point):
             points = [geometry]
         x = []

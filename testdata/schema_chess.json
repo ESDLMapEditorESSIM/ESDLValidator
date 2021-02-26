@@ -3,7 +3,7 @@
   "description": "CHESS validation schema contains checks for CHESS",
   "validations": [
     {
-      "name": "pipe_not_connected_to_pipe",
+      "name": "pipe_connected_to_pipe",
       "description": "Find if no Pipes are connected to other Pipes",
       "type": "error",
       "message": "Pipe connected to another pipe",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "name": "joint_not_connected_to_joint",
+      "name": "joint_connected_to_joint",
       "description": "Find if no joints are connected to other Joints",
       "type": "error",
       "message": "Joint connected to another joint",
@@ -101,10 +101,10 @@
       }
     },
     {
-      "name": "producer_power_cost_or_profile",
-      "description": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
+      "name": "producer_power_undefined",
+      "description": "An asset of type producer must have a power attribute (asset.power)",
       "type": "error",
-      "message": "Consumer missing power and marginal costs or no energy profile connected",
+      "message": "Producer missing power",
       "selects": [
         {
           "function": "get",
@@ -121,6 +121,33 @@
           "property": "power",
           "counts_as_null": [
             0.0
+          ],
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "consumer_profile_undefined",
+      "description": "An asset of type consumer must have a profile defined",
+      "type": "error",
+      "message": "Consumer missing profile",
+      "selects": [
+        {
+          "function": "get_references",
+          "alias": "consumerInPorts",
+          "args": {
+            "assetType": "Consumer",
+            "referenceType": "InPort"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_null",
+        "dataset": "consumerInPorts",
+        "args": {
+          "property": "profile",
+          "counts_as_null": [
+            "EOrderedSet()"
           ],
           "resultMsgJSON": true
         }
