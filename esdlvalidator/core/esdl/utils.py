@@ -93,7 +93,7 @@ def get_esh_from_string(esdlString: str):
 
     try:
         esh.load_from_string(esdlString)
-    except:
+    except Exception as e:
         raise InvalidESDL
 
     return esh

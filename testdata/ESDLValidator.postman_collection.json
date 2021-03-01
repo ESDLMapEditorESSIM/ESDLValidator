@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "25b36db2-eee9-4142-a5d6-14a86e2a7dfa",
+		"name": "ESDLValidator",
+		"description": "Test and example requests for the ESDLValidator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "schema",
+			"item": [
+				{
+					"name": "POST schema",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test validation schema\",\r\n    \"description\": \"Test validation schema contains a real world scenario with multiple validations, containing 'and' 'or' definitions in the check\",\r\n    \"validations\": [\r\n        {\r\n            \"name\": \"producer_power_cost_or_profile\",\r\n            \"description\": \"An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)\",\r\n            \"type\": \"error\",\r\n            \"message\": \"Consumer missing power and marginal costs or no energy profile connected\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"producers\",\r\n                    \"args\": {\r\n                        \"type\": \"Producer\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"producers\",\r\n                \"args\": {\r\n                    \"property\": \"power\",\r\n                    \"counts_as_null\": [\r\n                        0.0\r\n                    ]\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"costinformation.marginalcosts.value\",\r\n                            \"counts_as_null\": [\r\n                                0.0\r\n                            ]\r\n                        }\r\n                    }\r\n                ],\r\n                \"or\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"port.profile\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"storage_capacity_and_controlstrategy\",\r\n            \"description\": \"A storage asset needs to have a filled in capacity attribute and a StorageStrategy with charge and discharge costs\",\r\n            \"type\": \"error\",\r\n            \"message\": \"Storage missing capacity or StoreStrategy including 2 marginal costs\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"storages\",\r\n                    \"args\": {\r\n                        \"type\": \"storage\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"storages\",\r\n                \"args\": {\r\n                    \"property\": \"capacity\",\r\n                    \"counts_as_null\": [\r\n                        0.0\r\n                    ]\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlstrategy.marginalChargeCosts\"\r\n                        }\r\n                    },\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlstrategy.marginalDischargeCosts\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"gas_heater_marginal_costs_and_driven_by_demand\",\r\n            \"description\": \"Check if a gas heater has marginal cost and driven by demand\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Gas heater has no marginal cost defined or no driven by demand found\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"gasheaters\",\r\n                    \"args\": {\r\n                        \"type\": \"GasHeater\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"gasheaters\",\r\n                \"args\": {\r\n                    \"property\": \"costinformation.marginalcosts\"\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlStrategy\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"heat_pump_marginal_costs_and_driven_by_demand\",\r\n            \"description\": \"Check if a heat pump has marginal cost and driven by demand\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Heat pump has no marginal cost defined or no driven by demand found\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"heatpumps\",\r\n                    \"args\": {\r\n                        \"type\": \"HeatPump\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"heatpumps\",\r\n                \"args\": {\r\n                    \"property\": \"costinformation.marginalcosts\"\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlStrategy\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"marginal_cost_in_range\",\r\n            \"description\": \"Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Marginalcost not in range\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"assets\",\r\n                    \"args\": {\r\n                        \"type\": \"Asset\"\r\n                    }\r\n                },\r\n                {\r\n                    \"function\": \"filter_has_property\",\r\n                    \"alias\": \"assets_with_marginalcosts\",\r\n                    \"args\": {\r\n                        \"dataset\": \"assets\",\r\n                        \"property\": \"costinformation.marginalcosts\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"in_range\",\r\n                \"dataset\": \"assets_with_marginalcosts\",\r\n                \"args\": {\r\n                    \"property\": \"costInformation.marginalCosts.value\",\r\n                    \"min\": 0,\r\n                    \"max\": 1\r\n                }\r\n            }\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/schema/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"schema",
+								""
+							]
+						},
+						"description": "POST a new schema to the ESDLValidator"
+					},
+					"response": []
+				},
+				{
+					"name": "GET schema summary list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/schema/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"schema",
+								""
+							]
+						},
+						"description": "Request a summar list of all defined schemas"
+					},
+					"response": []
+				},
+				{
+					"name": "GET schema by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/schema/1/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"schema",
+								"1",
+								""
+							]
+						},
+						"description": "Request a schema by given ID"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT schema",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test validation schema v2\",\r\n    \"description\": \"Test validation schema v2 contains a real world scenario with multiple validations, containing 'and' 'or' definitions in the check\",\r\n    \"validations\": [\r\n        {\r\n            \"name\": \"producer_power_cost_or_profile\",\r\n            \"description\": \"An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)\",\r\n            \"type\": \"error\",\r\n            \"message\": \"Consumer missing power and marginal costs or no energy profile connected\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"producers\",\r\n                    \"args\": {\r\n                        \"type\": \"Producer\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"producers\",\r\n                \"args\": {\r\n                    \"property\": \"power\",\r\n                    \"counts_as_null\": [\r\n                        0.0\r\n                    ]\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"costinformation.marginalcosts.value\",\r\n                            \"counts_as_null\": [\r\n                                0.0\r\n                            ]\r\n                        }\r\n                    }\r\n                ],\r\n                \"or\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"port.profile\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"storage_capacity_and_controlstrategy\",\r\n            \"description\": \"A storage asset needs to have a filled in capacity attribute and a StorageStrategy with charge and discharge costs\",\r\n            \"type\": \"error\",\r\n            \"message\": \"Storage missing capacity or StoreStrategy including 2 marginal costs\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"storages\",\r\n                    \"args\": {\r\n                        \"type\": \"storage\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"storages\",\r\n                \"args\": {\r\n                    \"property\": \"capacity\",\r\n                    \"counts_as_null\": [\r\n                        0.0\r\n                    ]\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlstrategy.marginalChargeCosts\"\r\n                        }\r\n                    },\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlstrategy.marginalDischargeCosts\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"gas_heater_marginal_costs_and_driven_by_demand\",\r\n            \"description\": \"Check if a gas heater has marginal cost and driven by demand\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Gas heater has no marginal cost defined or no driven by demand found\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"gasheaters\",\r\n                    \"args\": {\r\n                        \"type\": \"GasHeater\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"gasheaters\",\r\n                \"args\": {\r\n                    \"property\": \"costinformation.marginalcosts\"\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlStrategy\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"heat_pump_marginal_costs_and_driven_by_demand\",\r\n            \"description\": \"Check if a heat pump has marginal cost and driven by demand\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Heat pump has no marginal cost defined or no driven by demand found\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"heatpumps\",\r\n                    \"args\": {\r\n                        \"type\": \"HeatPump\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"not_null\",\r\n                \"dataset\": \"heatpumps\",\r\n                \"args\": {\r\n                    \"property\": \"costinformation.marginalcosts\"\r\n                },\r\n                \"and\": [\r\n                    {\r\n                        \"function\": \"not_null\",\r\n                        \"args\": {\r\n                            \"property\": \"controlStrategy\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"marginal_cost_in_range\",\r\n            \"description\": \"Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1\",\r\n            \"type\": \"warning\",\r\n            \"message\": \"Marginalcost not in range\",\r\n            \"selects\": [\r\n                {\r\n                    \"function\": \"get\",\r\n                    \"alias\": \"assets\",\r\n                    \"args\": {\r\n                        \"type\": \"Asset\"\r\n                    }\r\n                },\r\n                {\r\n                    \"function\": \"filter_has_property\",\r\n                    \"alias\": \"assets_with_marginalcosts\",\r\n                    \"args\": {\r\n                        \"dataset\": \"assets\",\r\n                        \"property\": \"costinformation.marginalcosts\"\r\n                    }\r\n                }\r\n            ],\r\n            \"check\": {\r\n                \"function\": \"in_range\",\r\n                \"dataset\": \"assets_with_marginalcosts\",\r\n                \"args\": {\r\n                    \"property\": \"costInformation.marginalCosts.value\",\r\n                    \"min\": 0,\r\n                    \"max\": 1\r\n                }\r\n            }\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/schema/1/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"schema",
+								"1",
+								""
+							]
+						},
+						"description": "Update a validation schema"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE schema",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/schema/1/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"schema",
+								"1",
+								""
+							]
+						},
+						"description": "DELETE a schema from the ESDLValidator"
+					},
+					"response": []
+				}
+			],
+			"description": "schema crud endpoints",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "validation",
+			"item": [
+				{
+					"name": "POST validation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "ESDL file to check, update value with the file from github repo /testdata/hybrid_hp_with_pv_storage.esdl",
+									"type": "file",
+									"src": "/C:/tim/dev/energy/ESDLValidator/testdata/hybrid_hp_with_pv_storage.esdl"
+								},
+								{
+									"key": "schemas",
+									"value": "1",
+									"description": "Commas separated list of schemas to check against",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/validation/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"validation",
+								""
+							]
+						},
+						"description": "POST an ESDL file and check against xsd and user defined schema"
+					},
+					"response": []
+				}
+			],
+			"description": "Validation endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "127.0.0.1:5000"
+		}
+	]
+}

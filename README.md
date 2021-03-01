@@ -6,7 +6,7 @@ Service for validating ESDL files against validation schemas
 
 # ToDo V1.0
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
-- [ ] Add xsd validation
+- [x] Add xsd validation
 - [ ] Fix waitress logging
 - [ ] Better output messages for current checks
 - [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
@@ -19,7 +19,7 @@ Service for validating ESDL files against validation schemas
 - [ ] More unit test (currently no test for api package)
 - [ ] Endpoint for getting an overview of registered functions
 - [ ] Simple frontend tool in a separate project
-- [ ] Postman example file
+- [x] Postman example file
 - [ ] Tutorial
 
 ## Endpoints
@@ -41,7 +41,7 @@ validation endpoint expects multipart/form-data since we want to send an ESDL fi
 
 | Endpoints |  Operation  | Description |
 | ------------- |:-------------| :-----|
-| /validation | POST | Validate an ESDL against given schemas |
+| /validation | POST | Validate an ESDL against given schemas and xsd |
 
 ### Settings
 esdl-validator can be configured using the following environment variables.
@@ -59,7 +59,7 @@ esdl-validator can be configured using the following environment variables.
 | ESDLVALIDATOR_REPOSITORY_TYPE | Set the repository type, options FILE, MONGO | FILE |
 
 ## validation schema
-ToDo: information on how a validatio schema is constructed
+ToDo: information on how a validation schema is constructed
 
 ## Local development
 Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The default settings file excludes some unwanted files and folders, styling and discovery and settings for unit tests.
@@ -67,12 +67,12 @@ Setup a development environment using virtual environment and install the depend
 ### Virtual environment
 Install virtual environment if not installed yet
 ```
-python3 -m pip install --user virtualenv
+python -m pip install --user virtualenv
 ```
 
 Create a virtual environment
 ```
-python3 -m venv env
+python -m venv env
 ```
 
 Enable virtual environment with one of the following commands
@@ -84,20 +84,19 @@ env\Scripts\activate.bat (Windows CMD)
 
 ### Install project dependencies
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Testing
 Use the 'Test' tab is vscode or execute one of the following commands from the root folder
 ```
-pytest
-python3 -m unittest discover ./
+python -m unittest discover ./
 ```
 
 ### Run ESDL-validator in develop/debug mode
 To run the service in debug mode using the build in flask development server.
 ```
-python3 app.py
+python app.py
 ```
 
 ### Run ESDL-validator using waitress
@@ -109,9 +108,14 @@ waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ### Update static ESDL metamodel code
 To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version and run
 ```
-pip3 install pyecoregen
+pip install pyecoregen
 pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
 ```
+
+## Postman
+A Postman collection with some examples how to use the ESDLValidator can be found at ```testdata/ESDLValidator.postman_collection.json``` This collection can be imported into Postman using the ```import``` button in the top left corner of the application. All requests start with {{host}} this is a variable declared in the collection and is set to ```127.0.0.1:5000``` When running the ESDLValidator service somewhere else, update the ```host``` variable in the collection or add and use a [Postman environment](https://learning.postman.com/docs/sending-requests/managing-environments/) with a ```host``` variable.  
+
+For the request ```validation/POST validation``` make sure to update the file value in the body tab with your own ESDL or the test ESDL ```testdata/hybrid_hp_with_pv_storage.esdl``` which can be found in this repo. 
 
 ## Docker
 

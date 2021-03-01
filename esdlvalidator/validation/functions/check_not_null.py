@@ -52,7 +52,7 @@ class ContainsNotNull(FunctionCheck):
         return self.check_includes(include, prop, value, self.value)
 
     def check_includes(self, include, prop, value, originalValue):
-        msg = utils.create_offending_asset_msg(value)
+        msg = utils.create_offending_asset_msg(self.value)
 
         for includeValue in include:
             if isinstance(value, list):

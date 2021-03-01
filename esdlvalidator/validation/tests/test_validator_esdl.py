@@ -1,7 +1,7 @@
 import unittest
 
 from esdlvalidator.validation.tests import get_test_schema_data, get_test_schema_id, get_test_dataset_ameland, get_test_dataset_hybrid
-from esdlvalidator.validation.validator import EsdlValidator
+from esdlvalidator.validation.validator_esdl import EsdlValidator
 
 
 class TestValidator(unittest.TestCase):
@@ -72,3 +72,6 @@ class TestValidator(unittest.TestCase):
 
         # assert
         self.assertEqual(len(result.schemas), 2, "there should be 2 schemas in the result")
+        self.assertEqual(result.valid, False, "There should be errors in the schema's, valid should be false")
+        self.assertEqual(result.errorCount, 2, "There should be a total of 2 errors")
+        self.assertEqual(result.warningCount, 3, "There should be 3 warnings in total")

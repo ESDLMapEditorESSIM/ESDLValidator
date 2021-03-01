@@ -14,6 +14,7 @@ from esdlvalidator.core.esdl.esh import StringURI
 from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
 from esdlvalidator.core.exceptions import SchemaNotFound
 from esdlvalidator.validation.functions import utils
+from esdlvalidator.core.esdl import utils as coreutils
 
 parser = app.api.parser()
 
@@ -35,11 +36,11 @@ class ValidationToNotesController(Resource):
             return "Bad Request: Required 'schemas' parameter missing", 400
         schema_list = [id for id in request.args['schemas'].split(',')]
         try:
-            result = validationService.validateContents(file, schema_list)
+            result = validationService.validateContents(file, schema_list, False)
         except SchemaNotFound as e:
             return e.message, 400
 
-        esdl_resource = validationService.esdl
+        esdl_resource = coreutils.get_esh_from_string(file).resource
         notes = self.update_esdl(esdl_resource, result)
         uri = StringURI('to_string.esdl')
         esdl_resource.remove(esdl_resource.contents[0])
@@ -56,7 +57,8 @@ class ValidationToNotesController(Resource):
         notes.id = str(uuid.uuid4())
         notes.name = "Validation Notes"
 
-        for schema in results['schemas']:
+        esdlValidation = results['esdlValidation']
+        for schema in esdlValidation['schemas']:
             for validation in schema['validations']:
                 if "errors" in validation:
                     for error in validation['errors']:
