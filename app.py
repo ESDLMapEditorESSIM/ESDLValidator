@@ -2,8 +2,8 @@ import os
 
 from esdlvalidator.api.manage import create_app
 
-HOSTNAME = "HOSTNAME"
-PORT = "PORT"
+HOSTNAME = "ESDLVALIDATOR_HOSTNAME"
+PORT = "ESDLVALIDATOR_PORT"
 
 if __name__ == "__main__":
     """Run ESDL-Validator service in debug mode"""

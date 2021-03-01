@@ -4,13 +4,14 @@ networks:
   esdl_val_net:
 
 services:
-  esdlValidator:
-    image: ci.tno.nl/warmingup/chess-preprocessor:latest
+  esdl-validator:
+    build: .
     ports:
       - "3011:5000"
     environment:
-      - MONGODB_HOST=mongo
-      - MONGODB_PORT=27017
+      - ESDLVALIDATOR_REPOSITORY_TYPE=MONGO
+      - ESDLVALIDATOR_MONGODB_HOST=mongo
+      - ESDLVALIDATOR_MONGODB_PORT=27017
     volumes:
       - validator-storage:/storage
     networks:

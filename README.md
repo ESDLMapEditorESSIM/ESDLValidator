@@ -48,12 +48,15 @@ esdl-validator can be configured using the following environment variables.
 
 | Variable | Description | default  |
 | ------------- |:-------------| :-----|
+| ESDLVALIDATOR_HOSTNAME | Hostname to run the service on | localhost |
+| ESDLVALIDATOR_PORT | Port to run the service on | 5000 |
 | ESDLVALIDATOR_TITLE | Title of the service, shown in swagger | ESDL-Validator |
 | ESDLVALIDATOR_DESCRIPTION | Description of the service, shown in swagger | API for validating ESDL files |
 | ESDLVALIDATOR_ENDPOINT_PREFIX | Prefix of the endpoint, for example /api | - |
 | ESDLVALIDATOR_DB_LOCATION | location and name of database | schemas.db |
 | ESDLVALIDATOR_DEFAULT_CORS | Enable the default CORS, accepting everything | False |
 | ESDLVALIDATOR_LOG_LEVEL | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO |
+| ESDLVALIDATOR_REPOSITORY_TYPE | Set the repository type, options FILE, MONGO | FILE |
 
 ## validation schema
 ToDo: information on how a validatio schema is constructed
@@ -121,7 +124,7 @@ The docker image is by default configured to create/read the database file from 
 
 Run example for esdl-validator with logging set to DEBUG and the database file stored and read outside of the container.
 ```
-docker run -p 8080:80 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
+docker run -p 8080:5000 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
 ```
 
 The service should now be accesible on ```localhost:8080```

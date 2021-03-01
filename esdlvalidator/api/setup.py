@@ -17,6 +17,7 @@ class Settings:
     endpointPrefix = environ.var("", name="ESDLVALIDATOR_ENDPOINT_PREFIX")
     useDefaultCors = environ.var(False, converter=bool, name="ESDLVALIDATOR_DEFAULT_CORS")
     dbLocation = environ.var("schemas.db", name="ESDLVALIDATOR_DB_LOCATION")
+    repositoryType = environ.var("FILE", name="ESDLVALIDATOR_REPOSITORY_TYPE")
     logLevel = environ.var("INFO", name="ESDLVALIDATOR_LOG_LEVEL")
 
 

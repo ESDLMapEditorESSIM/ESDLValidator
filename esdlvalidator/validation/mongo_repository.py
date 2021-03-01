@@ -9,8 +9,8 @@ from pymongo import MongoClient
 from esdlvalidator.core.exceptions import SchemaNotFound
 from esdlvalidator.validation.abstract_repository import SchemaRepository
 
-MONGODB_HOST = "MONGODB_HOST"
-MONGODB_PORT = "MONGODB_PORT"
+MONGODB_HOST = "ESDLVALIDATOR_MONGODB_HOST"
+MONGODB_PORT = "ESDLVALIDATOR_MONGODB_PORT"
 SCHEMA_DB = "ESDLValidationSchemas"
 SCHEMA_COLLECTION = "schemaCollection"
 log = logging.getLogger(__name__)
