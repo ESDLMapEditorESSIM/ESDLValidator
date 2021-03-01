@@ -4,6 +4,7 @@ from esdlvalidator.core.esdl import esdl
 from esdlvalidator.core.esdl.esh import EnergySystemHandler
 from esdlvalidator.core.esdl import utils
 
+
 testESDL = "testdata/ameland_energie_2015.esdl"
 
 
@@ -15,11 +16,11 @@ class TestUtils(unittest.TestCase):
 
         actual = utils.get_esdl_class_from_string("Asset")
         expected = esdl.Asset
-        self.assertEqual(actual, expected, "String 'Asset' should return esdl.Asset")
+        self.assertEqual(actual[0], expected, "String 'Asset' should return esdl.Asset")
 
         actual = utils.get_esdl_class_from_string("aSseT")
         expected = esdl.Asset
-        self.assertEqual(actual, expected, "Class string casing should be ignored and return esdl.Asset")
+        self.assertEqual(actual[0], expected, "Class string casing should be ignored and return esdl.Asset")
 
     def test_esdl_class_from_string_throw(self):
         """Test if get_esdl_class_from_string throws an exception if class is not found"""

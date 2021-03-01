@@ -5,7 +5,7 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
 
 
 @FunctionFactory.register(FunctionType.SELECT, "get_references")
-class SelectGet(FunctionSelect):
+class SelectGetReferences(FunctionSelect):
 
     def get_function_definition(self):
         return FunctionDefinition(

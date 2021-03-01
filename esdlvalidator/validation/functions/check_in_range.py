@@ -21,7 +21,7 @@ class ContainsNotNull(FunctionCheck):
 
     def execute(self):
         self.set_values()
-        msg = {"offending_asset": self.value.id}
+        msg = utils.create_offending_asset_msg(self.value)
 
         if not utils.has_attribute(self.value, self.property):
             result = "Property {0} not found".format(self.property)
@@ -41,7 +41,7 @@ class ContainsNotNull(FunctionCheck):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
-                CheckResult(False, result)
+                return CheckResult(False, result)
 
     def set_values(self):
         self.property = utils.get_attribute(self.args, "property")

@@ -27,7 +27,8 @@ class ContainsNotNull(FunctionCheck):
         # Some esdl entity values have a default of undefined or none when not set
         include.extend(["undefined", "none"])
         value = self.value
-        msg = {"offending_asset": self.value.id}
+
+        msg = utils.create_offending_asset_msg(value)
 
         if hasProp:
             if not utils.has_attribute(value, prop):
@@ -51,7 +52,8 @@ class ContainsNotNull(FunctionCheck):
         return self.check_includes(include, prop, value, self.value)
 
     def check_includes(self, include, prop, value, originalValue):
-        msg = {"offending_asset": self.value.id}
+        msg = utils.create_offending_asset_msg(value)
+
         for includeValue in include:
             if isinstance(value, list):
                 ret = []

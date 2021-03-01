@@ -22,7 +22,7 @@ class ContainsMultiConditionCheck(FunctionCheck):
         pass
 
     def execute(self):
-        msg = {"offending_asset": self.value.id}
+        msg = utils.create_offending_asset_msg(self.value)
         if "properties" not in self.args or "violations" not in self.args:
             result = "Bad Schema: Either properties or violations missing from schema for this check"
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:

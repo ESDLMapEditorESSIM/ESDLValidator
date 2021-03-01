@@ -1,5 +1,6 @@
 import json
 
+from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
@@ -20,7 +21,7 @@ class ContainsNotConnectedTo(FunctionCheck):
         pass
 
     def execute(self):
-        msg = {"offending_asset": self.value.id}
+        msg = utils.create_offending_asset_msg(self.value)
         if len(self.value.port) == 0:
             result = "{} has no ports".format(self.value.id)
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:

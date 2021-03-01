@@ -1,5 +1,4 @@
-import json
-
+from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
@@ -21,7 +20,7 @@ class ContainsNotConnectedTo(FunctionCheck):
         pass
 
     def execute(self):
-        msg = {"offending_asset": self.value.id}
+        msg = utils.create_offending_asset_msg(self.value)
         for port in self.value.port:
             for connected_port in port.connectedTo:
                 if connected_port.energyasset.__class__.__name__ == self.args['assetType']:

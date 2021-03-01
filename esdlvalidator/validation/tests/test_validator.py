@@ -28,7 +28,7 @@ class TestValidator(unittest.TestCase):
         # assert
         self.assertEqual(validationAreaScope.checked, 8, "there should be 8 checked")
         self.assertEqual(len(validationAreaScope.warnings), 1, "there should be 1 warning")
-        self.assertEqual(validationAreaScope.warnings[0], "Area does not have a scope: value equals undefined for entity BU00600007", "Warning should say: Area does not have a scope: value equals undefined for entity BU00600007")
+        self.assertEqual(validationAreaScope.warnings[0], "Area does not have a scope: scope cannot be null for entity BU00600007", "Warning should say: Area does not have a scope: scope cannot be null for entity BU00600007")
 
     def test_validate_schema_2(self):
         """test running the validator on test schema 2 on dynamic test esdl with a real world scenario, multiple validations including and + or"""
@@ -47,7 +47,7 @@ class TestValidator(unittest.TestCase):
         # assert
         self.assertEqual(validationProducer.checked, 3, "there should be 3 checked since there are only 3 producers")
         self.assertEqual(len(validationProducer.errors), 2, "there should be 2 errors since 1 producer validates ok")
-        self.assertEqual(validationProducer.errors[0], "Consumer missing power and marginal costs or no energy profile connected: None", "Warning should say: Consumer missing power and marginal costs or no energy profile connected: None")
+        self.assertEqual(validationProducer.errors[0], "Consumer missing power and marginal costs or no energy profile connected: property port.profile value is None", "Warning should say: Consumer missing power and marginal costs or no energy profile connected: property port.profile value is None")
 
         self.assertEqual(validationStorage.checked, 1, "there should be 1 checked storage")
         self.assertEqual(len(validationStorage.errors), 0, "there should be 0 errors, storage should be correct")

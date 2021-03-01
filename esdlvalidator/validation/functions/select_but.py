@@ -5,7 +5,7 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
 
 
 @FunctionFactory.register(FunctionType.SELECT, "all_but")
-class SelectGet(FunctionSelect):
+class SelectBut(FunctionSelect):
 
     def get_function_definition(self):
         return FunctionDefinition(

@@ -25,7 +25,7 @@ def get_attribute(obj, name: str, default=None) -> bool:
     value = default
 
     if not isinstance(obj, dict):
-        if is_iterable(obj):
+        if isinstance(obj, list):
             value = []
             for sub_obj in obj:
                 value.append(get_attribute(sub_obj, parts[0], default))
@@ -54,6 +54,10 @@ def get_attribute(obj, name: str, default=None) -> bool:
             value = value._value
 
     return value
+
+
+def create_offending_asset_msg(value):
+    return {"offending_asset": value.id} if has_attribute(value, "id") else {}
 
 
 def is_iterable(obj) -> bool:
