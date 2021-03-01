@@ -12,11 +12,11 @@ class Validator:
         self.__esdlValidator = EsdlValidator()
         self.__xsdValidator = XsdValidator()
 
-    def validate(self, file, schemas: "list[str]", validateXsd: bool):
+    def validate(self, esdlString, schemas: "list[str]", validateXsd: bool):
         """Validator to ESDL against xsd and user schemas
 
         Args:
-            file : Loaded ESDL file
+            esdlString str: String containing the ESDL contents
             schemas list[str]: Schemas in string format to check against
             validateXsd bool: If the validator should check against xsd
 
@@ -24,20 +24,11 @@ class Validator:
             result ValidatorResult: containing the validator results
         """
 
-        esdlString = self.__get_esdl_string(file)
         esdl = self.__load_esdl(esdlString)
-
         xsdResult = None if validateXsd == False else self.__xsdValidator.validate(esdlString)
         esdlResult = self.__esdlValidator.validate(esdl, schemas)
         result = ValidatorResult(xsdResult, esdlResult)
         return result
-
-    def __get_esdl_string(self, file):
-        """Get a string from the uploaded file"""
-
-        fileBytes = file.read()
-        esdlString = fileBytes.decode("utf-8")
-        return esdlString
 
     def __load_esdl(self, esdlString: str):
         """Get the string of the uploaded file, load it as energy system handler and return the resource"""

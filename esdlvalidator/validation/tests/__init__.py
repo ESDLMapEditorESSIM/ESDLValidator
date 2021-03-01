@@ -1,6 +1,6 @@
 
 from esdlvalidator.core.esdl import utils
-from esdlvalidator.validation.repository import SchemaRepository
+from esdlvalidator.validation.file_repository import FileSchemaRepository
 
 with open('./testdata/validation_test.db', 'w') as file:
     file.write("")
@@ -14,7 +14,7 @@ def get_test_schema_data(file):
 
 
 def get_test_schema_id(schemaData):
-    repo = SchemaRepository("./testdata/validation_test.db")
+    repo = FileSchemaRepository("./testdata/validation_test.db")
     schemaID = repo.insert(schemaData)
     return repo.get_by_id(schemaID)
 

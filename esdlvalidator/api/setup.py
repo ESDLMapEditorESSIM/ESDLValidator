@@ -17,6 +17,7 @@ class Settings:
     endpointPrefix = environ.var("", name="ESDLVALIDATOR_ENDPOINT_PREFIX")
     useDefaultCors = environ.var(False, converter=bool, name="ESDLVALIDATOR_DEFAULT_CORS")
     dbLocation = environ.var("schemas.db", name="ESDLVALIDATOR_DB_LOCATION")
+    repositoryType = environ.var("FILE", name="ESDLVALIDATOR_REPOSITORY_TYPE")
     logLevel = environ.var("INFO", name="ESDLVALIDATOR_LOG_LEVEL")
 
 
@@ -49,4 +50,5 @@ class AppConfig:
         self.apiBlueprint = Blueprint("api", __name__)
         self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title, description=self.settings.description)
         self.ns_validation = self.api.namespace("validation", "ESDL validation endpoint")
+        self.ns_validation_to_notes = self.api.namespace("validationToNotes", "ESDL-aas validation endpoint")
         self.ns_schema = self.api.namespace("schema", "Validation schema endpoint")

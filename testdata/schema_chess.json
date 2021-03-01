@@ -1,0 +1,157 @@
+{
+  "name": "CHESS validation schema",
+  "description": "CHESS validation schema contains checks for CHESS",
+  "validations": [
+    {
+      "name": "pipe_connected_to_pipe",
+      "description": "Find if no Pipes are connected to other Pipes",
+      "type": "error",
+      "message": "Pipe connected to another pipe",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "pipes",
+          "args": {
+            "type": "Pipe"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_connected_to",
+        "dataset": "pipes",
+        "args": {
+          "assetType": "Pipe",
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "joint_connected_to_joint",
+      "description": "Find if no joints are connected to other Joints",
+      "type": "error",
+      "message": "Joint connected to another joint",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "joints",
+          "args": {
+            "type": "Joint"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_connected_to",
+        "dataset": "joints",
+        "args": {
+          "assetType": "Joint",
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "diameter_undefined",
+      "description": "Find if both innerDiameter and diameter are not defined",
+      "type": "error",
+      "message": "Diameter not defined",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "pipes",
+          "args": {
+            "type": "Pipe"
+          }
+        }
+      ],
+      "check": {
+        "function": "multi_cond",
+        "dataset": "pipes",
+        "args": {
+          "properties": [
+            "diameter",
+            "innerDiameter"
+          ],
+          "violations": [
+            "VALUE_SPECIFIED",
+            0.0
+          ],
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "unconnected_port",
+      "description": "Find if any port is left unconnected",
+      "type": "warning",
+      "message": "Unconnected port",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "assets",
+          "args": {
+            "type": "EnergyAsset"
+          }
+        }
+      ],
+      "check": {
+        "function": "unconnected_port",
+        "dataset": "assets",
+        "args": {
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "producer_power_undefined",
+      "description": "An asset of type producer must have a power attribute (asset.power)",
+      "type": "error",
+      "message": "Producer missing power",
+      "selects": [
+        {
+          "function": "get",
+          "alias": "producers",
+          "args": {
+            "type": "Producer"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_null",
+        "dataset": "producers",
+        "args": {
+          "property": "power",
+          "counts_as_null": [
+            0.0
+          ],
+          "resultMsgJSON": true
+        }
+      }
+    },
+    {
+      "name": "consumer_profile_undefined",
+      "description": "An asset of type consumer must have a profile defined",
+      "type": "error",
+      "message": "Consumer missing profile",
+      "selects": [
+        {
+          "function": "get_references",
+          "alias": "consumerInPorts",
+          "args": {
+            "assetType": "Consumer",
+            "referenceType": "InPort"
+          }
+        }
+      ],
+      "check": {
+        "function": "not_null",
+        "dataset": "consumerInPorts",
+        "args": {
+          "property": "profile",
+          "counts_as_null": [
+            "EOrderedSet()"
+          ],
+          "resultMsgJSON": true
+        }
+      }
+    }
+  ]
+}

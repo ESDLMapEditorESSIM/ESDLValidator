@@ -48,12 +48,15 @@ esdl-validator can be configured using the following environment variables.
 
 | Variable | Description | default  |
 | ------------- |:-------------| :-----|
+| ESDLVALIDATOR_HOSTNAME | Hostname to run the service on | localhost |
+| ESDLVALIDATOR_PORT | Port to run the service on | 5000 |
 | ESDLVALIDATOR_TITLE | Title of the service, shown in swagger | ESDL-Validator |
 | ESDLVALIDATOR_DESCRIPTION | Description of the service, shown in swagger | API for validating ESDL files |
 | ESDLVALIDATOR_ENDPOINT_PREFIX | Prefix of the endpoint, for example /api | - |
 | ESDLVALIDATOR_DB_LOCATION | location and name of database | schemas.db |
 | ESDLVALIDATOR_DEFAULT_CORS | Enable the default CORS, accepting everything | False |
 | ESDLVALIDATOR_LOG_LEVEL | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO |
+| ESDLVALIDATOR_REPOSITORY_TYPE | Set the repository type, options FILE, MONGO | FILE |
 
 ## validation schema
 ToDo: information on how a validation schema is constructed
@@ -64,12 +67,12 @@ Setup a development environment using virtual environment and install the depend
 ### Virtual environment
 Install virtual environment if not installed yet
 ```
-python3 -m pip install --user virtualenv
+python -m pip install --user virtualenv
 ```
 
 Create a virtual environment
 ```
-python3 -m venv env
+python -m venv env
 ```
 
 Enable virtual environment with one of the following commands
@@ -81,19 +84,19 @@ env\Scripts\activate.bat (Windows CMD)
 
 ### Install project dependencies
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Testing
 Use the 'Test' tab is vscode or execute one of the following commands from the root folder
 ```
-python3 -m unittest discover ./
+python -m unittest discover ./
 ```
 
 ### Run ESDL-validator in develop/debug mode
 To run the service in debug mode using the build in flask development server.
 ```
-python3 app.py
+python app.py
 ```
 
 ### Run ESDL-validator using waitress
@@ -105,7 +108,7 @@ waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ### Update static ESDL metamodel code
 To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version and run
 ```
-pip3 install pyecoregen
+pip install pyecoregen
 pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
 ```
 
@@ -125,7 +128,7 @@ The docker image is by default configured to create/read the database file from 
 
 Run example for esdl-validator with logging set to DEBUG and the database file stored and read outside of the container.
 ```
-docker run -p 8080:80 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
+docker run -p 8080:5000 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
 ```
 
 The service should now be accesible on ```localhost:8080```

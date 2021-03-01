@@ -1,0 +1,31 @@
+version: '3'
+
+networks:
+  esdl_val_net:
+
+services:
+  esdl-validator:
+    build: .
+    ports:
+      - "3011:5000"
+    environment:
+      - ESDLVALIDATOR_REPOSITORY_TYPE=MONGO
+      - ESDLVALIDATOR_MONGODB_HOST=mongo
+      - ESDLVALIDATOR_MONGODB_PORT=27017
+    volumes:
+      - validator-storage:/storage
+    networks:
+      - esdl_val_net
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-storage:/data/db
+    networks:
+      - esdl_val_net
+
+volumes:
+  validator-storage:
+  mongo-storage:
