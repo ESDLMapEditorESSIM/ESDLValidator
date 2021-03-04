@@ -74,7 +74,6 @@
           </port>
         </asset>
         <asset xsi:type="esdl:HeatingDemand" sector="78f77e27-4cc9-4bdc-b16c-a1544dace574" name="Overige bedrijven" id="5861ab77-606c-4bec-8401-569fa5ae1f95">
-          <geometry xsi:type="esdl:Point" lat="53.444794" lon="5.776062"/>
           <port xsi:type="esdl:InPort" id="d9b08ab0-0ebd-4ad3-94d2-3876d0c8a330" name="In" connectedTo="c85ed617-0ffe-408f-9b1c-e304cf5e1b37" carrier="e903f25f-78e8-4856-8c2e-db9d9fd7f1c8">
             <profile xsi:type="esdl:InfluxDBProfile" filters="" measurement="nedu_aardgas_2015-2018" id="393f9b2c-c977-462e-904c-5546653e12fe" database="energy_profiles" multiplier="20.02" profileType="ENERGY_IN_TJ" field="G1A" port="8086" host="http://10.30.2.1"/>
           </port>
