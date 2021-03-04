@@ -3,10 +3,10 @@
     "description": "VESTA validation example for new building ESDL files",
     "validations": [
         {
-            "name": "contains_not_supported_assets",
-            "description": "Check if areas contain assets other than ResidualHeatSource",
-            "type": "warning",
-            "message": "Unsupported Asset found",
+            "name": "building_valid",
+            "description": "Check if the buildings are valid for VESTA",
+            "type": "error",
+            "message": "Invalid building",
             "selects": [
                 {
                     "function": "get",
@@ -14,22 +14,121 @@
                     "args": {
                         "type": "Building"
                     }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "buildings",
+                "args": {
+                    "type": "geometry"
                 },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "name"
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "buildingYear",
+                            "counts_as_null": [
+                                0
+                            ]
+                        }
+                    },
+                    {
+                        "function": "has_child",
+                        "args": {
+                            "type": "BuildingUnit"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "building_unit_valid",
+            "description": "Check if the building units are valid for VESTA",
+            "type": "error",
+            "message": "Invalid building unit",
+            "selects": [
                 {
-                    "function": "select_children",
-                    "alias": "area_assets",
+                    "function": "get",
+                    "alias": "buildingUnits",
                     "args": {
-                        "dataset": "areas",
-                        "type": "Asset"
+                        "type": "BuildingUnit"
                     }
                 }
             ],
             "check": {
-                "function": "is_type",
-                "dataset": "area_assets",
+                "function": "not_null",
+                "dataset": "buildingUnits",
                 "args": {
-                    "type": "ResidualHeatSource"
+                    "type": "geometry"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "aggregationCount",
+                            "counts_as_null": [
+                                0,
+                                0.0
+                            ]
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "floorArea",
+                            "counts_as_null": [
+                                0,
+                                0.0
+                            ]
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "energyLabel"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "building_unit_warnings",
+            "description": "Check for building unit warnings",
+            "type": "warning",
+            "message": "Warning in building unit",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "buildingUnits",
+                    "args": {
+                        "type": "BuildingUnit"
+                    }
                 }
+            ],
+            "check": {
+                "function": "has_parent",
+                "dataset": "buildingUnits",
+                "args": {
+                    "type": "Building"
+                },
+                "and": [
+                    {
+                        "function": "equals",
+                        "args": {
+                            "property": "type",
+                            "values": [
+                                "APPARTEMENTENCOMPLEX",
+                                "APPARTEMENT"
+                            ]
+                        }
+                    }
+                ]
             }
         }
     ]
