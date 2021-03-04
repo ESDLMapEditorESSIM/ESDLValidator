@@ -61,6 +61,21 @@ class TestFunctionSelect(unittest.TestCase):
 
         self.assertEqual(len(assets.result), 528, "There should be 528 ResidualHeatSources")
 
+    def test_select_children(self):
+        """Test if function select children selects all the children from a dataset"""
+
+        dataset = self.get_test_dataset2()
+        areas = FunctionFactory.create(FunctionType.SELECT, "get", alias="areas", datasets=dataset, args={"type": "Area"})
+        dataset[areas.alias] = areas.result
+
+        allAssets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=dataset, args={"type": "Asset"})
+        dataset[allAssets.alias] = allAssets.result
+
+        children = FunctionFactory.create(FunctionType.SELECT, "select_children", alias="heatsources", datasets=dataset, args={"dataset": "areas", "type": "Asset"})
+
+        self.assertEqual(len(children.result), 555, "There should only be 555 assets")
+        self.assertNotEqual(len(allAssets.result), len(children.result), "There should not be the same amount of assets and area children assets")
+
     def get_test_datasets(self):
         esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
         return {"resource": esh.resource}
