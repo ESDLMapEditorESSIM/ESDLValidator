@@ -4793,7 +4793,6 @@
             <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitReference"/>
           </profile>
         </port>
-        <geometry xsi:type="esdl:Point" lon="4.8613" lat="52.3748" CRS="WGS84"/>
       </asset>
       <asset xsi:type="esdl:ResidualHeatSource" id="be216a86-e508-44a5-98c8-42f0f819c7c6" power="0.242936049" name="albert heijn bv" decommissioningDate="1999-01-01T00:00:00.000000" commissioningDate="1999-01-01T00:00:00.000000">
         <KPIs xsi:type="esdl:KPIs" id="58faac93-3c75-478d-8268-5de190f2922c">

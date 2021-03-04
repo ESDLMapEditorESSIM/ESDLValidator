@@ -1,6 +1,6 @@
 {
-    "name": "vesta_heatsource",
-    "description": "VESTA validation example for Heatsource ESDL files",
+    "name": "vesta_nieuwbouw",
+    "description": "VESTA validation example for new building ESDL files",
     "validations": [
         {
             "name": "contains_not_supported_assets",
