@@ -1,0 +1,29 @@
+{
+    "name": "vesta_heatsource",
+    "description": "VESTA validation example for Heatsource ESDL  files",
+    "validations": [
+        {
+            "name": "contains_not_supported_assets",
+            "description": "Check if areas contain assets other than ResidualHeatSource",
+            "type": "warning",
+            "message": "Unsupported Asset found",
+            "selects": [
+                {
+                    "function": "get_references",
+                    "alias": "area_assets",
+                    "args": {
+                        "assetType": "Area",
+                        "referenceType": "Assets"
+                    }
+                }
+            ],
+            "check": {
+                "function": "is_type",
+                "dataset": "area_assets",
+                "args": {
+                    "type": "ResidualHeatSource"
+                }
+            }
+        }
+    ]
+}

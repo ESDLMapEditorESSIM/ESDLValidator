@@ -24,7 +24,7 @@ class IsType(FunctionCheck):
         result = ""
 
         if not same:
-            id = "" if not utils.has_attribute(object, "id") else "{0} ".format(self.value.id)
+            id = "" if not utils.has_attribute(self.value, "id") else "{0} ".format(self.value.id)
             result = "Object {0}is not of type {1}".format(id, type)
 
         return CheckResult(same, result)
