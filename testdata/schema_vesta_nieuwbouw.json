@@ -1,0 +1,109 @@
+{
+    "name": "vesta_nieuwbouw",
+    "description": "VESTA validation example for new building ESDL files",
+    "validations": [
+        {
+            "name": "contains_not_supported_assets",
+            "description": "Check if areas contain assets other than ResidualHeatSource",
+            "type": "warning",
+            "message": "Unsupported Asset found",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "areas",
+                    "args": {
+                        "type": "Area"
+                    }
+                },
+                {
+                    "function": "select_children",
+                    "alias": "area_assets",
+                    "args": {
+                        "dataset": "areas",
+                        "type": "Asset"
+                    }
+                }
+            ],
+            "check": {
+                "function": "is_type",
+                "dataset": "area_assets",
+                "args": {
+                    "type": "ResidualHeatSource"
+                }
+            }
+        },
+        {
+            "name": "check_residual_heat_source_valid",
+            "description": "Check if all ResidialHeatSource assets are valid for VESTA, ResidualHeatSource should contain a name, power and geometry",
+            "type": "error",
+            "message": "Invalid ResidualHeatSource",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatsources",
+                    "args": {
+                        "type": "ResidualHeatSource"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "heatsources",
+                "args": {
+                    "property": "name",
+                    "counts_as_null": [
+                        "NULL",
+                        "UNDEFINED"
+                    ]
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "power",
+                            "counts_as_null": [
+                                0.0
+                            ]
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "geometry"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "check_residual_heat_source_dates",
+            "description": "Check if all ResidialHeatSource assets have a commissioningDate and decommissioningDate",
+            "type": "warning",
+            "message": "ResidualHeatSource missing commissioningDate or DecommissioningDate",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatsources",
+                    "args": {
+                        "type": "ResidualHeatSource"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "heatsources",
+                "args": {
+                    "property": "commissioningDate"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "decommissioningDate"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

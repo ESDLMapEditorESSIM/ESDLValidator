@@ -4,23 +4,22 @@ Service for validating ESDL files against validation schemas
 ## Status
 **work in progress** 
 
-# ToDo V1.0
+# ToDo
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
 - [x] Add xsd validation
+- [x] More select functions
+- [x] More check functions
+- [x] More interesting validation rules to test with
+- [x] Postman example file
 - [ ] Fix waitress logging
 - [ ] Better output messages for current checks
 - [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
-- [ ] More select functions
-- [ ] More check functions
-- [ ] More interesting validation rules to test with
 - [ ] Option to log to file instead of stdout
 - [ ] Accept multiple types in get function so a check can be done on multiple entities but not the parent, for example GasHeater and HeatPump 
 - [ ] Versioning?
 - [ ] More unit test (currently no test for api package)
 - [ ] Endpoint for getting an overview of registered functions
 - [ ] Simple frontend tool in a separate project
-- [x] Postman example file
-- [ ] Tutorial
 
 ## Endpoints
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
