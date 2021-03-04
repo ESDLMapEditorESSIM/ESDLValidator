@@ -49,6 +49,24 @@ class TestFunctionCheck(unittest.TestCase):
         self.assertEqual(okCount, 1, "There should be 1 cost in range")
         self.assertEqual(notOkCount, 1, "There should be 1 not in range")
 
+    def test_check_is_type(self):
+        datasets = self.get_test_datasets()
+        assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=datasets, args={"type": "Asset"})
+        datasets[assets.alias] = assets.result
+
+        okCount = 0
+        notOkCount = 0
+
+        for entry in assets.result:
+            check = FunctionFactory.create(FunctionType.CHECK, "is_type", value=entry, datasets=datasets, args={"dataset": "assets", "type": "HeatingDemand"})
+            if not check.result.ok:
+                notOkCount += 1
+            else:
+                okCount += 1
+
+        self.assertEqual(okCount, 21, "There should be 21 asset of type HeatingDemand")
+        self.assertEqual(notOkCount, 58, "There should be 58 not of type HeatingDemand")
+
     def get_test_datasets(self):
         esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
         return {"resource": esh.resource}

@@ -52,6 +52,19 @@ class TestFunctionSelect(unittest.TestCase):
         self.assertEqual(len(assets.result), 79, "There should be 100 assets")
         self.assertEqual(len(filtered.result), 2, "There should be 2 filtered")
 
+    def test_select_get_references(self):
+        """Test if getting assets inside a assets work"""
+
+        datasets = self.get_test_dataset2()
+        assets = FunctionFactory.create(FunctionType.SELECT, "get_references", alias="areas", datasets=datasets, args={"assetType": "Area", "referenceType": "ResidualHeatSource"})
+        datasets[assets.alias] = assets.result
+
+        self.assertEqual(len(assets.result), 528, "There should be 528 ResidualHeatSources")
+
     def get_test_datasets(self):
         esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
+        return {"resource": esh.resource}
+
+    def get_test_dataset2(self):
+        esh = utils.get_esh_from_file("testdata/buurt_maatregelen.esdl")
         return {"resource": esh.resource}

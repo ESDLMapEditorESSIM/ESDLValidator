@@ -7,6 +7,7 @@ from esdlvalidator.core.esdl.esh import EnergySystemHandler
 from esdlvalidator.core.exceptions import InvalidESDL
 from esdlvalidator.validation.functions import utils
 
+
 def get_esdl_class_from_string(names):
     """Retrieve an ESDL class based on its name
 
@@ -14,7 +15,7 @@ def get_esdl_class_from_string(names):
         name (str): String of the ESDL class to retrieve
 
     Returns:
-        class: The ESDL class matching the input string
+        class: The ESDL classes matching the input string
 
     Raises:
         ValueError: If class is not found
@@ -26,13 +27,16 @@ def get_esdl_class_from_string(names):
     classes = []
     if not isinstance(names, list):
         names = [names]
+
     classNames = get_esdl_class_names()
-    for className in classNames:
-        for name in names:
+    for name in names:
+        for className in classNames:
             if className.lower() == name.lower():
                 classes.append(eval("esdl." + className))
 
-    if len(classes) > 0:
+    if len(classes) == 1:
+        return classes[0]
+    elif len(classes) > 1:
         return classes
     else:
         raise ValueError("ESDL classes not found: {0}".format(names))
@@ -111,6 +115,9 @@ def get_entities_from_esdl_resource_by_type(esdlSource, esdlType):
     """
 
     esdlClasses = get_esdl_class_from_string(esdlType)
+    if not isinstance(esdlClasses, list):
+        esdlClasses = [esdlClasses]
+
     entities = []
 
     for uuid in esdlSource.uuid_dict:
@@ -137,6 +144,12 @@ def get_references_from_assets_by_type(assets, referenceType):
 
     entities = []
     esdlClasses = get_esdl_class_from_string(referenceType)
+
+    if not isinstance(assets, list):
+        assets = [assets]
+
+    if not isinstance(esdlClasses, list):
+        esdlClasses = [esdlClasses]
 
     for asset in assets:
         for ref in asset.eAllContents():
