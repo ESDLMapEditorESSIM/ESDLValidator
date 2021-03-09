@@ -8,15 +8,14 @@ Service for validating [Energy System Description Language](https://energytransi
 - [x] More check functions
 - [x] More interesting validation rules to test with
 - [x] Postman example file
-- [ ] Fix waitress logging
-- [ ] Better output messages for current checks
+- [ ] Waitress logging passed to the logger
+- [ ] Better output messages for current checks (include entity id if exists)
 - [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
 - [ ] Option to log to file instead of stdout
 - [ ] Accept multiple types in get function so a check can be done on multiple entities but not the parent, for example GasHeater and HeatPump 
-- [ ] Versioning?
-- [ ] More unit test (currently no test for api package)
+- [ ] Versioning, check posted ESDL version and check against the correct XSD and pyecore generated code?
+- [ ] More unit test, currently no test for api package
 - [ ] Endpoint for getting an overview of registered functions
-- [ ] Simple frontend tool in a separate project
 
 ## Endpoints
 Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
@@ -196,7 +195,7 @@ Example getting the average power of gasheaters in an ESDL
 ```
 
 #### Check
-Example check funtion, this example checks if every GasHeater has a propery costinformation.marginalcosts filled in. The "dataset" is set to "gasheaters" which means use the dataset with the alias "gasheaters" which should be a result of a previous select function, see the example above.
+Example check function, this example checks if every GasHeater has a propery costinformation.marginalcosts filled in. The "dataset" is set to "gasheaters" which means use the dataset with the alias "gasheaters" which should be a result of a previous select function, see the example above.
 
 ```
 "check": {
@@ -208,7 +207,7 @@ Example check funtion, this example checks if every GasHeater has a propery cost
 }
 ```
 
-A check can also contain and + or functions, example to check if producers have a power value and costinformation.marginalcosts.value or else contain a port.profile
+Every check can also contain and + or functions, example to check if producers has a power and costinformation.marginalcosts.value or else contains a port.profile
 
 ```
 "check": {
@@ -242,10 +241,71 @@ A check can also contain and + or functions, example to check if producers have 
 }
 ```
 
-More examples can be found under the folder testdata
+More complete examples can be found under the folder testdata
 ```
 schema_test_1.json
 schema_test_2.json
 schema_vesta_bronnen.json
 schema_vesta_nieuwbouw.json
+```
+
+
+### Validation result
+The validation result send back from the validation endpoint consists of xsdValidation and esdlValidation where xsdValidation is the result of the validation of the ESDL file against the latest ESDL XSD schema and esdlValidation the result of the user defined schemas. Below is an example validation result for buurt_maatregelen.esdl using the schema_vesta_bronnen.json. The XSD is invalid, apparently the ESDL can be read but the XSD did not expect an area element on line 5. buurt_maatregelen.esdl is also not valid for schema "vesta_heatsource" since it found 3 errors.
+
+```
+{
+  "xsdValidation": {
+    "valid": false,
+    "version": "v2101-dev",
+    "errors": [
+      "ERROR ON LINE 5: Element 'area': This element is not expected."
+    ]
+  },
+  "esdlValidation": {
+    "valid": false,
+    "errorCount": 15,
+    "warningCount": 55,
+    "schemas": [
+      {
+        "name": "vesta_heatsource",
+        "description": "VESTA validation example for Heatsource ESDL files",
+        "validations": [
+          {
+            "name": "contains_not_supported_assets",
+            "description": "Check if areas contain assets other than ResidualHeatSource",
+            "checked": 555,
+            "warnings": [
+              "Unsupported Asset found: Object 6d0e8488-e5ad-45cf-bf0c-53889463266f is not of type ResidualHeatSource",
+              "Unsupported Asset found: Object addbc1ea-6f3b-412a-8ff5-93c74060dd59 is not of type ResidualHeatSource",
+              "Unsupported Asset found: Object 3e073b05-af55-4df6-8a98-a1f0a76cf5d6 is not of type ResidualHeatSource",
+              ............
+            ]
+          },
+          {
+            "name": "check_residual_heat_source_valid",
+            "description": "Check if all ResidialHeatSource assets are valid for VESTA, ResidualHeatSource should contain a name, power and geometry",
+            "checked": 514,
+            "errors": [
+              "Invalid ResidualHeatSource: power cannot be null for entity dca3dccd-d24f-4488-9a43-a1be76e07f15",
+              "Invalid ResidualHeatSource: power cannot be null for entity aea162b9-11c5-41de-ae5b-a50d073c0739",
+              "Invalid ResidualHeatSource: property geometry value is None",
+              ............
+            ]
+          },
+          {
+            "name": "check_residual_heat_source_dates",
+            "description": "Check if all ResidialHeatSource assets have a commissioningDate and decommissioningDate",
+            "checked": 514,
+            "warnings": [
+              "ResidualHeatSource missing commissioningDate or DecommissioningDate: property commissioningDate value is None",
+              "ResidualHeatSource missing commissioningDate or DecommissioningDate: property commissioningDate value is None",
+              ............
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
