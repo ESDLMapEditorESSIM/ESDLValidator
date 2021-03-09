@@ -1,8 +1,5 @@
 # ESDL-Validator
-Service for validating ESDL files against validation schemas  
-
-## Status
-**work in progress** 
+Service for validating [Energy System Description Language](https://energytransition.gitbook.io/esdl/) (ESDL) files against XSD and user defined validation schemas  
 
 # ToDo
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
@@ -36,14 +33,14 @@ The schema endpoint can be used to manage the validation schemas. Validation sch
 | /schema/{id} | DELETE | Delete a schema by id |
 
 ### validation
-validation endpoint expects multipart/form-data since we want to send an ESDL file with extra request parameters such as schema id's, posting json with the ESDL as base64 string will have too much overhead with larger ESDL files.
+Validation endpoint expects multipart/form-data since we want to send an ESDL file with extra request parameters such as schema id's, posting json with the ESDL as base64 string will have too much overhead with larger ESDL files.
 
 | Endpoints |  Operation  | Description |
 | ------------- |:-------------| :-----|
 | /validation | POST | Validate an ESDL against given schemas and xsd |
 
 ### Settings
-esdl-validator can be configured using the following environment variables.
+The esdl-validator service can be configured using the following environment variables.
 
 | Variable | Description | default  |
 | ------------- |:-------------| :-----|
@@ -56,9 +53,8 @@ esdl-validator can be configured using the following environment variables.
 | ESDLVALIDATOR_DEFAULT_CORS | Enable the default CORS, accepting everything | False |
 | ESDLVALIDATOR_LOG_LEVEL | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO |
 | ESDLVALIDATOR_REPOSITORY_TYPE | Set the repository type, options FILE, MONGO | FILE |
-
-## validation schema
-ToDo: information on how a validation schema is constructed
+| ESDLVALIDATOR_MONGODB_HOST | Hostname of MongoDB, only set when using Mongo | localhost |
+| ESDLVALIDATOR_MONGODB_PORT | Port of MongoDB, only set when using Mongo | 27017 |
 
 ## Local development
 Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The default settings file excludes some unwanted files and folders, styling and discovery and settings for unit tests.
@@ -87,13 +83,13 @@ pip install -r requirements.txt
 ```
 
 ### Testing
-Use the 'Test' tab is vscode or execute one of the following commands from the root folder
+Use the 'Test' tab is vscode or execute one of the following commands from the root folder.
 ```
 python -m unittest discover ./
 ```
 
 ### Run ESDL-validator in develop/debug mode
-To run the service in debug mode using the build in flask development server.
+To run the service in debug mode using the build-in flask development server.
 ```
 python app.py
 ```
@@ -132,14 +128,124 @@ docker run -p 8080:5000 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esd
 
 The service should now be accesible on ```localhost:8080```
 
-## Validation
-ToDo
+## Validation Schema
+The ESDL-Validator service can validate ESDL files against XSD and user defined validation schemas, the service can be extended easily with new functions and endpoints if the current features lack the ability to suit your needs. When a validation request is send to the service it will get validated against the given schema (or multiple schemas). A validation schema contains name, description and an array of validations.
+
+```
+{
+    "name": "my_schema",
+    "description": "Example validation schema",
+    "validations": [...]
+}
+```
+
+### Validation
+A validation contains a name, description, type, message, a list of select functions and a check function. The type can be ```error``` or ```warning``` to describe if the validation generates warnings or errors. The message is a text that will be prefixed to generated warning or error message. 
+
+```
+"validations": [
+    {
+        "name": "my_validation_1",
+        "description": "Example validation 1",
+        "type": "warning",
+        "message": "my_validation_1 warning",
+        "selects": [
+            { "GET FUNCTION" }
+        ],
+        "check": { "CHECK FUNCTION }
+]
+```
 
 ### Functions
-There are 2 types of functions: select and check. Select functions are used to generate a 'dataset' which can be used in a check functions. In one validation schema multiple selects can be defined to select data from the esdl, filter out data or generate new data such for example calculating an average. Check functions test every entry in the given dataset and return a result (for every entry) which will be returned by the service, check function can generate warnings or errors based on how the check is configured in the validation schema. New functions can be added easily, by adding ```@FunctionFactory.register``` to the class, giving it a name and extending the appropriate function type the function will be discovered automatically by the FunctionFactory. To use a function simply reference the function by it's name in the validation schema i.e ```"function": "not_null"```
+There are 2 types of functions: select and check. Select functions are used to generate a 'dataset' which can be used in a check functions. In one validation schema multiple selects can be defined to select data from the esdl, filter out data or generate new data such for example calculating an average. Check functions test every entry in the given dataset and return a result (for every entry) which will be returned by the service, check function can generate warnings or errors based on how the check is configured in the validation schema. New functions can be added easily, by adding ```@FunctionFactory.register``` to the class, giving it a name and extending the appropriate function type the function will be discovered automatically by the FunctionFactory. To use a function simply reference the function by it's name in the validation schema i.e ```"function": "not_null"``` All current functions can be found under esdlvalidator/validation/functions, the arguments and their description that can be set for each function can be found in their .py file, it should also be possible to make an endpoint to describe all registered functions, this is not yet implemented.
 
 #### Select
-ToDo: Instructions on the select function and how to add new ones
+Example selecting Producer Assets and storing it in a 'producers' dataset which can be used in other select or check functions. "function": "get" will execute the select_get.py since this function is registered as "get".
+
+```
+"selects": [
+    {
+        "function": "get",
+        "alias": "producers",
+        "args": {
+            "type": "Producer"
+        }
+    }
+],
+```
+
+Example getting the average power of gasheaters in an ESDL
+```
+"selects": [
+    {
+        "function": "get",
+        "alias": "gasheaters",
+        "args": {
+            "type": "GasHeater"
+        }
+    },
+    {
+        "function": "avg",
+        "alias": "avg_gasheater_power",
+        "args": {
+            "property": "power",
+            "dataset": "gasheaters"
+        }
+    }
+],
+```
 
 #### Check
-ToDo: Instructions on the check function and how to add new ones
+Example check funtion, this example checks if every GasHeater has a propery costinformation.marginalcosts filled in. The "dataset" is set to "gasheaters" which means use the dataset with the alias "gasheaters" which should be a result of a previous select function, see the example above.
+
+```
+"check": {
+    "function": "not_null",
+    "dataset": "gasheaters",
+    "args": {
+        "property": "costinformation.marginalcosts"
+    }
+}
+```
+
+A check can also contain and + or functions, example to check if producers have a power value and costinformation.marginalcosts.value or else contain a port.profile
+
+```
+"check": {
+    "function": "not_null",
+    "dataset": "producers",
+    "args": {
+        "property": "power",
+        "counts_as_null": [
+            0.0
+        ]
+    },
+    "and": [
+        {
+            "function": "not_null",
+            "args": {
+                "property": "costinformation.marginalcosts.value",
+                "counts_as_null": [
+                    0.0
+                ]
+            }
+        }
+    ],
+    "or": [
+        {
+            "function": "not_null",
+            "args": {
+                "property": "port.profile"
+            }
+        }
+    ]
+}
+```
+
+More examples can be found under the folder testdata
+```
+schema_test_1.json
+schema_test_2.json
+schema_vesta_bronnen.json
+schema_vesta_nieuwbouw.json
+```
