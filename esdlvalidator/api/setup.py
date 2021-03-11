@@ -50,4 +50,5 @@ class AppConfig:
         self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title, description=self.settings.description)
         self.ns_validation = self.api.namespace("validation", "ESDL validation endpoint")
         self.ns_validation_to_notes = self.api.namespace("validationToNotes", "ESDL-aas validation endpoint")
+        self.ns_validation_to_msgs = self.api.namespace("validationToMessages", "ESDL-aas validation endpoint to return JSON")
         self.ns_schema = self.api.namespace("schema", "Validation schema endpoint")
