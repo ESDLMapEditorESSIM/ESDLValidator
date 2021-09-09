@@ -3,7 +3,7 @@ import json
 import types
 
 from esdlvalidator.core.esdl import utils
-from esdlvalidator.core.esdl.esh import EnergySystemHandler
+from esdl.esdl_handler import EnergySystemHandler
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionType
 
 

@@ -2,8 +2,8 @@ import inspect
 
 from pathlib import Path
 
-from esdlvalidator.core.esdl import esdl
-from esdlvalidator.core.esdl.esh import EnergySystemHandler
+import esdl
+from esdl.esdl_handler import EnergySystemHandler
 from esdlvalidator.core.exceptions import InvalidESDL
 from esdlvalidator.validation.functions import utils
 

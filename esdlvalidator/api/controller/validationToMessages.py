@@ -3,16 +3,12 @@ import uuid
 from datetime import datetime as dt
 from math import cos, sin, atan2, sqrt, radians, degrees
 
+from esdl import Notes, Line, Point, Polygon, Note
 from flask import request, Response
 from flask_restx import Resource
-from pyecore.resources import ResourceSet
-from pyecore.resources.resource import HttpURI
 
 from esdlvalidator.api import app
 from esdlvalidator.api.controller import validationService
-from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point, Polygon, Note
-from esdlvalidator.core.esdl.esh import StringURI
-from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
 from esdlvalidator.core.exceptions import SchemaNotFound
 from esdlvalidator.validation.functions import utils
 
