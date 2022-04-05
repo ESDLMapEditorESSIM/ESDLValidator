@@ -27,7 +27,7 @@
     },
     {
       "name": "joint_connected_to_non_transport_asset",
-      "description": "Find if no joints are connected to non-transport assets, such as other joints.",
+      "description": "Find if no joints are connected to non-transport assets.",
       "type": "error",
       "message": "Joint connected to non-transport asset",
       "selects": [
