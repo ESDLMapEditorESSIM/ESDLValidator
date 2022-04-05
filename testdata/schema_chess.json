@@ -43,7 +43,7 @@
         "function": "only_connected_to",
         "dataset": "joints",
         "args": {
-          "assetType": ["Pipe","ElectricityCable","Bus"],
+          "assetType": "Pipe",
           "resultMsgJSON": true
         }
       }
