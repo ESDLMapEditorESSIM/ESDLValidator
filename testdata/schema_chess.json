@@ -129,7 +129,7 @@
     {
       "name": "consumer_profile_undefined",
       "description": "An asset of type consumer must have a profile defined",
-      "type": "warning",
+      "type": "error",
       "message": "Missing profile",
       "selects": [
         {
