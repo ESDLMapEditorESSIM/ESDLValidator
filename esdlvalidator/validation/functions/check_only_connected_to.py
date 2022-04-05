@@ -4,13 +4,13 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
     ArgDefinition, FunctionType, CheckResult
 
 
-@FunctionFactory.register(FunctionType.CHECK, "connected_to")
+@FunctionFactory.register(FunctionType.CHECK, "only_connected_to")
 class ContainsConnectedTo(FunctionCheck):
 
     def get_function_definition(self):
         return FunctionDefinition(
-            "connected_to",
-            "Check if an asset is connected to",
+            "only_connected_to",
+            "Check if an asset is only connected to",
             [
                 ArgDefinition("assetType", "The type of asset to which selected asset must be connected to", True),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
