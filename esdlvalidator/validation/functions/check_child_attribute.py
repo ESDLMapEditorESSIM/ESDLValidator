@@ -4,15 +4,15 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
     ArgDefinition, FunctionType, CheckResult
 
 
-@FunctionFactory.register(FunctionType.CHECK, "check_attribute_exists")
+@FunctionFactory.register(FunctionType.CHECK, "check_child_attribute")
 class ContainsNotConnectedTo(FunctionCheck):
 
     def get_function_definition(self):
         return FunctionDefinition(
-            "check_attribute_exists",
-            "Check if asset component has attribute", # make component optional?
+            "check_child_attribute",
+            "Check if asset component has attribute",
             [
-                ArgDefinition("component", "The component containing the attribute", True),
+                ArgDefinition("component", "The child component containing the attribute", True),
                 ArgDefinition("attribute", "The attribute that needs to checked", True),
                 ArgDefinition("check_all", "Whether to check any or all component attribute exist", False),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
@@ -49,9 +49,10 @@ class ContainsNotConnectedTo(FunctionCheck):
             for item in components:
                 attr = utils.get_attribute(item, self.args["attribute"])
                 if attr is None or len(attr) == 0:
-                    result = "{} is missing attribute {} in component {}".format(self.value.id,
-                                                                                 self.args["attribute"],
-                                                                                 item.id)
+                    result = "{} is missing attribute {} in component {} of type {}".format(self.value.id,
+                                                                                            self.args["attribute"],
+                                                                                            item.id,
+                                                                                            self.args["component"])
                     if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                         msg["message"] = result
                         return CheckResult(False, msg)

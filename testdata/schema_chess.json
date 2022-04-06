@@ -141,7 +141,7 @@
         }
       ],
       "check": {
-        "function": "check_attribute_exists",
+        "function": "check_child_attribute",
         "dataset": "consumers",
         "args": {
           "attribute": "profile",
