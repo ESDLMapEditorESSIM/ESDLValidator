@@ -128,8 +128,8 @@
     },
     {
       "name": "consumer_profile_undefined",
-      "description": "An asset of type consumer must have a profile defined",
-      "type": "error",
+      "description": "An asset of type consumer must have a profile defined on one of its ports",
+      "type": "warning",
       "message": "Missing profile",
       "selects": [
         {
@@ -141,9 +141,12 @@
         }
       ],
       "check": {
-        "function": "check_profile",
+        "function": "check_attribute_exists",
         "dataset": "consumers",
         "args": {
+          "attribute": "profile",
+          "component": "port",
+          "check_all": false,
           "resultMsgJSON": true
         }
       }
