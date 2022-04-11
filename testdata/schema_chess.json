@@ -128,27 +128,25 @@
     },
     {
       "name": "consumer_profile_undefined",
-      "description": "An asset of type consumer must have a profile defined",
-      "type": "error",
-      "message": "Consumer missing profile",
+      "description": "An asset of type consumer must have a profile defined on one of its ports",
+      "type": "warning",
+      "message": "Missing profile",
       "selects": [
         {
-          "function": "get_references",
-          "alias": "consumerInPorts",
+          "function": "get",
+          "alias": "consumers",
           "args": {
-            "assetType": "Consumer",
-            "referenceType": "InPort"
+            "type": "Consumer"
           }
         }
       ],
       "check": {
-        "function": "not_null",
-        "dataset": "consumerInPorts",
+        "function": "check_child_attribute",
+        "dataset": "consumers",
         "args": {
-          "property": "profile",
-          "counts_as_null": [
-            "EOrderedSet()"
-          ],
+          "attribute": "profile",
+          "component": "port",
+          "check_all": false,
           "resultMsgJSON": true
         }
       }
