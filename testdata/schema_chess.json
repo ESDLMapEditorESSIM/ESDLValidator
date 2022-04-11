@@ -26,10 +26,10 @@
       }
     },
     {
-      "name": "joint_connected_to_joint",
-      "description": "Find if no joints are connected to other Joints",
+      "name": "joint_connected_to_non_transport_asset",
+      "description": "Find if no joints are connected to non-transport assets.",
       "type": "error",
-      "message": "Joint connected to another joint",
+      "message": "Joint connected to non-transport asset",
       "selects": [
         {
           "function": "get",
@@ -40,10 +40,10 @@
         }
       ],
       "check": {
-        "function": "not_connected_to",
+        "function": "only_connected_to",
         "dataset": "joints",
         "args": {
-          "assetType": "Joint",
+          "assetType": "Pipe",
           "resultMsgJSON": true
         }
       }
@@ -128,25 +128,27 @@
     },
     {
       "name": "consumer_profile_undefined",
-      "description": "An asset of type consumer must have a profile defined on one of its ports",
-      "type": "warning",
-      "message": "Missing profile",
+      "description": "An asset of type consumer must have a profile defined",
+      "type": "error",
+      "message": "Consumer missing profile",
       "selects": [
         {
-          "function": "get",
-          "alias": "consumers",
+          "function": "get_references",
+          "alias": "consumerInPorts",
           "args": {
-            "type": "Consumer"
+            "assetType": "Consumer",
+            "referenceType": "InPort"
           }
         }
       ],
       "check": {
-        "function": "check_child_attribute",
-        "dataset": "consumers",
+        "function": "not_null",
+        "dataset": "consumerInPorts",
         "args": {
-          "attribute": "profile",
-          "component": "port",
-          "check_all": false,
+          "property": "profile",
+          "counts_as_null": [
+            "EOrderedSet()"
+          ],
           "resultMsgJSON": true
         }
       }
