@@ -1,6 +1,28 @@
 from pathlib import Path
 from autodiscover import AutoDiscover
 
+import esdlvalidator.validation.functions.check_child_attribute
+import esdlvalidator.validation.functions.check_child_attribute_not_null
+import esdlvalidator.validation.functions.check_in_range
+import esdlvalidator.validation.functions.check_multi_cond
+import esdlvalidator.validation.functions.check_not_connected_to
+import esdlvalidator.validation.functions.check_not_null
+import esdlvalidator.validation.functions.check_number_ports
+import esdlvalidator.validation.functions.check_only_connected_to
+import esdlvalidator.validation.functions.check_unconnected_port
+
+import esdlvalidator.validation.functions.function
+
+import esdlvalidator.validation.functions.select_avg
+import esdlvalidator.validation.functions.select_but
+import esdlvalidator.validation.functions.select_filter_has_property
+import esdlvalidator.validation.functions.select_get
+import esdlvalidator.validation.functions.select_get_exclude
+import esdlvalidator.validation.functions.select_get_references
+import esdlvalidator.validation.functions.select_sum
+import esdlvalidator.validation.functions.utils
+
 path = Path('./esdlvalidator/validation/functions')
 autodiscover = AutoDiscover(path)
 autodiscover()
+

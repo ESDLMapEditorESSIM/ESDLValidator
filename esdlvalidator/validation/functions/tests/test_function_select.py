@@ -53,5 +53,5 @@ class TestFunctionSelect(unittest.TestCase):
         self.assertEqual(len(filtered.result), 2, "There should be 2 filtered")
 
     def get_test_datasets(self):
-        esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
+        esh = utils.get_esh_from_file("testdata/Ameland_energie_2015.esdl")
         return {"resource": esh.resource}

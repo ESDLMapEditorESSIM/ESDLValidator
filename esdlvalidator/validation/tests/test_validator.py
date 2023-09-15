@@ -1,6 +1,7 @@
 import unittest
 
-from esdlvalidator.validation.tests import get_test_schema_data, get_test_schema_id, get_test_dataset_ameland, get_test_dataset_hybrid
+from esdlvalidator.validation.tests import (get_test_schema_data, get_test_schema_id, get_test_dataset_ameland,
+                                            get_test_dataset_hybrid, get_test_dataset_3B_bad, get_test_dataset_PoC)
 from esdlvalidator.validation.validator import EsdlValidator
 
 
@@ -10,10 +11,14 @@ class TestValidator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestValidator, cls).setUpClass()
-        cls.schemaOne = get_test_schema_id(get_test_schema_data("testdata/schema_test_1.json"))
-        cls.schemaTwo = get_test_schema_id(get_test_schema_data("testdata/schema_test_2.json"))
+        cls.schemaOne = get_test_schema_id(get_test_schema_data(
+            "C:/git/chess-preprocessor/testdata/schema_test_1.json"))
+        cls.schemaTwo = get_test_schema_id(get_test_schema_data("C:/git/chess-preprocessor/testdata/schema_test_2.json"))
+        cls.schemaPOC = get_test_schema_id(get_test_schema_data("C:/git/chess-preprocessor/testdata/schema_PoC.json"))
         cls.esdlAmeland = get_test_dataset_ameland()
         cls.esdlHybrid = get_test_dataset_hybrid()
+        cls.esdl3B = get_test_dataset_3B_bad()
+        cls.esdlPOC = get_test_dataset_PoC()
 
     def test_validate_schema_1(self):
         """test running the validator for test schema 1 and ameland test esdl"""
@@ -72,3 +77,13 @@ class TestValidator(unittest.TestCase):
 
         # assert
         self.assertEqual(len(result.schemas), 2, "there should be 2 schemas in the result")
+
+    def test_validate_poc_scheme(self):
+        """test running the validator on test schema poc on dynamic test esdl"""
+
+        # prepare
+        validator = EsdlValidator()
+
+        # execute, validate against 1 schema
+        result = validator.validate(self.esdlPOC, [self.schemaPOC])
+        result = validator.validate(self.esdl3B, [self.schemaPOC])
