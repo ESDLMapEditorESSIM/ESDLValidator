@@ -4,6 +4,7 @@ networks:
   mapeditor-net:
     driver: bridge
     name: mapeditor-net
+    external: true
 
 services:
   esdlValidator:
