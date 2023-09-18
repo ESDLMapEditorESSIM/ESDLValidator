@@ -16,7 +16,7 @@ pymongo>=3.11.3
 pytz>=2021.1
 toml>=0.10.2
 Jinja2>=2.11.3
-Werkzeug>=1.0.1
+Werkzeug==2.1.2
 itsdangerous>=1.1.0
 click>=7.1.2
 setuptools>=53.0.0

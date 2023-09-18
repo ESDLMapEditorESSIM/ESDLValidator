@@ -1,0 +1,22 @@
+version: '3.8'
+
+networks:
+  mapeditor-net:
+    driver: bridge
+    name: mapeditor-net
+
+services:
+  esdlValidator:
+    image: mvrijlandt/nwn_esdl_validator:0.0.1
+    ports:
+      - "3011:5000"
+    environment:
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+    volumes:
+      - validator-storage:/storage
+    networks:
+      - mapeditor-net
+
+volumes:
+  validator-storage:
