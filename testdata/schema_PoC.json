@@ -256,9 +256,33 @@
                 }
             }
         },{
+            "name": "costinformation_exists",
+            "description": "The asset must have a specified type of costinformation structure ",
+            "type": "warning",
+            "message": "The selection of cost information attributes not complete",
+            "selects": [{
+                    "function": "get",
+                    "alias": "producers_conversions",
+                    "args": {
+                        "type": ["Producer", "Conversion", "ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "check_child_attribute_not_null",
+                "dataset": "producers_conversions",
+                "args": {
+                    "component": "costInformation",
+                    "attribute": ["installationCosts", "investmentCosts",
+                        "fixedOperationalCosts", "variableOperationalCosts"],
+                    "check_type": "exists",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
             "name": "investmentcost_per_power_undefined",
             "description": "The asset must have a specified type of investmentcost structure [EUR/W]",
-            "type": "warning",
+            "type": "error",
             "message": "producer costinformation - investmentcosts incomplete or incorrect",
             "selects": [{
                     "function": "get",
@@ -274,7 +298,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "value": "value",
+                    "check_type": "value",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "WATT"],
                     "resultMsgJSON": true
@@ -283,7 +307,7 @@
         },{
             "name": "investmentcost_per_volume_undefined",
             "description": "The asset must have a specified type of investmentcost structure [EUR/m3]",
-            "type": "warning",
+            "type": "error",
             "message": "producer costinformation - investmentcosts incomplete or incorrect",
             "selects": [{
                     "function": "get_exclude",
@@ -300,16 +324,41 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "value": "value",
+                    "check_type": "value",
                     "unit_type": ["unit", "perUnit"],
-                    "unit": ["EURO", "m3"],
+                    "unit": ["EURO", "CUBIC_METRE"],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "investmentcost_per_length_undefined",
+            "description": "The asset must have a specified type of investmentcost structure [EUR/m]",
+            "type": "error",
+            "message": "pipe costinformation - investmentcosts incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": "Pipe"
+                    }
+                }
+            ],
+            "check": {
+                "function": "check_child_attribute_not_null",
+                "dataset": "pipes",
+                "args": {
+                    "component": "costInformation",
+                    "attribute": "investmentCosts",
+                    "check_type": "value",
+                    "unit_type": ["unit", "perUnit"],
+                    "unit": ["EURO", "METRE"],
                     "resultMsgJSON": true
                 }
             }
         },{
             "name": "installation_cost_undefined",
             "description": "The asset must have a specified type of installation structure [EUR]",
-            "type": "warning",
+            "type": "error",
             "message": " costinformation - installation incomplete or incorrect",
             "selects": [{
                     "function": "get_exclude",
@@ -326,7 +375,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "installationCosts",
-                    "value": "value",
+                    "check_type": "value",
                     "unit_type": ["unit"],
                     "unit": ["EURO"],
                     "resultMsgJSON": true
@@ -335,7 +384,7 @@
         },{
             "name": "fixed_opex_undefined",
             "description": "The asset must have a specified type of fixed opex structure [EUR/W]",
-            "type": "warning",
+            "type": "error",
             "message": " costinformation - fixed operational incomplete or incorrect",
             "selects": [{
                     "function": "get",
@@ -351,9 +400,102 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "fixedOperationalCosts",
-                    "value": "value",
+                    "check_type": "value",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "WATT"],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "fixedopex_per_volume_undefined",
+            "description": "The asset must have a specified type of fixed operational structure [EUR/m3]",
+            "type": "error",
+            "message": "Tank costinformation - fixed operational incomplete or incorrect",
+            "selects": [{
+                    "function": "get_exclude",
+                    "alias": "tank_storage",
+                    "args": {
+                        "type": "HeatStorage",
+                        "exclude_types": "ATES"
+                    }
+                }
+            ],
+            "check": {
+                "function": "check_child_attribute_not_null",
+                "dataset": "tank_storage",
+                "args": {
+                    "component": "costInformation",
+                    "attribute": "investmentCosts",
+                    "check_type": "value",
+                    "unit_type": ["unit", "perUnit"],
+                    "unit": ["EURO", "CUBIC_METRE"],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "var_opex_undefined",
+            "description": "The asset must have a specified type of variable opex structure [EUR/Wh]",
+            "type": "error",
+            "message": " costinformation - variable operational incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "producers_conversions",
+                    "args": {
+                        "type": ["Producer", "Conversion", "ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "check_child_attribute_not_null",
+                "dataset": "producers_conversions",
+                "args": {
+                    "component": "costInformation",
+                    "attribute": "variableOperationalCosts",
+                    "check_type": "value",
+                    "unit_type": ["unit", "perUnit"],
+                    "unit": ["EURO", "WATTHOUR"],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "non_unique_names",
+            "description": "The asset must have a unique name",
+            "type": "error",
+            "message": " The name of this asset is not unique",
+            "selects": [{
+                    "function": "get_nameslist",
+                    "alias": "energy_assets",
+                    "args": {
+                        "type": "EnergyAsset"
+                    }
+                }
+            ],
+            "check": {
+                "function": "name_condition",
+                "dataset": "energy_assets",
+                "args": {
+                    "condition": "uniqueness",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "supply_return_combination",
+            "description": "Pipes and joints must have a name  with +_ret for return line",
+            "type": "error",
+            "message": "Pipes and joints must have a name  with +_ret for return line",
+            "selects": [{
+                    "function": "get_nameslist",
+                    "alias": "pipes_joints",
+                    "args": {
+                        "type": ["Pipe", "Joint"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "name_condition",
+                "dataset": "pipes_joints",
+                "args": {
+                    "condition": "supply_return",
                     "resultMsgJSON": true
                 }
             }
@@ -366,7 +508,7 @@
                     "function": "get",
                     "alias": "producers",
                     "args": {
-                        "type": "Producer"
+                        "type": ["Producer", "Conversion"]
                     }
                 }
             ],

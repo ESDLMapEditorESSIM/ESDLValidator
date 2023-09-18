@@ -14,7 +14,7 @@ class ContainsNotConnectedTo(FunctionCheck):
             [
                 ArgDefinition("component", "The child component containing the attribute", True),
                 ArgDefinition("attribute", "The attributes that needs to checked", True),
-                ArgDefinition("value", "Which check subattribute", True),
+                ArgDefinition("check_type", "Checking for existence or values: exists/value/both", True),
                 ArgDefinition("unit_type", "Which unit type to check", False),
                 ArgDefinition("unit", "Unit to compare it to", False),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
@@ -26,52 +26,99 @@ class ContainsNotConnectedTo(FunctionCheck):
 
     def execute(self):
         msg = {"offending_asset": self.value.id}
+        exist_check = False # only error messaging for relevant checks
+        value_check = False
+
+        if self.args["check_type"] == "exists" or self.args["check_type"] == "both":
+            exist_check = True
+        if self.args["check_type"] == "value" or self.args["check_type"] == "both":
+            value_check = True
+
+        if isinstance(self.args["attribute"], list) and value_check:
+            result = ("Not allowed to check multiple attributes if also values and units of attributes are "
+                      "checked")
+            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                msg["message"] = result
+                return CheckResult(False, msg)
+            else:
+                return CheckResult(False, result)
 
         components = None
         if hasattr(self.value, self.args["component"]):
             components = getattr(self.value, self.args["component"])
 
         if components is None:
-            result = "{} has no components of type {}".format(self.value.id, self.args["component"])
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
-                msg["message"] = result
-                return CheckResult(False, msg)
-            else:
-                return CheckResult(False, result)
-
-        attr = None
-        if hasattr(components, self.args["attribute"]):
-            attr = getattr(components, self.args["attribute"])
-
-        if attr is None:
-            result = "{} has no components of type {}".format(self.value.id, self.args["attribute"])
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
-                msg["message"] = result
-                return CheckResult(False, msg)
-            else:
-                return CheckResult(False, result)
-
-        value = getattr(attr, "value")
-
-        qau = getattr(attr, 'profileQuantityAndUnit')
-        if isinstance(self.args["unit_type"], list):
-            if len(self.args["unit_type"]) == len(self.args["unit"]):
-                resultcheck = self.check_units(self.args["attribute"], qau)
-                if not resultcheck.ok:
-                    return resultcheck
-                # for i in range(0,len(self.args["unit_type"])):
-                #     unittype = getattr(qau, self.args["unit_type"][i])
-                #     unit = self.args["unit"][i]
-                #     self.check_includes(unit, attr, unittype, self.value)
-            else:
-                result = "Bad Schema: Number of unit_types don't match number of units"
+            if exist_check:
+                result = "{} has no components of type {} with the attributes {}".format(self.value.id, self.args[
+                    "component"], self.args["attribute"])
                 if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                     msg["message"] = result
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
+            else:
+                CheckResult(True) #no checking of values and units required if no cost information exists
 
-        return self.check_includes("0.0", attr, value, self.value)
+
+
+        if isinstance(self.args["attribute"], list):
+            attr_list = []
+            for attribute in self.args["attribute"]:
+                attr = None
+                if hasattr(components, attribute):
+                    attr = getattr(components, attribute)
+                if attr is None:
+                    attr_list.append(attribute)
+            if len(attr_list)==0:
+                return CheckResult(True)
+            else:
+                result = "{} has no components of type {} with the attributes {}".format(self.value.id,
+                                                                                         self.args["component"],
+                                                                                         attr_list)
+                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                    msg["message"] = result
+                    return CheckResult(False, msg)
+                else:
+                    return CheckResult(False, result)
+        else:
+            attr = None
+            if hasattr(components, self.args["attribute"]):
+                attr = getattr(components, self.args["attribute"])
+            if attr is None:
+                if exist_check:
+                    result = "{} has no components of type {} with the attributes {}".format(self.value.id,
+                                                                                             self.args["component"],
+                                                                                             self.args["attribute"])
+                    if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                        msg["message"] = result
+                        return CheckResult(False, msg)
+                    else:
+                        return CheckResult(False, result)
+                else:
+                    return CheckResult(True) #no checking of values and units required if no cost information
+                    # attribute exists
+
+
+        if value_check:
+            value = getattr(attr, "value")
+
+            qau = getattr(attr, 'profileQuantityAndUnit')
+            if isinstance(self.args["unit_type"], list):
+                if len(self.args["unit_type"]) == len(self.args["unit"]):
+                    resultcheck = self.check_units(self.args["attribute"], qau)
+                    if not resultcheck.ok:
+                        return resultcheck
+                else:
+                    result = "Bad Schema: Number of unit_types don't match number of units"
+                    if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                        msg["message"] = result
+                        return CheckResult(False, msg)
+                    else:
+                        return CheckResult(False, result)
+
+            return self.check_includes("0.0", attr, value, self.value)
+        else:
+            return CheckResult(True)
 
     def check_includes(self, include, prop, value, originalValue):
         msg = {"offending_asset": self.value.id}
@@ -111,7 +158,6 @@ class ContainsNotConnectedTo(FunctionCheck):
                 return CheckResult(False, result)
 
         return CheckResult(True)
-
 
 
     def __create_message(self, msg, value):
