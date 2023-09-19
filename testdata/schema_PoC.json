@@ -534,8 +534,8 @@
                     "function": "get_nameslist",
                     "alias": "energy_assets",
                     "args": {
-                        "type": "EnergyAsset",
-                        "property": "name"
+                        "type": ["EnergyAsset"],
+                        "property": ["name"]
                     }
                 }
             ],
@@ -557,7 +557,7 @@
                     "alias": "pipes_joints",
                     "args": {
                         "type": ["Pipe", "Joint"],
-                        "property": "name"
+                        "property": ["name"]
                     }
                 }
             ],
