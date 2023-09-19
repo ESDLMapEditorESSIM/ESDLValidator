@@ -13,7 +13,9 @@ class SelectGetNamesList(FunctionSelect):
             "get_nameslist",
             "Get a list of entities from loaded ESDL data and list of all names",
             [
-                ArgDefinition("type", "type name of entities to retrieve, this can be a superclass. i.e. Port returns InPort, OutPort...", True)
+                ArgDefinition("type", "type name of entities to retrieve, this can be a superclass. i.e. Port returns InPort, OutPort...", True),
+                ArgDefinition("property","name of property that needs to be saved in list", True)
+
             ]
         )
 
@@ -31,10 +33,13 @@ class SelectGetNamesList(FunctionSelect):
                 else:
                     entities += esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
 
-        names_list = []
-        for entity in entities:
-            names_list.append(entity.name)
+        names_list = {}
+        if isinstance(self.args["property"], list):
+            for property in self.args["property"]:
+                names_list[property] = []
+                for entity in entities:
+                    names_list[property].append(utils.get_attribute(entity, property))
 
-        self.datasets['names_list'] = names_list
+        self.datasets['names_dict'] = names_list
 
         return entities

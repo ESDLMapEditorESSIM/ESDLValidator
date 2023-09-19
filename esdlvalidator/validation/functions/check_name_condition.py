@@ -21,7 +21,7 @@ class NameCondition(FunctionCheck):
         pass
 
     def execute(self):
-        names_list = self.datasets.get("names_list")
+        names_list = self.datasets.get("names_dict")["name"]
 
         msg = {"offending_asset": self.value.id}
         if self.args["condition"] == "uniqueness":

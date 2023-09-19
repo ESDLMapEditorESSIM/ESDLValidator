@@ -2,6 +2,28 @@
     "name": "PoC validation schema",
     "description": "CHESS validation schema contains checks for CHESS",
     "validations": [{
+            "name": "heat_carriers",
+            "description": "Find heat carriers are available",
+            "type": "error",
+            "message": "One of supply and return temperature should be defined",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatcarriers",
+                    "args": {
+                        "type": "HeatCommodity"
+                    }
+                }
+            ],
+            "check": {
+                "function": "multi_cond_xor",
+                "dataset": "heatcarriers",
+                "args": {
+                    "properties": ["supplyTemperature", "returnTemperature"],
+                    "violations": [0.0, 0.0],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
             "name": "pipe_connected_to_pipe",
             "description": "Find if no Pipes are connected to other Pipes",
             "type": "error",
@@ -128,28 +150,6 @@
                 }
             }
         }, {
-            "name": "diameter_undefined",
-            "description": "Find if both innerDiameter and diameter are not defined",
-            "type": "error",
-            "message": "Diameter not defined",
-            "selects": [{
-                    "function": "get",
-                    "alias": "pipes",
-                    "args": {
-                        "type": "Pipe"
-                    }
-                }
-            ],
-            "check": {
-                "function": "multi_cond",
-                "dataset": "pipes",
-                "args": {
-                    "properties": ["diameter", "innerDiameter"],
-                    "violations": ["VALUE_SPECIFIED", 0.0],
-                    "resultMsgJSON": true
-                }
-            }
-        }, {
             "name": "unconnected_port",
             "description": "Find if any port is left unconnected",
             "type": "warning",
@@ -173,7 +173,7 @@
             "name": "number_ports",
             "description": "Find if joint does not have exactly 2 ports",
             "type": "warning",
-            "message": "Number of ports in correct",
+            "message": "Number of ports incorrect",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -186,6 +186,74 @@
                 "function": "number_ports",
                 "dataset": "assets",
                 "args": {
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_as_producer",
+            "description": "Find if assets are connected as producers (Outport on supply network)",
+            "type": "warning",
+            "message": "Asset is not connected as producer",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["Producer", "Conversion"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
+                    "component": "carrier",
+                    "port_type_larger": "OutPort",
+                    "port_type_smaller": "InPort",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_as_consumer",
+            "description": "Find if assets are connected as producers (Outport on supply network)",
+            "type": "warning",
+            "message": "Asset is not connected as producer",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["Consumer", "HeatStorage"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
+                    "component": "carrier",
+                    "port_type_larger": "InPort",
+                    "port_type_smaller": "OutPort",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "diameter_undefined",
+            "description": "Find if both innerDiameter and diameter are not defined",
+            "type": "error",
+            "message": "Diameter not defined",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": "Pipe"
+                    }
+                }
+            ],
+            "check": {
+                "function": "multi_cond",
+                "dataset": "pipes",
+                "args": {
+                    "properties": ["diameter", "innerDiameter"],
+                    "violations": ["VALUE_SPECIFIED", 0.0],
                     "resultMsgJSON": true
                 }
             }
@@ -466,7 +534,8 @@
                     "function": "get_nameslist",
                     "alias": "energy_assets",
                     "args": {
-                        "type": "EnergyAsset"
+                        "type": "EnergyAsset",
+                        "property": "name"
                     }
                 }
             ],
@@ -487,7 +556,8 @@
                     "function": "get_nameslist",
                     "alias": "pipes_joints",
                     "args": {
-                        "type": ["Pipe", "Joint"]
+                        "type": ["Pipe", "Joint"],
+                        "property": "name"
                     }
                 }
             ],
