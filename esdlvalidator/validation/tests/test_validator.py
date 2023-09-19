@@ -4,6 +4,8 @@ from esdlvalidator.validation.tests import (get_test_schema_data, get_test_schem
                                             get_test_dataset_hybrid, get_test_dataset_3B_bad, get_test_dataset_PoC)
 from esdlvalidator.validation.validator import EsdlValidator
 
+from pathlib import Path
+
 
 class TestValidator(unittest.TestCase):
     """Tests for the validator"""
@@ -11,10 +13,12 @@ class TestValidator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestValidator, cls).setUpClass()
-        cls.schemaOne = get_test_schema_id(get_test_schema_data(
-            "C:/git/chess-preprocessor/testdata/schema_test_1.json"))
-        cls.schemaTwo = get_test_schema_id(get_test_schema_data("C:/git/chess-preprocessor/testdata/schema_test_2.json"))
-        cls.schemaPOC = get_test_schema_id(get_test_schema_data("C:/git/chess-preprocessor/testdata/schema_PoC.json"))
+        cls.schemaOne = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
+                                                                              "testdata/schema_test_1.json")))
+        cls.schemaTwo = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
+                                                                              "testdata/schema_test_2.json")))
+        cls.schemaPOC = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
+                                                                              "testdata/schema_PoC.json")))
         cls.esdlAmeland = get_test_dataset_ameland()
         cls.esdlHybrid = get_test_dataset_hybrid()
         cls.esdl3B = get_test_dataset_3B_bad()
@@ -86,4 +90,3 @@ class TestValidator(unittest.TestCase):
 
         # execute, validate against 1 schema
         result = validator.validate(self.esdlPOC, [self.schemaPOC])
-        result = validator.validate(self.esdl3B, [self.schemaPOC])
