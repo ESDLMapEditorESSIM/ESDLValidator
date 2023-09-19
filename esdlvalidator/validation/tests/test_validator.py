@@ -91,4 +91,4 @@ class TestValidator(unittest.TestCase):
         # execute, validate against 1 schema
         result = validator.validate(self.esdlPOC, [self.schemaPOC])
 
-        self.assertEqual(len(result.schemas), 2, "there should be 2 schemas in the result")
+        self.assertEqual(len(result.schemas), 1, "there should be 1 schemas in the result")
