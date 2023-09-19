@@ -8,7 +8,7 @@ networks:
 
 services:
   esdlValidator:
-    image: mvrijlandt/nwn_esdl_validator:0.0.1
+    image: mvrijlandt/nwn_esdl_validator:0.0.2
     ports:
       - "3011:5000"
     environment:
