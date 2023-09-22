@@ -36,7 +36,7 @@ class NameCondition(FunctionCheck):
                     return CheckResult(False, result)
         elif self.args["condition"] == "supply_return":
             if '_ret' in self.value.name:
-                check_name = self.value.name.strip('_ret')
+                check_name = self.value.name.removesuffix('_ret')
                 if check_name not in names_list:
                     result = ("{} does not have a parallel supply asset with the name ({})").format(
                         self.value.id, check_name)
