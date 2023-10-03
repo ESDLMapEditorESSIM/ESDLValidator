@@ -45,105 +45,21 @@
                 }
             }
         }, {
-            "name": "producer_connected_to_joint",
-            "description": "Find if no producers are connected to Joints",
+            "name": "asset_connected_to_joint",
+            "description": "Find if no assets other than pipes are connected to Joints",
             "type": "error",
-            "message": "Producer connected to joint",
+            "message": "Asset connected to joint",
             "selects": [{
                     "function": "get",
-                    "alias": "prod",
+                    "alias": "energy_assets",
                     "args": {
-                        "type": "Producer"
+                        "type": ["Producer", "Consumer", "Storage", "Conversion", "Joint"]
                     }
                 }
             ],
             "check": {
                 "function": "not_connected_to",
-                "dataset": "prod",
-                "args": {
-                    "assetType": "Joint",
-                    "resultMsgJSON": true
-                }
-            }
-        }, {
-            "name": "consumer_connected_to_joint",
-            "description": "Find if no consumers are connected to Joints",
-            "type": "error",
-            "message": "Consumer connected to joint",
-            "selects": [{
-                    "function": "get",
-                    "alias": "cons",
-                    "args": {
-                        "type": "Consumer"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_connected_to",
-                "dataset": "cons",
-                "args": {
-                    "assetType": "Joint",
-                    "resultMsgJSON": true
-                }
-            }
-        }, {
-            "name": "storage_connected_to_joint",
-            "description": "Find if no storages are connected to Joints",
-            "type": "error",
-            "message": "Storage connected to joint",
-            "selects": [{
-                    "function": "get",
-                    "alias": "sto",
-                    "args": {
-                        "type": "Storage"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_connected_to",
-                "dataset": "sto",
-                "args": {
-                    "assetType": "Joint",
-                    "resultMsgJSON": true
-                }
-            }
-        }, {
-            "name": "conversion_connected_to_joint",
-            "description": "Find if no conversions are connected to Joints",
-            "type": "error",
-            "message": "Conversion connected to joint",
-            "selects": [{
-                    "function": "get",
-                    "alias": "conv",
-                    "args": {
-                        "type": "Conversion"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_connected_to",
-                "dataset": "conv",
-                "args": {
-                    "assetType": "Joint",
-                    "resultMsgJSON": true
-                }
-            }
-        }, {
-            "name": "joint_connected_to_joint",
-            "description": "Find if no joints are connected to other Joints",
-            "type": "error",
-            "message": "Joint connected to another joint",
-            "selects": [{
-                    "function": "get",
-                    "alias": "joints",
-                    "args": {
-                        "type": "Joint"
-                    }
-                }
-            ],
-            "check": {
-                "function": "not_connected_to",
-                "dataset": "joints",
+                "dataset": "energy_assets",
                 "args": {
                     "assetType": "Joint",
                     "resultMsgJSON": true
