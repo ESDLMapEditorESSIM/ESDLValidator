@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.8-alpine
 
 ENV ESDLVALIDATOR_DB_LOCATION=/storage/schemas.db
 ENV HOSTNAME=localhost

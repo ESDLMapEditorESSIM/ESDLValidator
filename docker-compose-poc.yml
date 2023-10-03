@@ -7,7 +7,7 @@ networks:
     external: true
 
 services:
-  esdlValidator:
+  esdl_validator:
     image: mvrijlandt/nwn_esdl_validator:0.0.2
     ports:
       - "3011:5000"
