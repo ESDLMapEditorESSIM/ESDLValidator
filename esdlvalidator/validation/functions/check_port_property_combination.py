@@ -33,10 +33,10 @@ class ContainsPortPropertyCombination(FunctionCheck):
             for port in self.value.port:
                 if port.__class__.__name__ in self.args['port_type_larger']:
                     port_larger = port
-                    port_larger_T = port.carrier.supplyTemperature
+                    port_larger_T = port.connectedTo.items[0].carrier.supplyTemperature
                 elif port.__class__.__name__ in self.args['port_type_smaller']:
                     port_smaller = port
-                    port_smaller_T = port.carrier.returnTemperature
+                    port_smaller_T = port.connectedTo.items[0].carrier.returnTemperature
             if port_larger_T == 0 or port_smaller_T == 0:
                 result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
                           "properly").format(self.value.id,  self.value.name)
