@@ -38,6 +38,13 @@ Service for validating ESDL files against validation schemas
 - [ ] check number of assets in the ESDL. [warning]
 - [ ] check if area contains atleast one asset [warning]
 - [ ] check if multiplier of profile is not 0 [error]
+- [ ] check name of carriers, return carrier = supplycarrier name + '_ret' [error]
+- [ ] add scheme to use before duplicator
+  - use same scheme without 
+    - [ ] the check on how assets are connected
+    - [ ] the check if also '_ret' exists for pipe and joint
+    - [ ] the check if all ports are connected
+    - [ ] the exclusive check if only supply or return temperature of carrier is set.
 
 # ToDo V1.0
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
