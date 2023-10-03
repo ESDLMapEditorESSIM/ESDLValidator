@@ -248,7 +248,7 @@
                     "function": "get",
                     "alias": "producers_conversions",
                     "args": {
-                        "type": ["Producer", "Conversion", "ATES"]
+                        "type": ["Producer", "Conversion", "ATES", "Consumer"]
                     }
                 }
             ],
@@ -272,7 +272,7 @@
                     "function": "get",
                     "alias": "producers_conversions",
                     "args": {
-                        "type": ["Producer", "Conversion", "ATES"]
+                        "type": ["Producer", "Conversion", "ATES", "Consumer"]
                     }
                 }
             ],
@@ -292,7 +292,7 @@
             "name": "investmentcost_per_volume_undefined",
             "description": "The asset must have a specified type of investmentcost structure [EUR/m3]",
             "type": "error",
-            "message": "producer costinformation - investmentcosts incomplete or incorrect",
+            "message": "tank storage costinformation - investmentcosts incomplete or incorrect",
             "selects": [{
                     "function": "get_exclude",
                     "alias": "tank_storage",
@@ -349,7 +349,7 @@
                     "alias": "energy_assets",
                     "args": {
                         "type": "EnergyAsset",
-                        "exclude_types": ["Pipe", "Joint", "Consumer"]
+                        "exclude_types": ["Pipe", "Joint"]
                     }
                 }
             ],
@@ -374,7 +374,7 @@
                     "function": "get",
                     "alias": "producers_conversions",
                     "args": {
-                        "type": ["Producer", "Conversion", "ATES"]
+                        "type": ["Producer", "Conversion", "ATES", "Consumer"]
                     }
                 }
             ],
@@ -425,7 +425,7 @@
                     "function": "get",
                     "alias": "producers_conversions",
                     "args": {
-                        "type": ["Producer", "Conversion", "ATES"]
+                        "type": ["Producer", "Conversion", "ATES", "Consumer"]
                     }
                 }
             ],
