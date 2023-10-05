@@ -24,21 +24,31 @@ Service for validating ESDL files against validation schemas
     - variable operational cost in EUR/Wh for producers, conversion, ATES, consumers
 - names of assets are unique
 - pipes and joints have names pairs for supply and return based on + '_ret'
-- power producer is defined
+- power of producer, conversion, consumer is defined
 - consumer profile is defined
 
 ### PoC scheme ToDo:
 - [ ] check minimum pipelength [warning]
 - [ ] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error]
 - [ ] check area ....
+- [ ] check on heatpump information (power,COP, ....) [warning]
+- [ ] check tankstorage volume or capacity defined
 - [ ] check power consumer is larger than max of profile [warning]
 - [ ] check power consumer is not 0, because used for scaling. [error]
+- [ ] check aggregation count:
+  - [ ] if >0 then aggregated ==True else [warning]
+  - [ ] if ==0, same as disabled (asset ignored) [warning]
 - [ ] check unit EUR/Wh to also allow EUR/J [warning]
 - [ ] check fixed and variable maintenance to also be allowed. [warning]
 - [ ] check number of assets in the ESDL. [warning]
 - [ ] check if area contains atleast one asset [warning]
 - [ ] check if multiplier of profile is not 0 [error]
 - [ ] check name of carriers, return carrier = supplycarrier name + '_ret' [error]
+- [ ] check all pipes have carrier [error]
+- [ ] check carrier on all ports of joint are the same [error]
+- [ ] improve error/warning messages
+  - [ ] change asset id to asset name to be used in description 
+  - [ ] improve description of what to changes for errors:
 - [ ] add scheme to use before duplicator
   - use same scheme without 
     - [ ] the check on how assets are connected

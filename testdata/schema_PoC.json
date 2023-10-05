@@ -130,7 +130,7 @@
             }
         },{
             "name": "connected_as_consumer",
-            "description": "Find if assets are connected as producers (Inport on supply network)",
+            "description": "Find if assets are connected as consumer (Inport on supply network)",
             "type": "warning",
             "message": "Asset is not connected as consumer",
             "selects": [{
@@ -494,7 +494,7 @@
                     "function": "get",
                     "alias": "producers",
                     "args": {
-                        "type": ["Producer", "Conversion"]
+                        "type": ["Producer", "Conversion", "Consumer"]
                     }
                 }
             ],

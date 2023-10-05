@@ -1,7 +1,7 @@
 import unittest
 
 from esdlvalidator.validation.tests import (get_test_schema_data, get_test_schema_id, get_test_dataset_ameland,
-                                            get_test_dataset_hybrid, get_test_dataset_3B_bad, get_test_dataset_PoC)
+                                            get_test_dataset_hybrid, get_test_dataset_3B_bad, get_test_dataset_PoC, get_test_dataset_single_pipes)
 from esdlvalidator.validation.validator import EsdlValidator
 
 from pathlib import Path
@@ -23,6 +23,7 @@ class TestValidator(unittest.TestCase):
         cls.esdlHybrid = get_test_dataset_hybrid()
         cls.esdl3B = get_test_dataset_3B_bad()
         cls.esdlPOC = get_test_dataset_PoC()
+        cls.esdlSingle = get_test_dataset_single_pipes()
 
     def test_validate_schema_1(self):
         """test running the validator for test schema 1 and ameland test esdl"""
@@ -90,5 +91,6 @@ class TestValidator(unittest.TestCase):
 
         # execute, validate against 1 schema
         result = validator.validate(self.esdlPOC, [self.schemaPOC])
+        result2 = validator.validate(self.esdlSingle, [self.schemaPOC])
 
         self.assertEqual(len(result.schemas), 1, "there should be 1 schemas in the result")

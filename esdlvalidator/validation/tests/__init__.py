@@ -38,3 +38,8 @@ def get_test_dataset_3B_bad():
 def get_test_dataset_PoC():
     esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/PoC_validator with return network.esdl"))
     return esh.resource
+
+def get_test_dataset_single_pipes():
+    esh = utils.get_esh_from_file(
+        Path.joinpath(Path(__file__).parents[3], "testdata/Single_pipes.esdl"))
+    return esh.resource
