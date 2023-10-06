@@ -25,7 +25,7 @@
                 "dataset": "count_enabled",
                 "args": {
                     "min_value": 0,
-                    "max_value": 200,
+                    "max_value": 400,
                     "resultMsgJSON": true
                 }
             }
@@ -54,7 +54,7 @@
                 "dataset": "count_optional",
                 "args": {
                     "min_value": 0,
-                    "max_value": 40,
+                    "max_value": 30,
                     "resultMsgJSON": true
                 }
             }
