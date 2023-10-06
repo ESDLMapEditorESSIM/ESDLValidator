@@ -29,12 +29,13 @@ Service for validating ESDL files against validation schemas
 
 ### PoC scheme ToDo:
 - [ ] check minimum pipelength [warning]
-- [ ] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error]
+- [ ] check if there are carriers which are not used [error]?? 
+- [x] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error] !!
 - [ ] check area ....
 - [ ] check on heatpump information (power,COP, ....) [warning]
-- [ ] check tankstorage volume or capacity defined
+- [x] check tankstorage volume or capacity defined
 - [ ] check power consumer is larger than max of profile [warning]
-- [ ] check power consumer is not 0, because used for scaling. [error]
+- [x] check power consumer is not 0, because used for scaling. [error]
 - [ ] check aggregation count:
   - [ ] if >0 then aggregated ==True else [warning]
   - [ ] if ==0, same as disabled (asset ignored) [warning]
@@ -42,10 +43,10 @@ Service for validating ESDL files against validation schemas
 - [ ] check fixed and variable maintenance to also be allowed. [warning]
 - [ ] check number of assets in the ESDL. [warning]
 - [ ] check if area contains atleast one asset [warning]
-- [ ] check if multiplier of profile is not 0 [error]
-- [ ] check name of carriers, return carrier = supplycarrier name + '_ret' [error]
-- [ ] check all pipes have carrier [error]
-- [ ] check carrier on all ports of joint are the same [error]
+- [x] check if multiplier of profile is not 0 [error] !!
+- [x] check name of carriers, return carrier = supplycarrier name + '_ret' [error] !!
+- [ ] check all pipes have carrier [error] !!
+- [ ] check carrier on all ports of joint are the same [error] !!
 - [ ] improve error/warning messages
   - [ ] change asset id to asset name to be used in description 
   - [ ] improve description of what to changes for errors:
@@ -55,6 +56,7 @@ Service for validating ESDL files against validation schemas
     - [ ] the check if also '_ret' exists for pipe and joint
     - [ ] the check if all ports are connected
     - [ ] the exclusive check if only supply or return temperature of carrier is set.
+  
 
 # ToDo V1.0
 - [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing

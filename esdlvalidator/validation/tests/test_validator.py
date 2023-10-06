@@ -89,8 +89,62 @@ class TestValidator(unittest.TestCase):
         # prepare
         validator = EsdlValidator()
 
-        # execute, validate against 1 schema
+        # execute, validate against 1 schema for both single  and duplicated network
         result = validator.validate(self.esdlPOC, [self.schemaPOC])
         result2 = validator.validate(self.esdlSingle, [self.schemaPOC])
 
         self.assertEqual(len(result.schemas), 1, "there should be 1 schemas in the result")
+
+        for validation in result.schemas[0].validations:
+            print(validation.name)
+            if validation.name == 'connected_as_consumer':
+                self.assertEqual(len(validation.errors),2, 'there should be two assets not properly connected as '
+                                                        'consumers')
+            elif validation.name == "storage_chargerate_undefined":
+                self.assertEqual(len(validation.warnings), 2)
+            elif validation.name == "storage_dischargerate_undefined":
+                self.assertEqual(len(validation.warnings), 1)
+            elif validation.name == "heat_exchanger_capacity":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "costinformation_exists":
+                self.assertEqual(len(validation.warnings), 8)
+            elif validation.name == "investmentcost_per_power_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "fixed_opex_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "var_opex_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "non_unique_names":
+                self.assertEqual(len(validation.errors), 2)
+            elif validation.name == "supply_return_combination":
+                self.assertEqual(len(validation.errors), 6)
+            elif validation.name == "investmentcost_per_power_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "asset_power_undefined":
+                self.assertEqual(len(validation.errors), 7)
+            elif validation.name == "tank_storage_capacity_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "consumer_profile_undefined":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "consumer_profile_not_null":
+                self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "connected_prim_sec":
+                self.assertEqual(len(validation.errors), 1)
+            else:
+                if 'errors' in validation.__dict__.keys():
+                    self.assertEqual(len(validation.errors),0)
+                elif 'warnings' in validation.__dict__.keys():
+                    self.assertEqual(len(validation.warnings), 0)
+
+        for validation in result2.schemas[0].validations:
+            if validation.name == 'heat_carriers':
+                self.assertEqual(len(validation.errors),1)
+            elif validation.name == "unconnected_port":
+                self.assertEqual(len(validation.warnings), 4)
+            elif validation.name == "supply_return_combination":
+                self.assertEqual(len(validation.errors), 10)
+            else:
+                if 'errors' in validation.__dict__.keys():
+                    self.assertEqual(len(validation.errors),0)
+                elif 'warnings' in validation.__dict__.keys():
+                    self.assertEqual(len(validation.warnings), 0)

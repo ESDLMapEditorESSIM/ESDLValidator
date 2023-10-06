@@ -2,6 +2,64 @@
     "name": "PoC validation schema",
     "description": "CHESS validation schema contains checks for CHESS",
     "validations": [{
+            "name": "number_of_assets",
+            "description": "Find if number of assets is within limits",
+            "type": "error",
+            "message": "Too many assets present (ENABLED) in the file",
+            "selects": [{
+                    "function": "get",
+                    "alias": "dataset",
+                    "args": {
+                        "type": "EnergyAsset"
+                    }
+                }, {
+                "function": "sum",
+                "alias": "count_enabled",
+                "args": {
+                    "property" : "state",
+                    "dataset" : "dataset",
+                    "condition" : "ENABLED"
+                }
+            }],"check": {
+                "function": "check_value_range",
+                "dataset": "count_enabled",
+                "args": {
+                    "min_value": 0,
+                    "max_value": 200,
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "number_of_assets",
+            "description": "Find if number of sizing assets is within limits",
+            "type": "error",
+            "message": "Too many sizing assets present (OPTIONAL) in the file",
+            "selects": [{
+                    "function": "get",
+                    "alias": "dataset",
+                    "args": {
+                        "type": "EnergyAsset"
+                    }
+                },  {
+                "function": "sum",
+                "alias": "count_optional",
+                "args": {
+                    "property" : "state",
+                    "dataset" : "dataset",
+                    "condition" : "OPTIONAL"
+                }
+            }
+            ],"check": {
+                "function": "check_value_range",
+                "dataset": "count_optional",
+                "args": {
+                    "min_value": 0,
+                    "max_value": 40,
+                    "resultMsgJSON": true
+                }
+            }
+
+        },{
             "name": "heat_carriers",
             "description": "Find heat carriers are available",
             "type": "error",
@@ -108,13 +166,13 @@
         },{
             "name": "connected_as_producer",
             "description": "Find if assets are connected as producers (Outport on supply network)",
-            "type": "warning",
+            "type": "error",
             "message": "Asset is not connected as producer",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["Producer", "Conversion"]
+                        "type": ["Producer", "GasHeater"]
                     }
                 }
             ],
@@ -131,7 +189,7 @@
         },{
             "name": "connected_as_consumer",
             "description": "Find if assets are connected as consumer (Inport on supply network)",
-            "type": "warning",
+            "type": "error",
             "message": "Asset is not connected as consumer",
             "selects": [{
                     "function": "get",
@@ -148,6 +206,29 @@
                     "component": "carrier",
                     "port_type_larger": "InPort",
                     "port_type_smaller": "OutPort",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_prim_sec",
+            "description": "Find if assets are connected properly with secondary and primary",
+            "type": "error",
+            "message": "Asset is not connected properly with primary and secondary",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange", "GenericConversion", "HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
+                    "component": "carrier",
+                    "port_type_larger": "OutPort",
+                    "port_type_smaller": "InPort",
                     "resultMsgJSON": true
                 }
             }
@@ -282,7 +363,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "WATT"],
                     "resultMsgJSON": true
@@ -308,7 +389,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "CUBIC_METRE"],
                     "resultMsgJSON": true
@@ -333,7 +414,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "METRE"],
                     "resultMsgJSON": true
@@ -359,7 +440,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "installationCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit"],
                     "unit": ["EURO"],
                     "resultMsgJSON": true
@@ -384,7 +465,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "fixedOperationalCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "WATT"],
                     "resultMsgJSON": true
@@ -410,7 +491,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "investmentCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "CUBIC_METRE"],
                     "resultMsgJSON": true
@@ -435,7 +516,7 @@
                 "args": {
                     "component": "costInformation",
                     "attribute": "variableOperationalCosts",
-                    "check_type": "value",
+                    "check_type": "unit",
                     "unit_type": ["unit", "perUnit"],
                     "unit": ["EURO", "WATTHOUR"],
                     "resultMsgJSON": true
@@ -465,14 +546,14 @@
             }
         },{
             "name": "supply_return_combination",
-            "description": "Pipes and joints must have a name  with +_ret for return line",
+            "description": "Pipes, joints and heat commodities must have a name  with +_ret for return line",
             "type": "error",
-            "message": "Pipes and joints must have a name  with +_ret for return line",
+            "message": "Pipes, joints and heat commodities must have a name  with +_ret for return line",
             "selects": [{
                     "function": "get_nameslist",
                     "alias": "pipes_joints",
                     "args": {
-                        "type": ["Pipe", "Joint"],
+                        "type": ["Pipe", "Joint", "HeatCommodity"],
                         "property": ["name"]
                     }
                 }
@@ -486,10 +567,10 @@
                 }
             }
         },{
-            "name": "producer_power_undefined",
-            "description": "An asset of type producer must have a power attribute (asset.power)",
+            "name": "asset_power_undefined",
+            "description": "An asset must have a power attribute (asset.power)",
             "type": "error",
-            "message": "Producer missing power",
+            "message": "Asset missing power",
             "selects": [{
                     "function": "get",
                     "alias": "producers",
@@ -508,11 +589,37 @@
                 }
             }
         }, {
+            "name": "tank_storage_capacity_undefined",
+            "description": "A tank storage must have a capacity or volume attribute set",
+            "type": "error",
+            "message": "Asset missing capacity or volume",
+            "selects": [{
+                    "function": "get_exclude",
+                    "alias": "tank",
+                    "args": {
+                        "type": "HeatStorage",
+                        "exclude_types": "ATES"
+
+                    }
+                }
+            ],
+            "check": {
+                "function": "multi_cond",
+                "dataset": "tank",
+                "args": {
+                    "properties": ["volume", "capacity"],
+                    "violations": [0.0, 0.0],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
             "name": "consumer_profile_undefined",
             "description": "An asset of type consumer must have a profile defined",
             "type": "error",
             "message": "Consumer missing profile",
-            "selects": [{
+            "selects": [
+                {
                     "function": "get_references",
                     "alias": "consumerInPorts",
                     "args": {
@@ -526,7 +633,33 @@
                 "dataset": "consumerInPorts",
                 "args": {
                     "property": "profile",
-                    "counts_as_null": ["EOrderedSet()"],
+                    "counts_as_null": [
+                        "EOrderedSet()"
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "consumer_profile_not_null",
+            "description": "An asset of type consumer must have a profile defined",
+            "type": "error",
+            "message": "Consumer missing profile",
+            "selects": [{
+                    "function": "get_references",
+                    "alias": "consumerInPorts",
+                    "args": {
+                        "assetType": "Consumer",
+                        "referenceType": "InPort"
+                    }
+                }
+            ],
+            "check": {
+                "function": "check_child_attribute_not_null",
+                "dataset": "consumerInPorts",
+                "args": {
+                    "component": "profile",
+                    "attribute": "multiplier",
+                    "check_type": "value",
                     "resultMsgJSON": true
                 }
             }

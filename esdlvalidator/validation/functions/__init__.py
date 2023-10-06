@@ -9,6 +9,7 @@ import esdlvalidator.validation.functions.check_multi_cond_xor
 import esdlvalidator.validation.functions.check_name_condition
 import esdlvalidator.validation.functions.check_not_connected_to
 import esdlvalidator.validation.functions.check_not_null
+import esdlvalidator.validation.functions.check_value_range
 import esdlvalidator.validation.functions.check_number_ports
 import esdlvalidator.validation.functions.check_only_connected_to
 import esdlvalidator.validation.functions.check_port_property_combination
