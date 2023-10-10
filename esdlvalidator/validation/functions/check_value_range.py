@@ -14,6 +14,7 @@ class ContainsNumberAssets(FunctionCheck):
             [
                 ArgDefinition("min_value", "The min number of assets that should be present", True),
                 ArgDefinition("max_value", "The max number of assets that should be present", True),
+                ArgDefinition("message", "Part of message to be added", False),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
             ]
         )
@@ -22,11 +23,14 @@ class ContainsNumberAssets(FunctionCheck):
         pass
 
     def execute(self):
+        msg = {}
         self.min = utils.get_attribute(self.args, "min_value")
         self.max = utils.get_attribute(self.args, "max_value")
         if self.value<self.min:
-            return CheckResult(False, 'to few assets present')
+            msg["message"] = utils.get_attribute(self.args, "message") + "to few assets present"
+            return CheckResult(False, msg)
         elif self.value>self.max:
-            return CheckResult(False, "to many assets present")
+            msg["message"] = utils.get_attribute(self.args, "message") + "to many assets present"
+            return CheckResult(False, msg)
 
         return CheckResult(True)

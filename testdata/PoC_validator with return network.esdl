@@ -2,12 +2,12 @@
 <esdl:EnergySystem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:esdl="http://www.tno.nl/esdl" version="9" id="64d5d892-4896-4ab2-89e5-e191db4eeac6_with_return_network" description="" esdlVersion="v2207" name="PoC_validator with return network">
   <instance xsi:type="esdl:Instance" id="0ef5d5cd-0984-4fe4-a742-efffafa6f8eb" name="Untitled instance">
     <area xsi:type="esdl:Area" id="ddab37d3-fd78-4ed2-a596-bda9c514ebb6" name="Untitled area">
-      <asset xsi:type="esdl:GeothermalSource" id="69435473-177a-4e0f-ac09-fb8a4bfadad0" name="GeothermalSource_6943">
+      <asset xsi:type="esdl:GeothermalSource" id="69435473-177a-4e0f-ac09-fb8a4bfadad0" name="GeothermalSource_6943" state="OPTIONAL">
         <port xsi:type="esdl:OutPort" connectedTo="353948f3-a4d1-4120-9b48-2e45702d18a6" carrier="0fa1d0bc-c3e3-43cc-9a44-50942eeac0e9" name="Out" id="c8826d91-91b8-420d-aec8-9a59ebd5cb79"/>
         <port xsi:type="esdl:InPort" carrier="0fa1d0bc-c3e3-43cc-9a44-50942eeac0e9_ret" name="In" connectedTo="4048d690-dd3e-4ca5-a250-02ef9d57b8b2" id="2f1c24db-5c69-4f2c-a3c7-e7b72696cffa"/>
         <geometry xsi:type="esdl:Point" CRS="WGS84" lat="52.00156773139614" lon="4.37058448791504"/>
       </asset>
-      <asset xsi:type="esdl:GenericProducer" id="91e9b1d1-6ed3-4e0b-86e4-349f0da02131" name="GenericProducer_91e9">
+      <asset xsi:type="esdl:GenericProducer" id="91e9b1d1-6ed3-4e0b-86e4-349f0da02131" name="GenericProducer_91e9" state="OPTIONAL">
         <port xsi:type="esdl:OutPort" connectedTo="c129e833-772a-41d7-8e13-3d1c4b3f6b77" carrier="0fa1d0bc-c3e3-43cc-9a44-50942eeac0e9" name="Out" id="5d14c302-77b0-4c38-9a3d-681ae8277884"/>
         <port xsi:type="esdl:InPort" carrier="0fa1d0bc-c3e3-43cc-9a44-50942eeac0e9_ret" name="In" connectedTo="4918a956-cf1e-4173-9aa6-08a76ab9ff93" id="d07e6dc7-7e25-4c95-85e7-ae4803b66260"/>
         <geometry xsi:type="esdl:Point" CRS="WGS84" lat="52.000127796500934" lon="4.374361038208009"/>
@@ -97,7 +97,7 @@
         <port xsi:type="esdl:OutPort" connectedTo="758181aa-376b-4bc0-a9e8-0dd6f0b3e8e1" carrier="02ccd4ed-723b-40dd-811a-0ded707e8f7f" name="Out" id="fe17169e-67d7-4de4-9480-f6fdc5a00a3e"/>
         <geometry xsi:type="esdl:Point" lat="51.99877864115756" lon="4.372985064983369"/>
       </asset>
-      <asset xsi:type="esdl:Pipe" related="Pipe3_ret" id="Pipe3" diameter="DN200" name="Pipe3" length="73.43">
+      <asset xsi:type="esdl:Pipe" related="Pipe3_ret" id="Pipe3" diameter="DN200" name="Pipe3" length="73.43" state="OPTIONAL">
         <port xsi:type="esdl:InPort" carrier="02ccd4ed-723b-40dd-811a-0ded707e8f7f" name="In" connectedTo="1889d55b-e9c9-4418-92e5-1c6fba4ccc3e" id="85aac4b2-ee22-4cac-9726-6dc5360c9bc8"/>
         <port xsi:type="esdl:OutPort" connectedTo="f665829f-1dd7-4d9c-8e29-0f2a4084cf0e" carrier="02ccd4ed-723b-40dd-811a-0ded707e8f7f" name="Out" id="3aefcf2a-c0c3-40d2-8e34-2ba5f088b88e"/>
         <geometry xsi:type="esdl:Line">
@@ -270,7 +270,7 @@
           <point xsi:type="esdl:Point" CRS="WGS84" lat="51.998251021684645" lon="4.372584413437383"/>
         </geometry>
       </asset>
-      <asset xsi:type="esdl:Pipe" related="Pipe3" id="Pipe3_ret" diameter="DN200" name="Pipe3_ret" length="73.43">
+      <asset xsi:type="esdl:Pipe" related="Pipe3" id="Pipe3_ret" diameter="DN200" name="Pipe3_ret" length="73.43" state="OPTIONAL">
         <port xsi:type="esdl:InPort" carrier="02ccd4ed-723b-40dd-811a-0ded707e8f7f_ret" name="In_ret" connectedTo="1e28e9eb-2cb3-4932-a49a-e7f2aec0aaeb" id="e09f1314-f102-4c2c-9813-3671f5a49a31"/>
         <port xsi:type="esdl:OutPort" connectedTo="5df2e2e9-11d5-40e5-ad7c-11195bd1dd85" carrier="02ccd4ed-723b-40dd-811a-0ded707e8f7f_ret" name="Out_ret" id="949a97f1-8832-4a98-9cc7-80b80cf60f50"/>
         <geometry xsi:type="esdl:Line">

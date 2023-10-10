@@ -4,13 +4,14 @@
     "validations": [{
             "name": "number_of_assets",
             "description": "Find if number of assets is within limits",
-            "type": "error",
-            "message": "Too many assets present (ENABLED) in the file",
+            "type": "warning",
+            "message": "Many assets present (ENABLED) in the file, the optimisation/simulation might take a while",
             "selects": [{
-                    "function": "get",
+                    "function": "get_exclude",
                     "alias": "dataset",
                     "args": {
-                        "type": "EnergyAsset"
+                        "type": "EnergyAsset",
+                        "exclude_types": "Joint"
                     }
                 }, {
                 "function": "sum",
@@ -25,20 +26,51 @@
                 "dataset": "count_enabled",
                 "args": {
                     "min_value": 0,
-                    "max_value": 400,
+                    "max_value": 500,
+                    "message": "Many assets present (ENABLED) in the file, the optimisation/simulation might take a while",
                     "resultMsgJSON": true
                 }
             }
         },{
-            "name": "number_of_assets",
+            "name": "number_of_assets_sizing",
+            "description": "Find if number of assets is within limits",
+            "type": "error",
+            "message": "Too many assets to size (OPTIONAL) in the file besides pipes, this is not supported in the PoC",
+            "selects": [{
+                    "function": "get_exclude",
+                    "alias": "dataset",
+                    "args": {
+                        "type": "EnergyAsset",
+                        "exclude_types": ["Joint", "Pipe"]
+                    }
+                }, {
+                "function": "sum",
+                "alias": "count_optional",
+                "args": {
+                    "property" : "state",
+                    "dataset" : "dataset",
+                    "condition" : "OPTIONAL"
+                }
+            }],"check": {
+                "function": "check_value_range",
+                "dataset": "count_optional",
+                "args": {
+                    "min_value": 0,
+                    "max_value": 100,
+                    "message": "Too many assets to size (OPTIONAL) in the file besides pipes, this is not supported in the PoC",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "number_of_pipe_sizing_error",
             "description": "Find if number of sizing assets is within limits",
             "type": "error",
-            "message": "Too many sizing assets present (OPTIONAL) in the file",
+            "message": "Too many pipes to size (OPTIONAL) in the file, this is not supported in the PoC",
             "selects": [{
                     "function": "get",
                     "alias": "dataset",
                     "args": {
-                        "type": "EnergyAsset"
+                        "type": "Pipe"
                     }
                 },  {
                 "function": "sum",
@@ -54,7 +86,39 @@
                 "dataset": "count_optional",
                 "args": {
                     "min_value": 0,
-                    "max_value": 30,
+                    "max_value": 100,
+                    "message": "Too many pipes to size (OPTIONAL) in the file, this is not supported in the PoC",
+                    "resultMsgJSON": true
+                }
+            }
+
+        },{
+            "name": "number_of_pipe_sizing_warning",
+            "description": "Find if number of sizing assets is within limits",
+            "type": "warning",
+            "message": "Many pipes to size (OPTIONAL) in the file, the optimisation might take a while",
+            "selects": [{
+                    "function": "get",
+                    "alias": "dataset",
+                    "args": {
+                        "type": "Pipe"
+                    }
+                },  {
+                "function": "sum",
+                "alias": "count_optional",
+                "args": {
+                    "property" : "state",
+                    "dataset" : "dataset",
+                    "condition" : "OPTIONAL"
+                }
+            }
+            ],"check": {
+                "function": "check_value_range",
+                "dataset": "count_optional",
+                "args": {
+                    "min_value": 0,
+                    "max_value": 50,
+                    "message": "Many pipes to size (OPTIONAL) in the file, the optimisation might take a while",
                     "resultMsgJSON": true
                 }
             }

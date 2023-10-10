@@ -29,9 +29,9 @@ Service for validating ESDL files against validation schemas
 
 ### PoC scheme ToDo:
 - [ ] check minimum pipelength [warning]
-- [ ] check if there are carriers which are not used [error]?? 
-- [x] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error] !!
-- [ ] check area ....
+- [ ] check if there are carriers which are not used [error] 
+- [x] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error] 
+- [ ] check area ...
 - [ ] check on heatpump information (power,COP, ....) [warning]
 - [x] check tankstorage volume or capacity defined
 - [ ] check power consumer is larger than max of profile [warning]
