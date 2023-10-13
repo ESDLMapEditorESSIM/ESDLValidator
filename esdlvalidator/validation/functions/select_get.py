@@ -19,6 +19,9 @@ class SelectGet(FunctionSelect):
     def execute(self):
         dataset = self.datasets.get("resource")
         if isinstance(self.args['type'], str):
+            # if self.args['type'] == "dataset":
+            #     entities = dataset
+            # else:
             getType = utils.get_attribute(self.args, "type")
             entities = esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
         elif isinstance(self.args['type'], list):

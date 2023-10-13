@@ -28,10 +28,13 @@ class ContainsNotConnectedTo(FunctionCheck):
         msg = {"offending_asset": self.value.id}
         exist_check = False # only error messaging for relevant checks
         value_check = False
+        unit_check = False
 
         if self.args["check_type"] == "exists" or self.args["check_type"] == "both":
             exist_check = True
-        if self.args["check_type"] == "value" or self.args["check_type"] == "both":
+        if self.args["check_type"] == "unit" or self.args["check_type"] == "both":
+            unit_check = True
+        if self.args["check_type"] == "value":
             value_check = True
 
         if isinstance(self.args["attribute"], list) and value_check:
@@ -82,6 +85,8 @@ class ContainsNotConnectedTo(FunctionCheck):
                     return CheckResult(False, result)
         else:
             attr = None
+            if type(components).__name__ == "EOrderedSet" and len(components)==1:
+                components = components[0]
             if hasattr(components, self.args["attribute"]):
                 attr = getattr(components, self.args["attribute"])
             if attr is None:
@@ -98,11 +103,25 @@ class ContainsNotConnectedTo(FunctionCheck):
                     return CheckResult(True) #no checking of values and units required if no cost information
                     # attribute exists
 
-
         if value_check:
-            value = getattr(attr, "value")
+            if isinstance(attr, float):
+                value = attr
+            else:
+                value = getattr(attr, "value")
+            if value == 0.0:
+                result = "{} has a component of type {} with the attributes {} at 0".format(self.value.id,
+                                                                                             self.args["component"],
+                                                                                             self.args["attribute"])
+                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                    msg["message"] = result
+                    return CheckResult(False, msg)
+                else:
+                    return CheckResult(False, result)
 
+        if unit_check:
+            value = getattr(attr, "value")
             qau = getattr(attr, 'profileQuantityAndUnit')
+
             if isinstance(self.args["unit_type"], list):
                 if len(self.args["unit_type"]) == len(self.args["unit"]):
                     resultcheck = self.check_units(self.args["attribute"], qau)
@@ -117,8 +136,9 @@ class ContainsNotConnectedTo(FunctionCheck):
                         return CheckResult(False, result)
 
             return self.check_includes("0.0", attr, value, self.value)
-        else:
-            return CheckResult(True)
+
+        return CheckResult(True)
+
 
     def check_includes(self, include, prop, value, originalValue):
         msg = {"offending_asset": self.value.id}

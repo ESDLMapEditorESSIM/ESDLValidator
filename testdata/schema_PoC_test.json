@@ -26,7 +26,7 @@
                 "dataset": "count_enabled",
                 "args": {
                     "min_value": 0,
-                    "max_value": 500,
+                    "max_value": 5,
                     "message": "Many assets present (ENABLED) in the file, the optimisation/simulation might take a while",
                     "resultMsgJSON": true
                 }
