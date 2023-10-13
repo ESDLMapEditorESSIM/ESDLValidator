@@ -24,13 +24,18 @@ class ContainsNumberAssets(FunctionCheck):
 
     def execute(self):
         msg = {}
+
+        dataset2 = self.datasets.get("resource")
+        area_obj = esdlUtils.get_entities_from_esdl_resource_by_type(dataset2, "Area")
+        msg = {"offending_asset": area_obj[0].id}
+
         self.min = utils.get_attribute(self.args, "min_value")
         self.max = utils.get_attribute(self.args, "max_value")
         if self.value<self.min:
-            msg["message"] = utils.get_attribute(self.args, "message") + "to few assets present"
+            msg["message"] = utils.get_attribute(self.args, "message") + ", too few assets present"
             return CheckResult(False, msg)
         elif self.value>self.max:
-            msg["message"] = utils.get_attribute(self.args, "message") + "to many assets present"
+            msg["message"] = utils.get_attribute(self.args, "message") + ", too many assets present"
             return CheckResult(False, msg)
 
         return CheckResult(True)
