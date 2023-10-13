@@ -4,8 +4,8 @@ networks:
   esdl_val_net:
 
 services:
-  esdlValidator:
-    image: ci.tno.nl/warmingup/chess-preprocessor:latest
+  esdl_validator:
+    build: ./
     ports:
       - "3011:5000"
     environment:
