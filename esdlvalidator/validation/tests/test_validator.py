@@ -19,6 +19,8 @@ class TestValidator(unittest.TestCase):
                                                                               "testdata/schema_test_2.json")))
         cls.schemaPOC = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
                                                                               "testdata/schema_PoC.json")))
+        # cls.schemaPOC = get_test_schema_id(get_test_schema_data(
+        #     r"C:\Users\janssenfpjh\Downloads\schema_PoC_deploy.json"))
         cls.esdlAmeland = get_test_dataset_ameland()
         cls.esdlHybrid = get_test_dataset_hybrid()
         cls.esdl3B = get_test_dataset_3B_bad()

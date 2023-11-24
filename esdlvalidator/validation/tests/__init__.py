@@ -37,6 +37,11 @@ def get_test_dataset_3B_bad():
 
 def get_test_dataset_PoC():
     esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/PoC_validator with return network.esdl"))
+    # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\New Energy System with return network (1).esdl")
+    # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\lkj with return network.esdl")
+    # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\WBr Moerdijk 2clean_carrier_duplicate.esdl")
+    # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\WBr Moerdijk 2clean.esdl")
+    # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\WBr Moerdijk 2clean2.esdl")
     return esh.resource
 
 def get_test_dataset_single_pipes():
