@@ -247,6 +247,8 @@
                     "component": "carrier",
                     "port_type_larger": "OutPort",
                     "port_type_smaller": "InPort",
+                    "property_larger": ["carrier", "supplyTemperature"],
+                    "property_smaller": ["carrier", "returnTemperature"],
                     "resultMsgJSON": true
                 }
             }
@@ -270,6 +272,8 @@
                     "component": "carrier",
                     "port_type_larger": "InPort",
                     "port_type_smaller": "OutPort",
+                    "property_larger": ["carrier", "supplyTemperature"],
+                    "property_smaller": ["carrier", "returnTemperature"],
                     "resultMsgJSON": true
                 }
             }
@@ -293,6 +297,8 @@
                     "component": "carrier",
                     "port_type_larger": "OutPort",
                     "port_type_smaller": "InPort",
+                    "property_larger": ["carrier", "supplyTemperature"],
+                    "property_smaller": ["carrier", "returnTemperature"],
                     "resultMsgJSON": true
                 }
             }

@@ -60,7 +60,8 @@ class ContainsNotNull(FunctionCheck):
                 for r in ret:
                     if not r.ok:
                         return r
-            elif str(includeValue).lower() == str(value).lower():
+            elif (isinstance(includeValue, str) and str(includeValue).lower() == str(value).lower()) or (
+                    includeValue == value):
                 result = self.__create_message("{0} cannot be null".format(prop), originalValue)
                 if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                     msg["message"] = result

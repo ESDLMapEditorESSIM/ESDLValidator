@@ -19,6 +19,8 @@ class TestValidator(unittest.TestCase):
                                                                               "testdata/schema_test_2.json")))
         cls.schemaPOC = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
                                                                               "testdata/schema_PoC.json")))
+        # cls.schemaPOC = get_test_schema_id(get_test_schema_data(
+        #     r"C:\Users\janssenfpjh\Downloads\schema_PoC_deploy.json"))
         cls.esdlAmeland = get_test_dataset_ameland()
         cls.esdlHybrid = get_test_dataset_hybrid()
         cls.esdl3B = get_test_dataset_3B_bad()
@@ -38,7 +40,7 @@ class TestValidator(unittest.TestCase):
         # assert
         self.assertEqual(validationAreaScope.checked, 8, "there should be 8 checked")
         self.assertEqual(len(validationAreaScope.warnings), 1, "there should be 1 warning")
-        self.assertEqual(validationAreaScope.warnings[0], "Area does not have a scope: value equals undefined for entity BU00600007", "Warning should say: Area does not have a scope: value equals undefined for entity BU00600007")
+        self.assertEqual(validationAreaScope.warnings[0], "Area does not have a scope: scope cannot be null for entity BU00600007", "Warning should say: Area does not have a scope: scope cannot be null for entity BU00600007")
 
     def test_validate_schema_2(self):
         """test running the validator on test schema 2 on dynamic test esdl with a real world scenario, multiple validations including and + or"""
@@ -56,8 +58,8 @@ class TestValidator(unittest.TestCase):
 
         # assert
         self.assertEqual(validationProducer.checked, 3, "there should be 3 checked since there are only 3 producers")
-        self.assertEqual(len(validationProducer.errors), 2, "there should be 2 errors since 1 producer validates ok")
-        self.assertEqual(validationProducer.errors[0], "Consumer missing power and marginal costs or no energy profile connected: None", "Warning should say: Consumer missing power and marginal costs or no energy profile connected: None")
+        self.assertEqual(len(validationProducer.errors), 1, "there should be 1 errors since 2 producer validates ok")
+        self.assertEqual(validationProducer.errors[0], "Consumer missing power and marginal costs or no energy profile connected: port.profile cannot be null for entity 5983a0f8-6f87-47b5-ba31-5e245c370dab", "Warning should say: Consumer missing power and marginal costs or no energy profile connected: port.profile cannot be null for entity 5983a0f8-6f87-47b5-ba31-5e245c370dab")
 
         self.assertEqual(validationStorage.checked, 1, "there should be 1 checked storage")
         self.assertEqual(len(validationStorage.errors), 0, "there should be 0 errors, storage should be correct")

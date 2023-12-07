@@ -49,8 +49,8 @@ class ContainsMultiConditionCheck(FunctionCheck):
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
-
-            fail = fail and (str(utils.get_attribute(self.value, p)) == str(v))
+            value = utils.get_attribute(self.value, p)
+            fail = fail and ((isinstance(v, str) and str(v).lower() == str(value).lower()) or (v == value))
 
         if fail:
             result = "One of {} must be defined".format(" or ".join(self.args['properties']))

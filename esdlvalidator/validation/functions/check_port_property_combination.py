@@ -2,6 +2,7 @@ import json
 
 import esdl
 
+from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
@@ -19,6 +20,8 @@ class ContainsPortPropertyCombination(FunctionCheck):
                                                       "port of port_type_smaller",True),
                 ArgDefinition("port_type_smaller", "The porttype of which the property must be smaller than the "
                                                       "port of port_type_larger", True),
+                ArgDefinition("property_larger", "The property which must be larger on port_type_larger", True),
+                ArgDefinition("property_smaller", "The property which must be smaller on port_type_smaller", True),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
             ]
         )
@@ -31,32 +34,41 @@ class ContainsPortPropertyCombination(FunctionCheck):
         result = ""
         connected_ports = 0
         carriers_exists = 0
+        attributes_exists = 0
         if len(self.value.port) == 2:
-            port_larger_T = 0
-            port_smaller_T = 0
+            value_larger = 0
+            value_smaller = 0
             for port in self.value.port:
                 if len(port.connectedTo) != 0:
                     connected_ports += 1
                     if port.__class__.__name__ in self.args['port_type_larger']:
-                        carrier_port = port.connectedTo.items[0].carrier
-                        if carrier_port != None:
-                            port_larger_T =carrier_port.supplyTemperature
-                            carriers_exists += 1
+                        new_obj = port
+                        for arg in self.args["property_larger"]:
+                            new_obj = utils.get_attribute(new_obj, arg)
+                            if arg == self.args["property_larger"][-1]:
+                                value_larger = new_obj
+                                attributes_exists += 1
+                            if arg == None:
+                                continue
                     elif port.__class__.__name__ in self.args['port_type_smaller']:
-                        carrier_port = port.connectedTo.items[0].carrier
-                        if carrier_port != None:
-                            port_smaller_T = carrier_port.returnTemperature
-                            carriers_exists += 1
+                        new_obj = port
+                        for arg in self.args["property_smaller"]:
+                            new_obj = utils.get_attribute(new_obj, arg)
+                            if arg == self.args["property_smaller"][-1]:
+                                value_smaller = new_obj
+                                attributes_exists += 1
+                            if arg == None:
+                                continue
             if connected_ports == 2:
-                if carriers_exists != 2:
+                if attributes_exists != 2:
                     result = ("{} (name: {}) does not have the carriers properly assigned, set carriers again").format(
                         self.value.id, self.value.name)
-                elif (port_larger_T == 0 or port_smaller_T == 0) or port_larger_T<port_smaller_T :
+                elif (value_larger == 0 or value_smaller == 0) or value_larger<value_smaller :
                     result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
                               "properly").format(self.value.id,  self.value.name)
                     # as carriers only have return or supply temperature, if wrong carrier, then temperature 0
             else:
-                if port_larger_T == 0 and port_smaller_T == 0:
+                if value_larger == 0 and value_smaller == 0:
                     result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
                               "properly").format(self.value.id, self.value.name)
 
