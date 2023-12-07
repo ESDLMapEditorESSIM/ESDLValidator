@@ -41,7 +41,7 @@ class ContainsNotNull(FunctionCheck):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
-                CheckResult(False, result)
+                return CheckResult(False, result)
 
     def set_values(self):
         self.property = utils.get_attribute(self.args, "property")
