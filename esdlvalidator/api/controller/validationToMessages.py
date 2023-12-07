@@ -1,5 +1,6 @@
 import json
 import uuid
+import logging
 from datetime import datetime as dt
 from math import cos, sin, atan2, sqrt, radians, degrees
 
@@ -13,6 +14,8 @@ from esdlvalidator.core.exceptions import SchemaNotFound
 from esdlvalidator.validation.functions import utils
 
 parser = app.api.parser()
+parser.add_argument("data", type=str, required=True)
+parser.add_argument("schemas", type=str, required=True)
 
 
 @app.ns_validation_to_msgs.route('/')
@@ -26,8 +29,14 @@ class ValidationToMessagesController(Resource):
     @app.api.expect(parser, validate=True)
     def post(self):
         """Validate an ESDL file against one or more validation schemas"""
+        if request.data:
+            # 'Contains the incoming request data as string in case it came with a mimetype Flask does not handle'
+            # > Happens with requests from the mapeditor
+            file = request.data.decode('utf-8')
+        else:
+            # with openapi
+            file = request.args['data']
 
-        file = request.data.decode('utf-8')
         if "schemas" not in request.args:
             return "Bad Request: Required 'schemas' parameter missing", 400
         schema_list = [id for id in request.args['schemas'].split(',')]
