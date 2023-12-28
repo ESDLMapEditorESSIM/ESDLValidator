@@ -49,7 +49,7 @@ class ContainsMultiConditionCheck(FunctionCheck):
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
-            print(str(utils.get_attribute(self.value, p)), p, v)
+            # print(str(utils.get_attribute(self.value, p)), p, v)
             if utils.get_attribute(self.value, p) == v:
                 fails += 1
 
