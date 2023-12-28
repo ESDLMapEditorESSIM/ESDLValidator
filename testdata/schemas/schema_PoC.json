@@ -122,7 +122,6 @@
                 "function": "port_property_combination",
                 "dataset": "assets",
                 "args": {
-                    "component": "carrier",
                     "port_type_larger": "OutPort",
                     "port_type_smaller": "InPort",
                     "property_larger": ["carrier", "supplyTemperature"],
@@ -147,7 +146,6 @@
                 "function": "port_property_combination",
                 "dataset": "assets",
                 "args": {
-                    "component": "carrier",
                     "port_type_larger": "InPort",
                     "port_type_smaller": "OutPort",
                     "property_larger": ["carrier", "supplyTemperature"],
@@ -156,10 +154,10 @@
                 }
             }
         },{
-            "name": "connected_prim_sec",
+            "name": "connected_temp_prim",
             "description": "Find if assets are connected properly with secondary and primary",
             "type": "error",
-            "message": "Asset is not connected properly with primary and secondary",
+            "message": "Asset is not connected properly connected on primary side",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -172,11 +170,90 @@
                 "function": "port_property_combination",
                 "dataset": "assets",
                 "args": {
-                    "component": "carrier",
+                    "port_type_larger": "InPort",
+                    "port_type_smaller": "OutPort",
+                    "property_larger": ["carrier", "supplyTemperature"],
+                    "property_smaller": ["carrier", "returnTemperature"],
+                    "port_name_larger": "prim",
+                    "port_name_smaller": "prim",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_temp_sec",
+            "description": "Find if assets are connected properly with secondary and primary",
+            "type": "error",
+            "message": "Asset is not connected properly connected on secondary side",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange", "GenericConversion", "HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
                     "port_type_larger": "OutPort",
                     "port_type_smaller": "InPort",
                     "property_larger": ["carrier", "supplyTemperature"],
                     "property_smaller": ["carrier", "returnTemperature"],
+                    "port_name_larger": "sec",
+                    "port_name_smaller": "sec",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_prim_sec",
+            "description": "Find if assets are connected properly with secondary and primary",
+            "type": "error",
+            "message": "Asset is not connected properly connected between primary and secondary side",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange", "GenericConversion"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
+                    "port_type_larger": "InPort",
+                    "port_type_smaller": "OutPort",
+                    "property_larger": ["carrier", "supplyTemperature"],
+                    "property_smaller": ["carrier", "supplyTemperature"],
+                    "port_name_larger": "prim",
+                    "port_name_smaller": "sec",
+                    "resultMsgJSON": true
+                }
+            }
+        },{
+            "name": "connected_prim_sec_return",
+            "description": "Find if assets are connected properly with secondary and primary",
+            "type": "error",
+            "message": "Asset is not connected properly connected between primary and secondary side",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange", "GenericConversion"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "port_property_combination",
+                "dataset": "assets",
+                "args": {
+                    "port_type_larger": "OutPort",
+                    "port_type_smaller": "InPort",
+                    "property_larger": ["carrier", "returnTemperature"],
+                    "property_smaller": ["carrier", "returnTemperature"],
+                    "port_name_larger": "prim",
+                    "port_name_smaller": "sec",
                     "resultMsgJSON": true
                 }
             }

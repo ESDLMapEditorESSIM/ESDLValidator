@@ -129,6 +129,8 @@ class TestValidator(unittest.TestCase):
                 self.assertEqual(len(validation.errors), 1)
             elif validation.name == "connected_prim_sec":
                 self.assertEqual(len(validation.errors), 1)
+            elif validation.name == "connected_prim_sec_return":
+                self.assertEqual(len(validation.errors), 1)
             else:
                 if 'errors' in validation.__dict__.keys():
                     self.assertEqual(len(validation.errors),0)

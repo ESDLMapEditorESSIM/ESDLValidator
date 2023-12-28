@@ -15,13 +15,16 @@ class ContainsPortPropertyCombination(FunctionCheck):
             "port_property_combination",
             "Check if an asset is only connected to",
             [
-                ArgDefinition("component", "The port component which must be checked", True),
                 ArgDefinition("port_type_larger", "The porttype of which the property must be larger than the "
                                                       "port of port_type_smaller",True),
                 ArgDefinition("port_type_smaller", "The porttype of which the property must be smaller than the "
                                                       "port of port_type_larger", True),
                 ArgDefinition("property_larger", "The property which must be larger on port_type_larger", True),
                 ArgDefinition("property_smaller", "The property which must be smaller on port_type_smaller", True),
+                ArgDefinition("port_name_larger", "A string that must be part of the port name for the port with the "
+                                                  "larger property", False),
+                ArgDefinition("port_name_smaller", "A string that must be part of the port name for the port with "
+                                                     "the smaller property", False),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
             ]
         )
@@ -35,89 +38,60 @@ class ContainsPortPropertyCombination(FunctionCheck):
         connected_ports = 0
         carriers_exists = 0
         attributes_exists = 0
-        if len(self.value.port) == 2:
+
+        port_type_larger = getattr(esdl, self.args['port_type_larger'])
+        port_type_smaller = getattr(esdl, self.args['port_type_smaller'])
+
+        if len(self.value.port) !=0:
             value_larger = 0
             value_smaller = 0
             for port in self.value.port:
                 if len(port.connectedTo) != 0:
                     connected_ports += 1
-                    if port.__class__.__name__ in self.args['port_type_larger']:
+                    if isinstance(port, port_type_larger):
                         new_obj = port
-                        for arg in self.args["property_larger"]:
-                            new_obj = utils.get_attribute(new_obj, arg)
-                            if arg == self.args["property_larger"][-1]:
-                                value_larger = new_obj
-                                attributes_exists += 1
-                            if arg == None:
-                                continue
-                    elif port.__class__.__name__ in self.args['port_type_smaller']:
+                        bool_name = True
+                        if 'port_name_larger' in self.args:
+                            if self.args['port_name_larger'] not in port.name.lower():
+                                bool_name = False
+                        if bool_name == True:
+                            for arg in self.args["property_larger"]:
+                                new_obj = utils.get_attribute(new_obj, arg)
+                                if arg == self.args["property_larger"][-1]:
+                                    value_larger = new_obj
+                                    attributes_exists += 1
+                                if arg == None:
+                                    continue
+                    elif isinstance(port, port_type_smaller):
                         new_obj = port
-                        for arg in self.args["property_smaller"]:
-                            new_obj = utils.get_attribute(new_obj, arg)
-                            if arg == self.args["property_smaller"][-1]:
-                                value_smaller = new_obj
-                                attributes_exists += 1
-                            if arg == None:
-                                continue
-            if connected_ports == 2:
+                        bool_name = True
+                        if 'port_name_smaller' in self.args:
+                            if self.args['port_name_smaller'] not in port.name.lower():
+                                bool_name = False
+                        if bool_name == True:
+                            for arg in self.args["property_smaller"]:
+                                new_obj = utils.get_attribute(new_obj, arg)
+                                if arg == self.args["property_smaller"][-1]:
+                                    value_smaller = new_obj
+                                    attributes_exists += 1
+                                if arg == None:
+                                    continue
+            if connected_ports != 1:
                 if attributes_exists != 2:
-                    result = ("{} (name: {}) does not have the carriers properly assigned, set carriers again").format(
-                        self.value.id, self.value.name)
-                elif (value_larger == 0 or value_smaller == 0) or value_larger<value_smaller :
-                    result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
-                              "properly").format(self.value.id,  self.value.name)
+                    result = (f"{self.value.id} (name: {self.value.name}) does not have the carriers properly assigned, set carriers again")
+                elif (value_larger == 0 or value_smaller == 0) or value_larger < value_smaller :
+                    port_name_smaller_value = self.args['port_name_smaller'] if 'port_name_smaller' in self.args else ''
+                    port_name_larger_value = self.args['port_name_larger'] if 'port_name_larger' in self.args else ''
+                    result = (f"{self.value.id} (name: {self.value.name}) is connected to the wrong ports or carriers "
+                              f"have not been added properly. The {self.args['property_smaller'][-1]} of "
+                              f"{self.args['port_type_smaller']} {port_name_smaller_value} should be smaller than the "
+                              f"{self.args['property_larger'][-1]} of {self.args['port_type_larger']} "
+                              f"{port_name_larger_value}")
                     # as carriers only have return or supply temperature, if wrong carrier, then temperature 0
             else:
                 if value_larger == 0 and value_smaller == 0:
                     result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
                               "properly").format(self.value.id, self.value.name)
-
-        elif len(self.value.port) == (4 or 5):
-            prim_larger_T = 0
-            sec_smaller_T = 0
-            prim_smaller_T = 0
-            sec_larger_T = 0
-            for port in self.value.port:
-                if isinstance(port.carrier, esdl.HeatCommodity):
-                    if len(port.connectedTo) != 0:
-                        connected_ports += 1
-                        if isinstance(port, esdl.InPort):
-                            if 'prim' in port.name.lower():
-                                carrier_port = port.connectedTo.items[0].carrier
-                                if carrier_port != None:
-                                    prim_larger_T = port.connectedTo.items[0].carrier.supplyTemperature
-                            elif 'sec' in port.name.lower():
-                                carrier_port = port.connectedTo.items[0].carrier
-                                if carrier_port != None:
-                                    sec_smaller_T = port.connectedTo.items[0].carrier.returnTemperature
-                        elif isinstance(port, esdl.OutPort):
-                            if 'prim' in port.name.lower():
-                                carrier_port = port.connectedTo.items[0].carrier
-                                if carrier_port != None:
-                                    prim_smaller_T = port.connectedTo.items[0].carrier.returnTemperature
-                            elif 'sec' in port.name.lower():
-                                carrier_port = port.connectedTo.items[0].carrier
-                                if carrier_port != None:
-                                    sec_larger_T = port.connectedTo.items[0].carrier.supplyTemperature
-            if connected_ports == 4:
-                if (prim_larger_T == 0 or sec_smaller_T == 0 or prim_smaller_T == 0 or sec_smaller_T == 0):
-                    result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
-                              "properly").format(self.value.id,  self.value.name)
-                elif prim_larger_T < prim_smaller_T:
-                    result = ("{} (name: {}) primary side is connected wrong, temeprature in should be larger than "
-                              "temperatour out").format(self.value.id, self.value.name)
-                elif sec_larger_T < sec_smaller_T:
-                    result = ("{} (name: {}) secondary side is connected wrong, temeprature out should be larger than "
-                              "temperatour in").format(self.value.id, self.value.name)
-                if not isinstance(self.value, esdl.HeatPump):
-                    if prim_larger_T < sec_larger_T:
-                        result = result + ("{} (name: {}) secondary side temperature out should be smaller than "
-                                  "primary side temeprature in").format(self.value.id, self.value.name)
-            else:
-                if prim_larger_T == 0 and prim_smaller_T == 0 and sec_smaller_T == 0 and sec_larger_T == 0:
-                    result = ("{} (name: {}) is connected to the wrong ports or carriers have not been added "
-                              "properly").format(self.value.id, self.value.name)
-                    #no carriers set
 
         if len(result) > 0:
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
