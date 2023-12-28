@@ -14,13 +14,11 @@ class TestValidator(unittest.TestCase):
     def setUpClass(cls):
         super(TestValidator, cls).setUpClass()
         cls.schemaOne = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
-                                                                              "testdata/schema_test_1.json")))
+                                                                              "testdata/schemas/schema_test_1.json")))
         cls.schemaTwo = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
-                                                                              "testdata/schema_test_2.json")))
+                                                                              "testdata/schemas/schema_test_2.json")))
         cls.schemaPOC = get_test_schema_id(get_test_schema_data(Path.joinpath(Path(__file__).parents[3],
-                                                                              "testdata/schema_PoC.json")))
-        # cls.schemaPOC = get_test_schema_id(get_test_schema_data(
-        #     r"C:\Users\janssenfpjh\Downloads\schema_PoC_deploy.json"))
+                                                                              "testdata/schemas/schema_PoC.json")))
         cls.esdlAmeland = get_test_dataset_ameland()
         cls.esdlHybrid = get_test_dataset_hybrid()
         cls.esdl3B = get_test_dataset_3B_bad()
@@ -98,7 +96,6 @@ class TestValidator(unittest.TestCase):
         self.assertEqual(len(result.schemas), 1, "there should be 1 schemas in the result")
 
         for validation in result.schemas[0].validations:
-            print(validation.name)
             if validation.name == 'connected_as_consumer':
                 self.assertEqual(len(validation.errors),2, 'there should be two assets not properly connected as '
                                                         'consumers')

@@ -23,20 +23,20 @@ def get_test_schema_id(schemaData):
 
 
 def get_test_dataset_ameland():
-    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/ameland_energie_2015.esdl"))
+    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/esdls/ameland_energie_2015.esdl"))
     return esh.resource
 
 
 def get_test_dataset_hybrid():
-    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/hybrid_hp_with_pv_storage.esdl"))
+    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/esdls/hybrid_hp_with_pv_storage.esdl"))
     return esh.resource
 
 def get_test_dataset_3B_bad():
-    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/3B_bad.esdl"))
+    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/esdls/3B_bad.esdl"))
     return esh.resource
 
 def get_test_dataset_PoC():
-    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/PoC_validator with return network.esdl"))
+    esh = utils.get_esh_from_file(Path.joinpath(Path(__file__).parents[3], "testdata/esdls/PoC_validator with return network.esdl"))
     # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\New Energy System with return network (1).esdl")
     # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\lkj with return network.esdl")
     # esh = utils.get_esh_from_file(r"C:\Users\janssenfpjh\Downloads\WBr Moerdijk 2clean_carrier_duplicate.esdl")
@@ -46,5 +46,5 @@ def get_test_dataset_PoC():
 
 def get_test_dataset_single_pipes():
     esh = utils.get_esh_from_file(
-        Path.joinpath(Path(__file__).parents[3], "testdata/Single_pipes.esdl"))
+        Path.joinpath(Path(__file__).parents[3], "testdata/esdls/Single_pipes.esdl"))
     return esh.resource
