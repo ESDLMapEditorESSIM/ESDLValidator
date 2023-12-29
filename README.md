@@ -37,7 +37,7 @@ Service for validating ESDL files against validation schemas
 - [ ] check if there are carriers which are not used [error]
 - [x] check connection of assets with more than 2 ports (heat pump and heat exchanger) [error]
 - [ ] check area ...
-- [ ] check on heatpump information (power,COP, ....) [warning]
+- [x] check on heatpump information (power,COP, ....) [warning]
 - [x] check tankstorage volume or capacity defined
 - [ ] check power consumer is larger than max of profile [warning]
 - [x] check power consumer is not 0, because used for scaling. [error]
@@ -50,7 +50,6 @@ Service for validating ESDL files against validation schemas
 - [ ] check if area contains atleast one asset [warning]
 - [x] check if multiplier of profile is not 0 [error] !!
 - [x] check name of carriers, return carrier = supplycarrier name + '_ret' [error] !!
-- [ ] check all pipes have carrier [error] !!
 - [ ] check carrier on all ports of joint are the same [error] !!
 - [ ] improve error/warning messages
     - [ ] change asset id to asset name to be used in description

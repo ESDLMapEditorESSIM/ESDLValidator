@@ -102,6 +102,7 @@
                 "function": "number_ports",
                 "dataset": "assets",
                 "args": {
+                    "number": 2,
                     "resultMsgJSON": true
                 }
             }
@@ -614,6 +615,28 @@
                 }
             }
         }, {
+            "name": "heatpump_cop_undefined",
+            "description": "An asset must have a cop attribute",
+            "type": "error",
+            "message": "Asset missing cop",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatpumps",
+                    "args": {
+                        "type": ["HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "heatpumps",
+                "args": {
+                    "property": "COP",
+                    "counts_as_null": [0.0],
+                    "resultMsgJSON": true
+                }
+            }
+        },{
             "name": "tank_storage_capacity_undefined",
             "description": "A tank storage must have a capacity or volume attribute set",
             "type": "error",

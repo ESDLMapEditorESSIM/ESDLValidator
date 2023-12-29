@@ -12,6 +12,7 @@ class ContainsXNumberPorts(FunctionCheck):
             "number_ports",
             "Check the number of ports available",
             [
+                ArgDefinition("number", "Display output in JSON format", True),
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
             ]
         )
@@ -21,15 +22,15 @@ class ContainsXNumberPorts(FunctionCheck):
 
     def execute(self):
         msg = {"offending_asset": self.value.id}
-        if len(self.value.port) < 2:
-            result = "{} has less than 2 ports".format(self.value.id)
+        if len(self.value.port) < self.args["number"]:
+            result = f"{self.value.id} has less than {self.args['number']} ports"
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
                 return CheckResult(False, result)
-        elif len(self.value.port) > 2:
-            result = "{} has more than 2 ports".format(self.value.id)
+        elif len(self.value.port) > self.args["number"]:
+            result = f"{self.value.id} has more than {self.args['number']} ports"
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                 msg["message"] = result
                 return CheckResult(False, msg)

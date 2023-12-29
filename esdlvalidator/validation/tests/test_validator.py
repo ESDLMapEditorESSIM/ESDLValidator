@@ -121,6 +121,8 @@ class TestValidator(unittest.TestCase):
                 self.assertEqual(len(validation.errors), 1)
             elif validation.name == "asset_power_undefined":
                 self.assertEqual(len(validation.errors), 7)
+            elif validation.name == "heatpump_cop_undefined":
+                self.assertEqual(len(validation.errors), 1)
             elif validation.name == "tank_storage_capacity_undefined":
                 self.assertEqual(len(validation.errors), 1)
             elif validation.name == "consumer_profile_undefined":
