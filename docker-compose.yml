@@ -5,7 +5,8 @@ networks:
 
 services:
   esdl_validator:
-    build: ./
+#    build: .
+    image: ghcr.io/project-omotes/esdl_validator:0.0.1
     ports:
       - "3011:5000"
     environment:
@@ -15,13 +16,21 @@ services:
       - validator-storage:/storage
     networks:
       - esdl_val_net
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   mongo:
-    image: mongo:latest
+    image: mvertes/alpine-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-storage:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
     networks:
       - esdl_val_net
 

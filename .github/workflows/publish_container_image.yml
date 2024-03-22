@@ -1,0 +1,26 @@
+#name: Deply to GitHub Container Registry
+run-name: Releasing next version 🚀
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build the container image
+      run: |
+        docker build . --tag ghcr.io/project-omotes/omotes_rest:latest --tag ghcr.io/project-omotes/esdl_validator:${{ github.ref_name}}
+        docker push ghcr.io/project-omotes/esdl_validator:latest
+        docker push ghcr.io/project-omotes/esdl_validator:${{ github.ref_name}}
