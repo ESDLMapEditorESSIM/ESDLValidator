@@ -21,6 +21,6 @@ jobs:
 
     - name: Build the container image
       run: |
-        docker build . --tag ghcr.io/esdlmapeditoressim/esdl_validator:latest --tag ghcr.io/esdlmapeditoressim/esdl_validator:${{ github.ref_name}}
-        docker push ghcr.io/esdlmapeditoressim/esdl_validator:latest
-        docker push ghcr.io/esdlmapeditoressim/esdl_validator:${{ github.ref_name}}
+        docker build . --tag esdlmapeditoressim/esdl_validator:latest --tag esdlmapeditoressim/esdl_validator:${{ github.ref_name}}
+        docker push esdlmapeditoressim/esdl_validator:latest
+        docker push esdlmapeditoressim/esdl_validator:${{ github.ref_name}}

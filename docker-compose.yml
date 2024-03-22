@@ -6,7 +6,7 @@ networks:
 services:
   esdl_validator:
 #    build: .
-    image: ghcr.io/esdlmapeditoressim/esdl_validator:0.0.2
+    image: esdlmapeditoressim/esdl_validator:0.0.6
     ports:
       - "3011:5000"
     environment:
