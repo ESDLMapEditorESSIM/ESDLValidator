@@ -21,7 +21,7 @@
             <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" perUnit="WATT" unit="EURO" id="dbe7fea2-c345-4aab-9df0-3afc27ff1751" description="Cost in EUR/kW" perMultiplier="KILO" physicalQuantity="COST"/>
           </installationCosts>
           <investmentCosts xsi:type="esdl:SingleValue" value="10.0" id="c162cc99-7c02-4866-8813-b68e72cc1d34">
-            <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" perUnit="WATT" unit="EURO" id="aeeb19dc-815c-4801-9681-9f6058bbbaf1" description="Cost in EUR/kW" perMultiplier="KILO" physicalQuantity="COST"/>
+            <profileQuantityAndUnit xsi:type="esdl:QuantityAndUnitType" unit="EURO" id="aeeb19dc-815c-4801-9681-9f6058bbbaf1" description="Cost in EUR/kW" perMultiplier="KILO" physicalQuantity="COST"/>
           </investmentCosts>
         </costInformation>
       </asset>

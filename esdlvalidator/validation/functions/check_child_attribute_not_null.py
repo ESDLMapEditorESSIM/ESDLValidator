@@ -164,10 +164,11 @@ class ContainsNotConnectedTo(FunctionCheck):
         correct = 0
         msg = {"offending_asset": self.value.id}
         for i in range(0, len(self.args["unit_type"])):
-            unittype = getattr(qau, self.args["unit_type"][i])
-            unit = self.args["unit"][i]
-            if str(unittype.name).lower() == str(unit).lower():
-                correct += 1
+            if hasattr(qau, self.args["unit_type"][i]):
+                unittype = getattr(qau, self.args["unit_type"][i])
+                unit = self.args["unit"][i]
+                if str(unittype.name).lower() == str(unit).lower():
+                    correct += 1
         if correct != len(self.args["unit_type"]):
             result = self.__create_message("{0} should contain {1} of type {2}".format(prop, self.args["unit_type"],
                 self.args["unit"]), self.value)
