@@ -28,6 +28,8 @@ class ContainsNotConnectedTo(FunctionCheck):
         components = []
         if hasattr(self.value, self.args["component"]):
             components = getattr(self.value, self.args["component"])
+            if components is None:
+                components = []
 
         if len(components) == 0:
             result = "{} has no components of type {}".format(self.value.id, self.args["component"])

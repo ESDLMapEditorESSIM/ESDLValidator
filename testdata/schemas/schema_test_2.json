@@ -40,7 +40,8 @@
                     {
                         "function": "not_null",
                         "args": {
-                            "property": "port.profile"
+                            "property": "port.profile",
+                            "counts_as_null": ["EOrderedSet()"]
                         }
                     }
                 ]

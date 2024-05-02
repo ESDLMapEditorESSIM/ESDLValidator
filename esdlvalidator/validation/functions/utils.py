@@ -6,7 +6,7 @@ from pyecore.ecore import EValue
 def has_attribute(obj, name: str) -> bool:
     # give a default "nothing_found" since None can be the actual returned value
     result = get_attribute(obj, name, "nothing_found")
-    return False if result is "nothing_found" else True
+    return False if result == "nothing_found" else True
 
 
 def get_attribute(obj, name: str, default=None) -> bool:
@@ -15,7 +15,8 @@ def get_attribute(obj, name: str, default=None) -> bool:
     Args:
         obj: List, class or dictionary to get a property value from
         name (str): The property to get
-        default (Object): Optional default value that will return when property not found, defaults to None
+        default (Object): Optional default value that will return when property not found,
+                          defaults to None
 
     Returns:
         property value: The property value found for given name, default if not found

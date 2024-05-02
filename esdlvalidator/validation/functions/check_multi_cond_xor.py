@@ -4,13 +4,13 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
     ArgDefinition, FunctionType, CheckResult
 
 
-@FunctionFactory.register(FunctionType.CHECK, "multi_cond")
+@FunctionFactory.register(FunctionType.CHECK, "multi_cond_xor")
 class ContainsMultiConditionCheck(FunctionCheck):
 
     def get_function_definition(self):
         return FunctionDefinition(
-            "multi_cond",
-            "Check if a combination of properties of an asset are in violation (AND-condition)",
+            "multi_cond_xor",
+            "Check if a combination of properties of an asset are in violation (XOR-condition)",
             [
                 ArgDefinition("properties", "The properties that need to checked", True),
                 ArgDefinition("violations", "The property values to check against", True),
@@ -38,7 +38,7 @@ class ContainsMultiConditionCheck(FunctionCheck):
             else:
                 return CheckResult(False, result)
 
-        fail = True
+        fails = 0
         for i in range(0, len(self.args["properties"])):
             p = self.args["properties"][i]
             v = self.args["violations"][i]
@@ -49,11 +49,17 @@ class ContainsMultiConditionCheck(FunctionCheck):
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
-            value = utils.get_attribute(self.value, p)
-            fail = fail and ((isinstance(v, str) and str(v).lower() == str(value).lower()) or (v == value))
+            # print(str(utils.get_attribute(self.value, p)), p, v)
+            if utils.get_attribute(self.value, p) == v:
+                fails += 1
+
+        fail = False
+        if fails != len(self.args["properties"])-1:
+            fail = True
 
         if fail:
-            result = "One of {} must be defined".format(" or ".join(self.args['properties']))
+            result = "Only one of {} must be defined for asset {} ({})".format(" or ".join(self.args['properties']),
+                                                                               self.value.id, self.value.name)
             if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                 msg["message"] = result
                 return CheckResult(False, msg)

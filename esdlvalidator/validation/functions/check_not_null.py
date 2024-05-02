@@ -1,3 +1,5 @@
+from esdl import esdl
+
 from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, ArgDefinition, FunctionType, CheckResult
 
@@ -27,7 +29,10 @@ class ContainsNotNull(FunctionCheck):
         # Some esdl entity values have a default of undefined or none when not set
         include.extend(["undefined", "none"])
         value = self.value
-        msg = {"offending_asset": self.value.id}
+        if isinstance(value, esdl.Port):
+            msg = {"offending_asset": self.value.eContainer().id}
+        else:
+            msg = {"offending_asset": self.value.id}
 
         if hasProp:
             if not utils.has_attribute(value, prop):
@@ -48,19 +53,20 @@ class ContainsNotNull(FunctionCheck):
             else:
                 return CheckResult(False, result)
 
-        return self.check_includes(include, prop, value, self.value)
+        return self.check_includes(include, prop, value, self.value, msg)
 
-    def check_includes(self, include, prop, value, originalValue):
-        msg = {"offending_asset": self.value.id}
+    def check_includes(self, include, prop, value, originalValue, msg):
+        # msg = {"offending_asset": self.value.id}
         for includeValue in include:
             if isinstance(value, list):
                 ret = []
                 for v in value:
-                    ret.append(self.check_includes(include, prop, v, originalValue))
+                    ret.append(self.check_includes(include, prop, v, originalValue, msg))
                 for r in ret:
                     if not r.ok:
                         return r
-            elif str(includeValue).lower() == str(value).lower():
+            elif (isinstance(includeValue, str) and str(includeValue).lower() == str(value).lower()) or (
+                    includeValue == value):
                 result = self.__create_message("{0} cannot be null".format(prop), originalValue)
                 if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
                     msg["message"] = result
