@@ -118,7 +118,6 @@ esdl-validator can be configured using the following environment variables.
 | ESDLVALIDATOR_TITLE           | Title of the service, shown in swagger                   | ESDL-Validator                |
 | ESDLVALIDATOR_DESCRIPTION     | Description of the service, shown in swagger             | API for validating ESDL files |
 | ESDLVALIDATOR_ENDPOINT_PREFIX | Prefix of the endpoint, for example /api                 | -                             |
-| ESDLVALIDATOR_DB_LOCATION     | location and name of database                            | schemas.db                    |
 | ESDLVALIDATOR_DEFAULT_CORS    | Enable the default CORS, accepting everything            | False                         |
 | ESDLVALIDATOR_LOG_LEVEL       | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO                          |
 
@@ -215,9 +214,6 @@ Build example
 ```
 docker build -t esdl-validator .
 ```
-
-The docker image is by default configured to create/read the database file from /storage/schemas.db, this can be updated
-by setting ESDLVALIDATOR_DB_LOCATION
 
 Run example for esdl-validator with logging set to DEBUG and the database file stored and read outside of the container.
 

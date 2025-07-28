@@ -16,7 +16,6 @@ class Settings:
     description = environ.var("API for validating ESDL files", name="ESDLVALIDATOR_DESCRIPTION")
     endpointPrefix = environ.var("", name="ESDLVALIDATOR_ENDPOINT_PREFIX")
     useDefaultCors = environ.var(False, converter=bool, name="ESDLVALIDATOR_DEFAULT_CORS")
-    dbLocation = environ.var("schemas.db", name="ESDLVALIDATOR_DB_LOCATION")
     logLevel = environ.var("INFO", name="ESDLVALIDATOR_LOG_LEVEL")
 
 

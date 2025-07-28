@@ -1,11 +1,9 @@
 FROM python:3.8-alpine
 
-ENV ESDLVALIDATOR_DB_LOCATION=/storage/schemas.db
 ENV HOSTNAME=localhost
 ENV PORT=5000
 ENV MONGODB_HOST=localhost
 ENV MONGODB_PORT=27017
-ENV ESDLVALIDATOR_DB_LOCATION=/storage/schemas.db
 RUN apk add --update --no-cache g++ gcc libxslt-dev
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements.txt &&\
