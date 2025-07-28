@@ -19,7 +19,7 @@ parser = app.api.parser()
 class ValidationToNotesController(Resource):
     """Validate an ESDL file and return an ESDL with notes"""
 
-    @app.ns_validation_to_notes.doc(description="Post a new validation schema", responses={
+    @app.ns_validation_to_notes.doc(deprecated=True, description="Post a new validation schema", responses={
         200: "Ok",
         404: "Schema not found",
         400: "Unknown filetype, Invalid ESDL"})
