@@ -6,7 +6,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from pymongo import MongoClient
 
-from esdlvalidator.core.exceptions import SchemaNotFound
+from esdlvalidator.core.exceptions import NameAlreadyExists, InvalidJSON, SchemaNotFound
 from esdlvalidator.validation.abstract_repository import SchemaRepository
 
 MONGODB_HOST = "MONGODB_HOST"
@@ -61,8 +61,30 @@ class MongoSchemaRepository(SchemaRepository):
         return document
 
     def insert(self, jsonString: str):
+        """Insert a new schema
+
+        Args:
+            json (string): The schema JSON string
+
+        Returns:
+            schemaID: The created id for the schema, can be used to retrieve the schema
+
+        Raises:
+            InvalidJSON: If json is not a valid json string or schema name already exist
+            NameAlreadyExists: If database already contains a document with the same name
+        """
+
         log.debug("Inserting {}".format(jsonString))
-        document = json.loads(jsonString)
+
+        try:
+            document = json.loads(jsonString)
+        except:
+            raise InvalidJSON
+        
+        doc = self.collection.find_one({'name': document["name"]})
+        if doc is not None:
+            raise NameAlreadyExists
+        
         return self.collection.insert_one(document).inserted_id
 
     def remove_by_id(self, id: str):

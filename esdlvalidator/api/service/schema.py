@@ -1,7 +1,6 @@
 import json
 
 from esdlvalidator.validation.abstract_repository import SchemaRepository
-from esdlvalidator.validation.file_repository import FileSchemaRepository
 
 
 class SchemaService:
@@ -21,11 +20,11 @@ class SchemaService:
         return [{"id": str(schema["id"]), "name": schema["name"], "description": schema["description"]} for schema in
                 schemas]
 
-    def get_by_id(self, id: int):
+    def get_by_id(self, id: str):
         """Get a schema by schema id
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
 
         Returns:
             schema (Document): Schema for given id
@@ -58,7 +57,7 @@ class SchemaService:
             schema (str): schema as JSON string
 
         Returns:
-            id (int): ID assigned to the document by the database
+            id (str): ID assigned to the document by the database
 
         Raises:
             InvalidJSON: If json is not a valid json string or schema name already exist
@@ -67,11 +66,11 @@ class SchemaService:
 
         return self.repo.insert(json.dumps(schema))
 
-    def delete(self, id: int):
+    def delete(self, id: str):
         """Remove schema by ID
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
 
         Returns:
             schemaID: schema id when found
@@ -82,11 +81,11 @@ class SchemaService:
 
         return self.repo.remove_by_id(id)
 
-    def update(self, id: int, schema: str):
+    def update(self, id: str, schema: str):
         """Update schema by id
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
             shema: schema
 
         Returns:

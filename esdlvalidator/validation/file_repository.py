@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 class FileSchemaRepository(SchemaRepository):
-    """Repository for retrieving, adding, deleting validation schemas"""
+    """
+    DEPRECATED. Use MongoSchemaRepository instead.
+
+    Repository for retrieving, adding, deleting validation schemas
+    """
 
     def __init__(self, location: str):
         """Create a repository and initialize the 'database' from the given file"""

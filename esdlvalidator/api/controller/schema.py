@@ -32,18 +32,18 @@ class SchemaListController(Resource):
         """Post a new validation schema"""
 
         schema_id = schemaService.insert(request.json)
-        return {"location": "/schema/{0}".format(schema_id)}, 201, {"location": "/schema/{0}".format(schema_id)}
+        return {"location": "/schema/{0}".format(schema_id)}, 201
 
 
 @app.ns_schema.route('/<string:schema_id_or_name>/')
 class SchemaController(Resource):
     """GET/UPDATE/DELETE validation schemas"""
 
-    @app.api.doc(description="Get a schema by ID", responses={
+    @app.api.doc(description="Get a validation schema by ID or name", responses={
         200: "Ok",
         404: "Schema not found"})
-    def get(self, schema_id_or_name):
-        """Get a validation schema by ID"""
+    def get(self, schema_id_or_name: str):
+        """Get a validation schema by ID or name"""
 
         try:
             doc = schemaService.get_by_id(schema_id_or_name)
@@ -55,11 +55,11 @@ class SchemaController(Resource):
 
         return doc, 200
 
-    @app.api.doc(description="Delete a schema by ID", responses={
+    @app.api.doc(description="Delete a validation schema by ID", responses={
         200: "Ok, schema was deleted",
         404: "Schema not found"})
-    def delete(self, schema_id_or_name):
-        """Delete a validation schema from the database"""
+    def delete(self, schema_id_or_name: str):
+        """Delete a validation schema by ID"""
 
         try:
             schemaService.get_by_id(schema_id_or_name)
@@ -68,13 +68,13 @@ class SchemaController(Resource):
 
         return schemaService.delete(schema_id_or_name), 200
 
-    @app.api.doc(description="Update a validation schema", responses={
+    @app.api.doc(description="Update an existing validation schema by ID", responses={
         200: "Ok, schema was updated",
         404: "Schema not found",
         400: "Invalid JSON"})
     @app.api.expect(models.schema, validate=True)
-    def put(self, schema_id_or_name):
-        """Delete a validation schema from the database"""
+    def put(self, schema_id_or_name: str):
+        """Update an existing validation schema by ID"""
 
         try:
             schemaService.get_by_id(schema_id_or_name)
@@ -82,4 +82,4 @@ class SchemaController(Resource):
             return "Requested schema with name/id '{}' not found".format(schema_id_or_name), 404
 
         schema_id = schemaService.update(schema_id_or_name, request.json)
-        return {"location": "/schema/{0}".format(schema_id)}, 200, {"location": "/schema/{0}".format(schema_id)}
+        return {"location": "/schema/{0}".format(schema_id)}, 200
