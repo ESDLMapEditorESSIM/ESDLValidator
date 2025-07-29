@@ -9,7 +9,7 @@ def has_attribute(obj, name: str) -> bool:
     return False if result is "nothing_found" else True
 
 
-def get_attribute(obj, name: str, default=None) -> bool:
+def get_attribute(obj, name: str, default=None):
     """Get a property from args send to the function, property name casing will be ignored
 
     Args:

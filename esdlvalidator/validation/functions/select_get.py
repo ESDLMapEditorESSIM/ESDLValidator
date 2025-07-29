@@ -12,25 +12,32 @@ class SelectGet(FunctionSelect):
             "get",
             "Get a list of entities from loaded ESDL data",
             [
-                ArgDefinition("type", "type name of entities to retrieve, this can be a superclass. i.e. Port returns InPort, OutPort...", True)
+                ArgDefinition("type", "A (list of) type name of entities to retrieve, this can be a superclass. i.e. Port returns InPort, OutPort...", True),
+                ArgDefinition("exclude_type", "A (list of) type name of entities to exclude, this can be a superclass. i.e. Port returns InPort, OutPort...", False)
             ]
         )
 
     def execute(self):
         dataset = self.datasets.get("resource")
-        if isinstance(self.args['type'], str):
-            # if self.args['type'] == "dataset":
-            #     entities = dataset
-            # else:
-            getType = utils.get_attribute(self.args, "type")
-            entities = esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
-        elif isinstance(self.args['type'], list):
-            entities = []
-            for arg in self.args['type']:
-                getType = utils.get_attribute({'type': arg}, "type")
-                if len(entities)==0:
-                    entities = esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
-                else:
-                    entities += esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
 
-        return entities
+        types = self.args["type"]
+        if isinstance(types, str):
+            types = [types]
+
+        excluded_esdlClasses = []
+        if 'exclude_type' in self.args:
+            if isinstance(self.args['exclude_type'], str) or isinstance(self.args['exclude_type'], list):
+                excluded_esdlClasses = esdlUtils.get_esdl_class_from_string(self.args["exclude_type"])
+            else:
+                raise ValueError("Invalid function argument 'exclude_type' type. Expect str or list[str].")
+
+        selected_entities = []
+        for type in types:
+            getType = utils.get_attribute({'type': type}, "type")
+            entities = esdlUtils.get_entities_from_esdl_resource_by_type(dataset, getType)
+
+            for entity in entities:
+                if not any(isinstance(entity, e_cls) for e_cls in excluded_esdlClasses):
+                    selected_entities.append(entity)
+           
+        return selected_entities

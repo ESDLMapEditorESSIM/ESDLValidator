@@ -401,11 +401,11 @@
             "type": "error",
             "message": "tank storage costinformation - investmentcosts incomplete or incorrect",
             "selects": [{
-                    "function": "get_exclude",
+                    "function": "get",
                     "alias": "tank_storage",
                     "args": {
                         "type": "HeatStorage",
-                        "exclude_types": "ATES"
+                        "exclude_type": "ATES"
                     }
                 }
             ],
@@ -452,11 +452,11 @@
             "type": "error",
             "message": " costinformation - installation incomplete or incorrect",
             "selects": [{
-                    "function": "get_exclude",
+                    "function": "get",
                     "alias": "energy_assets",
                     "args": {
                         "type": "EnergyAsset",
-                        "exclude_types": ["Pipe", "Joint"]
+                        "exclude_type": ["Pipe", "Joint"]
                     }
                 }
             ],
@@ -503,11 +503,11 @@
             "type": "error",
             "message": "Tank costinformation - fixed operational incomplete or incorrect",
             "selects": [{
-                    "function": "get_exclude",
+                    "function": "get",
                     "alias": "tank_storage",
                     "args": {
                         "type": "HeatStorage",
-                        "exclude_types": "ATES"
+                        "exclude_type": "ATES"
                     }
                 }
             ],
@@ -642,11 +642,11 @@
             "type": "error",
             "message": "Asset missing capacity or volume",
             "selects": [{
-                    "function": "get_exclude",
+                    "function": "get",
                     "alias": "tank",
                     "args": {
                         "type": "HeatStorage",
-                        "exclude_types": "ATES"
+                        "exclude_type": "ATES"
 
                     }
                 }
