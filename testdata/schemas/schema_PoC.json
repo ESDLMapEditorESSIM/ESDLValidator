@@ -554,7 +554,7 @@
             "type": "error",
             "message": " The name of this asset is not unique",
             "selects": [{
-                    "function": "get_nameslist",
+                    "function": "get",
                     "alias": "energy_assets",
                     "args": {
                         "type": ["EnergyAsset"],
@@ -563,10 +563,10 @@
                 }
             ],
             "check": {
-                "function": "name_condition",
+                "function": "property_uniqueness",
                 "dataset": "energy_assets",
                 "args": {
-                    "condition": "uniqueness",
+                    "property": "name",
                     "resultMsgJSON": true
                 }
             }
@@ -576,7 +576,7 @@
             "type": "error",
             "message": "Pipes, joints and heat commodities must have a name  with +_ret for return line",
             "selects": [{
-                    "function": "get_nameslist",
+                    "function": "get",
                     "alias": "pipes_joints",
                     "args": {
                         "type": ["Pipe", "Joint", "HeatCommodity"],
@@ -585,10 +585,11 @@
                 }
             ],
             "check": {
-                "function": "name_condition",
+                "function": "has_pair",
                 "dataset": "pipes_joints",
                 "args": {
-                    "condition": "supply_return",
+                    "property": "name",
+                    "keyword": "_ret",
                     "resultMsgJSON": true
                 }
             }
