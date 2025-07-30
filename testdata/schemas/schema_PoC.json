@@ -88,7 +88,7 @@
         }, {
             "name": "number_ports",
             "description": "Find if joint does not have exactly 2 ports",
-            "type": "warning",
+            "type": "error",
             "message": "Number of ports incorrect",
             "selects": [{
                     "function": "get",
@@ -99,10 +99,12 @@
                 }
             ],
             "check": {
-                "function": "number_ports",
+                "function": "reference_count_in_range",
                 "dataset": "assets",
                 "args": {
-                    "number": 2,
+                    "referenceType": "port",
+                    "min": 2,
+                    "max": 2,
                     "resultMsgJSON": true
                 }
             }
