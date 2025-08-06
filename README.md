@@ -160,6 +160,23 @@ env\Scripts\activate.bat (Windows CMD)
 pip3 install -r requirements.txt
 ```
 
+### Set up Git hooks
+
+At the project root, run the command in a bash terminal to set up git hooks.
+
+```bash
+./.githooks/.setup-hooks.sh
+```
+
+You should see the logs below after the successful setup. 
+
+```
+Setting up Git hooks...
+✅ Git hook installed: .git/hooks/pre-push
+```
+
+The reason for setting up this git hook (`pre-push`) is to block project-specific functions defined under `esdlvalidator/validation/functions/projects/` from being pushed to an open GitHub repository. This does not affect when pushing to the internal gitlab repository.
+
 ### Testing
 
 Use the 'Test' tab is vscode or execute one of the following commands from the root folder
@@ -185,6 +202,12 @@ An example how to start the service using waitress.
 waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ```
 
+
+.githooks/.setup-hooks.sh
+Setting up Git hooks...
+✅ Git hook installed: .git/hooks/pre-push
+
+<!-- TODO: say sth. about pyesdl? -->
 <!-- ### Deprecated: Update static ESDL metamodel code
 
 To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version
