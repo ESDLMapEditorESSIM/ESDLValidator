@@ -162,6 +162,10 @@ pip3 install -r requirements.txt
 
 ### Set up Git hooks
 
+The `pre-push` git hook should be installed to avoid **project-specific** validation functions (which should be defined and stored under `esdlvalidator/validation/functions/projects/`) from being pushed to an open GitHub repository. 
+
+This does not affect when pushing changes to the internal gitlab repository (both project-specific functions and generic functions can be pushed to remotes).
+
 At the project root, run the command in a bash terminal to set up git hooks.
 
 ```bash
@@ -175,7 +179,7 @@ Setting up Git hooks...
 ✅ Git hook installed: .git/hooks/pre-push
 ```
 
-The reason for setting up this git hook (`pre-push`) is to block project-specific functions defined under `esdlvalidator/validation/functions/projects/` from being pushed to an open GitHub repository. This does not affect when pushing to the internal gitlab repository.
+
 
 ### Testing
 
