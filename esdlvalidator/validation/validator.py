@@ -20,11 +20,12 @@ class EsdlValidator:
     def __init__(self):
         pass
 
-    def validate(self, esdl, schemas: list):
+    def validate(self, esdl, schemas: list) -> ValidatorResult:
         """Validate an ESDL against one or more multiple schemas
 
         Args:
             esdl (object): The loaded ESDL
+            schemas (list): A list of validation schemas
 
         Returns:
             result: ValidatorResult containing the validation results

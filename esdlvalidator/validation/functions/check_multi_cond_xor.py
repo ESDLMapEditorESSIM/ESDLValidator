@@ -3,7 +3,6 @@ from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
-
 @FunctionFactory.register(FunctionType.CHECK, "multi_cond_xor")
 class ContainsMultiConditionCheck(FunctionCheck):
 
@@ -49,7 +48,6 @@ class ContainsMultiConditionCheck(FunctionCheck):
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
-            # print(str(utils.get_attribute(self.value, p)), p, v)
             if utils.get_attribute(self.value, p) == v:
                 fails += 1
 
