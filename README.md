@@ -224,13 +224,15 @@ An example how to start the service using waitress.
 waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ```
 
+### Update pyESDL version
 
-.githooks/.setup-hooks.sh
-Setting up Git hooks...
-✅ Git hook installed: .git/hooks/pre-push
+To work with the latest version of ESDL, make sure `pyESDL>={version}` in `requirements.txt` is updated and run pip install again.
 
-<!-- TODO: say sth. about pyesdl? -->
-<!-- ### Deprecated: Update static ESDL metamodel code
+```
+pip3 install -r requirements.txt
+```
+
+<!-- ### DEPRECATED: Update static ESDL metamodel code
 
 To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version
 and run
