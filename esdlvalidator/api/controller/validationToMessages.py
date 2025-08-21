@@ -12,17 +12,16 @@ parser.add_argument("data", type=str, required=True)
 parser.add_argument("schemas", type=str, help="List of schema id's, comma separated", required=True)
 
 
-@app.ns_validation_to_msgs.route('/')
+@app.ns_validation.route('/validationToMessages')
 class ValidationToMessagesController(Resource):
-    """Validate an ESDL file and return an ESDL with notes"""
 
-    @app.ns_validation_to_msgs.doc(description="Post a new validation schema", responses={
+    @app.ns_validation.doc(description="Post a new validation schema", responses={
         200: "Ok",
         404: "Schema not found",
         400: "Unknown filetype, Invalid ESDL"})
     @app.api.expect(parser, validate=True)
     def post(self):
-        """Validate an ESDL file against one or more validation schemas"""
+        """Validate an ESDL file against one or more validation schemas and return JSON"""
         if request.data:
             # 'Contains the incoming request data as string in case it came with a mimetype Flask does not handle'
             # > Happens with requests from the mapeditor
