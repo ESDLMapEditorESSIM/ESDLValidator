@@ -127,37 +127,85 @@ ToDo: information on how a validatio schema is constructed
 
 ## Local development
 
-Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default
-settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new
-file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The
-default settings file excludes some unwanted files and folders, styling and discovery and settings for unit tests.
+We use [uv](https://docs.astral.sh/uv/) as a project and package manager. To develop locally. First make sure uv is installed.
 
-### Virtual environment
+Install uv
 
-Install virtual environment if not installed yet
-
-```
-python3 -m pip install --user virtualenv
+```bash
+# On Linux.
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Create a virtual environment
-
-```
-python3 -m venv env
-```
-
-Enable virtual environment with one of the following commands
-
-```
-source env/bin/activate    (Linux)
-env\Scripts\activate.ps1 (Windows Powershell)
-env\Scripts\activate.bat (Windows CMD)
+```powershell
+# On Windows.
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### Install project dependencies
+Create a virtual environment if it is not set up yet. Run the command at the project root. This should create a virtual environment `.venv`
 
 ```
-pip3 install -r requirements.txt
+uv venv
+```
+
+To activate the virtual environment.
+
+```bash
+# On Linux.
+source .venv/Scripts/activate
+```
+
+```powershell
+# On Windows.
+.venv\Scripts\activate
+```
+
+
+Project dependencies are specified in `pyproject.toml` and `uv.lock` files. To install dependencies, run the command below.
+
+```
+uv sync
+```
+
+To check the installed dependencies.
+
+```
+uv pip list
+```
+
+To add or remove a dependency, run the command below. This will update `pyproject.toml` and `uv.lock` automatically.
+
+```
+uv add {dependency to be installed}
+uv remove {dependency to be removed}
+```
+
+#### Update pyESDL version
+
+To work with the latest version of ESDL, make sure `pyESDL>={version}` in `pyproject.toml` is updated and run `uv sync` again.
+
+### Run ESDL-validator in develop/debug mode
+
+To run the service in debug mode.
+
+```
+uv run app.py
+```
+
+
+### Testing
+
+To run test.
+
+```
+pytest
+```
+
+### Black format
+
+The black format settings can be found under `[tool.black]` in the `pyproject.toml` file. To run black to format code.
+
+```
+black .
 ```
 
 ### Set up Git hooks
@@ -199,48 +247,6 @@ esdlvalidator/validation/functions/projects/nwn/test.py
 ➡️ These files must not be pushed to GitHub. Push to GitLab is allowed.
 ```
 
-### Testing
-
-Use the 'Test' tab is vscode or execute one of the following commands from the root folder
-
-```
-pytest
-python3 -m unittest discover ./
-```
-
-### Run ESDL-validator in develop/debug mode
-
-To run the service in debug mode using the build in flask development server.
-
-```
-python3 app.py
-```
-
-### Run ESDL-validator using waitress
-
-An example how to start the service using waitress.
-
-```
-waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
-```
-
-### Update pyESDL version
-
-To work with the latest version of ESDL, make sure `pyESDL>={version}` in `requirements.txt` is updated and run pip install again.
-
-```
-pip3 install -r requirements.txt
-```
-
-<!-- ### DEPRECATED: Update static ESDL metamodel code
-
-To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version
-and run
-
-```
-pip3 install pyecoregen
-pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
-``` -->
 
 ## Docker
 
