@@ -1,26 +1,23 @@
-FROM python:3.10-alpine
+FROM python:3.10-slim
 
-ENV HOSTNAME=localhost
-ENV PORT=5000
-ENV MONGODB_HOST=localhost
-ENV MONGODB_PORT=27017
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
-RUN apk add --update --no-cache g++ gcc libxslt-dev
+# Steps to install uv (https://docs.astral.sh/uv/guides/integration/docker/#installing-uv)
+ENV UV_VERSION=0.8.13
+ADD https://astral.sh/uv/$UV_VERSION/install.sh /uv-installer.sh
 
-COPY requirements.txt /tmp/
+# Run the installer then remove it
+RUN sh /uv-installer.sh && rm /uv-installer.sh
 
-RUN pip install --no-cache-dir -r /tmp/requirements.txt &&\
-    addgroup -g 1000 esdlgroup &&\
-    adduser -u 1000 -G esdlgroup -h /home/esdluser -D esdluser &&\
-    mkdir /storage &&\
-    chown esdluser: /storage
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
 
-VOLUME /storage
+WORKDIR /code
 
-WORKDIR /home/esdluser
-
-USER esdluser
+# Install dependencies
+COPY ./pyproject.toml ./uv.lock ./
+RUN uv sync
 
 COPY . .
 
-CMD ["sh", "-c", "waitress-serve --listen *:$PORT --call esdlvalidator.api.manage:create_app"]
+CMD ["uv", "run", "waitress-serve", "--listen", "*:5000", "--call", "esdlvalidator.api.manage:create_app"]

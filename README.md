@@ -191,6 +191,13 @@ To run the service in debug mode.
 uv run app.py
 ```
 
+### Run ESDL-validator using waitress
+
+An example how to start the service using waitress.
+
+```
+uv run waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
+```
 
 ### Testing
 
@@ -227,7 +234,6 @@ Setting up Git hooks...
 ✅ Git hook installed: .git/hooks/pre-push
 ```
 
-
 #### Examples
 
 When pushing to the internal gitlab repository with `git push`, you would see message like below and then proceed.
@@ -250,31 +256,13 @@ esdlvalidator/validation/functions/projects/nwn/test.py
 
 ## Docker
 
-To test locally on docker desktop:
+To test locally with docker desktop:
 
 ```
-docker-compose up --build
+docker-compose -f docker-compose.yml up --build -d
 ```
 
-Then go to [localhost:3011]() and `schema` POST to add a validation schema, `schema` GET will give a list of loaded
-schemas.
-To test the validator use `validationToMessages` POST with the esdl in regular text and the schema ID.
-
-### OLD
-
-Build example
-
-```
-docker build -t esdl-validator .
-```
-
-Run example for esdl-validator with logging set to DEBUG and the database file stored and read outside of the container.
-
-```
-docker run -p 8080:80 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
-```
-
-The service should now be accesible on ```localhost:8080```
+The service should now be accesible on ```localhost:3011```
 
 ## Validation
 

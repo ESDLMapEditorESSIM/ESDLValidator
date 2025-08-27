@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   mapeditor-net:
     driver: bridge
@@ -15,6 +13,7 @@ services:
       - MONGODB_HOST=mongo
       - MONGODB_PORT=27017
       - PYTHONUNBUFFERED=1
+      - ESDLVALIDATOR_LOG_LEVEL=DEBUG
     volumes:
       - validator-storage:/storage
     networks:
