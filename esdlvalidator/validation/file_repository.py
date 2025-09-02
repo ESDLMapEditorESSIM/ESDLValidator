@@ -13,8 +13,6 @@ logger = logging.getLogger(__name__)
 
 class FileSchemaRepository(SchemaRepository):
     """
-    DEPRECATED. Use MongoSchemaRepository instead.
-
     Repository for retrieving, adding, deleting validation schemas
     """
 

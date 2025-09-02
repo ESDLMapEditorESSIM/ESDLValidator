@@ -120,6 +120,8 @@ esdl-validator can be configured using the following environment variables.
 | ESDLVALIDATOR_ENDPOINT_PREFIX | Prefix of the endpoint, for example /api                 | -                             |
 | ESDLVALIDATOR_DEFAULT_CORS    | Enable the default CORS, accepting everything            | False                         |
 | ESDLVALIDATOR_LOG_LEVEL       | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO                          |
+| MONGODB_HOST                  | Host of MongoDB repository                               | localhost                     | 
+| MONGODB_PORT                  | Port of MongoDB repository                               | 27017                         | 
 
 ## validation schema
 
@@ -185,7 +187,9 @@ To work with the latest version of ESDL, make sure `pyESDL>={version}` in `pypro
 
 ### Run ESDL-validator in develop/debug mode
 
-To run the service in debug mode.
+ESDL Validator uses MongoDB to store schema information. Therefore, make sure there is a MongoDB instance can be connected with. The host and port of MongoDB service can be configured via environment variables `MONGODB_HOST` and `MONGODB_PORT`. The easy way to start is to use `docker-compose.yml` file to start both containers. See the [Docker](#docker) section below.
+
+Alternatively, to run ESDL Validator in a debug mode.
 
 ```
 uv run app.py
@@ -198,6 +202,16 @@ An example how to start the service using waitress.
 ```
 uv run waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
 ```
+
+### Docker
+
+To start ESDL Validator together with MongoDB using docker compose:
+
+```
+docker-compose -f docker-compose.yml up --build -d
+```
+
+The service should now be accesible on ```localhost:3011```
 
 ### Testing
 
@@ -253,16 +267,6 @@ esdlvalidator/validation/functions/projects/nwn/test.py
 ➡️ These files must not be pushed to GitHub. Push to GitLab is allowed.
 ```
 
-
-## Docker
-
-To test locally with docker desktop:
-
-```
-docker-compose -f docker-compose.yml up --build -d
-```
-
-The service should now be accesible on ```localhost:3011```
 
 ## Validation
 
