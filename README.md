@@ -11,8 +11,11 @@ docker-compose up
 ```
 
 Then go to `localhost:3011` to see the available endpoints.  
+
 First upload the validation schema `testdata/schemas/schema_Poc.json` using `POST /schema`.  
+
 `GET /schema` returns a list of the available schema id's, names and descriptions.  
+
 `GET /schema/{schema_id_or_name}` returns a schema by id.
 
 To run the validation use `POST /validationToMessages/` with the esdl as string (for instance

@@ -12,10 +12,10 @@ parser.add_argument("data", type=str, required=True)
 parser.add_argument("schemas", type=str, help="List of schema id's, comma separated", required=True)
 
 
-@app.ns_validation.route('/validationToMessages')
+@app.ns_validation_to_msgs.route('/')
 class ValidationToMessagesController(Resource):
 
-    @app.ns_validation.doc(description="Post a new validation schema", responses={
+    @app.ns_validation_to_msgs.doc(description="Post a new validation schema", responses={
         200: "Ok",
         404: "Schema not found",
         400: "Unknown filetype, Invalid ESDL"})
