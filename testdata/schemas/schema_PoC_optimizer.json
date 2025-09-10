@@ -35,6 +35,272 @@
                     "resultMsgJSON": true
                 }
             }
+        },
+        {
+            "name": "heatpump_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatPump are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatpumps",
+                    "args": {
+                        "type": ["HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "heatpumps",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "COP",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "producers_required_attributes_are_set",
+            "description": "Report errors if the required attributes of producer assets are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "producers",
+                    "args": {
+                        "type": ["GeothermalSource", "ResidualHeatSource"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "producers",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatingdemand_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatingDemand assets are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatingdemands",
+                    "args": {
+                        "type": ["HeatingDemand"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "heatingdemands",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatstorage_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatStorage assets are not set. NOTE: excluding ATES here (also a kind of HeatStorage), which is checked separately below.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatstorages",
+                    "args": {
+                        "type": ["HeatStorage"],
+                        "exclude_type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "heatstorages",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "maxChargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "maxDischargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "volume",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "ATES_required_attributes_are_set",
+            "description": "Report errors if the required attributes of ATES assets are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "ates",
+                    "args": {
+                        "type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "ates",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "aquiferTopDepth",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferThickness",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferMidTemperature",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferPorosity",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferPermeability",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferAnisotropy",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "salinity",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "wellCasingSize",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "wellDistance",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "pipe_required_attributes_are_set",
+            "description": "Report errors if the required attributes of Pipe assets are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": ["Pipe"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "pipes",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "diameter",
+                            "count_as_null": ["VALUE_SPECIFIED"]
+                        },
+                        {
+                            "attribute": "length",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatexchange_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatExchange assets are not set.",
+            "type": "error",
+            "message": "Required Attribute Not Set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatexchanges",
+                    "args": {
+                        "type": ["HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "heatexchanges",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "capacity",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
         }
     ]
 }
