@@ -30,7 +30,11 @@ def setup_logger(logLevel: str):
     werkzeug.setLevel(logLevel)
     waitress.setLevel(logLevel)
 
-    logging.basicConfig(level=logLevel, format="%(asctime)s | %(name)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z")
+    logging.basicConfig(
+        level=logLevel,
+        format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S%z"
+    )
 
 
 class AppConfig:
@@ -46,6 +50,7 @@ class AppConfig:
 
         # Setup flask/restx, namespaces
         self.apiBlueprint = Blueprint("api", __name__)
-        self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title, description=self.settings.description)
+        self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title,
+                       description=self.settings.description)
         self.ns_validation = self.api.namespace("validation", "ESDL validation endpoint")
         self.ns_schema = self.api.namespace("schema", "Validation schema endpoint")

@@ -108,7 +108,7 @@ class TestValidator(unittest.TestCase):
             elif validation.name == "costinformation_exists":
                 self.assertEqual(len(validation.warnings), 8)
             elif validation.name == "investmentcost_per_power_undefined":
-                self.assertEqual(len(validation.errors), 1)
+                self.assertEqual(len(validation.errors), 2)
             elif validation.name == "fixed_opex_undefined":
                 self.assertEqual(len(validation.errors), 1)
             elif validation.name == "var_opex_undefined":

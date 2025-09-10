@@ -2,6 +2,153 @@
 
 Service for validating ESDL files against validation schemas
 
+## Usage
+
+To start the service locally run
+
+```bash
+docker-compose up
+```
+
+Then go to `localhost:3011` to see the available endpoints.  
+First upload the validation schema `testdata/schemas/schema_Poc.json` using `POST /schema`.  
+`GET /schema` returns a list of the available schema id's, names and descriptions.  
+`GET /schema/{schema_id_or_name}` returns a schema by id.
+
+To run the validation use `POST /validationToMessages/` with the esdl as string (for instance
+`testdata/esdls/Single_pipes.esdl`) and the schema id.
+This should return a response with errors and warnings:
+
+```json
+[
+  {
+    "assetID": "6f45c6f8-e8e2-4378-a910-45140337b9dd",
+    "messages": [
+      {
+        "message": "Only one of supplyTemperature or returnTemperature must be defined for asset 6f45c6f8-e8e2-4378-a910-45140337b9dd (HotSide)",
+        "severity": "ERROR"
+      },
+      {
+        "message": "6f45c6f8-e8e2-4378-a910-45140337b9dd (HotSide) does not have a parallel return asset with the name (HotSide_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "e11a2daa-2e56-4635-afb3-1e23c6d08c33",
+    "messages": [
+      {
+        "message": "e11a2daa-2e56-4635-afb3-1e23c6d08c33's OutPort is unconnected",
+        "severity": "WARNING"
+      }
+    ]
+  },
+  {
+    "assetID": "c407387a-ebfd-41b7-af1b-9cae7aec842b",
+    "messages": [
+      {
+        "message": "c407387a-ebfd-41b7-af1b-9cae7aec842b's InPort is unconnected",
+        "severity": "WARNING"
+      }
+    ]
+  },
+  {
+    "assetID": "e677bac5-48e0-4ac0-b2a9-5a329b00b0d6",
+    "messages": [
+      {
+        "message": "e677bac5-48e0-4ac0-b2a9-5a329b00b0d6's OutPort is unconnected",
+        "severity": "WARNING"
+      }
+    ]
+  },
+  {
+    "assetID": "737494af-8ac4-4ebe-a11a-e89f6f2c415a",
+    "messages": [
+      {
+        "message": "737494af-8ac4-4ebe-a11a-e89f6f2c415a's InPort is unconnected",
+        "severity": "WARNING"
+      },
+      {
+        "message": "737494af-8ac4-4ebe-a11a-e89f6f2c415a (Pipe_7374) does not have a parallel return asset with the name (Pipe_7374_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "363103d6-a32e-40a6-b3a9-ae376c944f6b",
+    "messages": [
+      {
+        "message": "363103d6-a32e-40a6-b3a9-ae376c944f6b (Pipe_3631) does not have a parallel return asset with the name (Pipe_3631_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "83582c37-b692-4432-8430-4e3407ed4c08",
+    "messages": [
+      {
+        "message": "83582c37-b692-4432-8430-4e3407ed4c08 (Pipe_8358) does not have a parallel return asset with the name (Pipe_8358_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "a5142229-9331-4313-a52b-70c3da15f4a9",
+    "messages": [
+      {
+        "message": "a5142229-9331-4313-a52b-70c3da15f4a9 (Pipe_a514) does not have a parallel return asset with the name (Pipe_a514_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "0fc640c8-7f6b-45ae-8e40-2966c1377761",
+    "messages": [
+      {
+        "message": "0fc640c8-7f6b-45ae-8e40-2966c1377761 (Pipe_0fc6) does not have a parallel return asset with the name (Pipe_0fc6_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "a0b0a95a-76c6-4afa-a319-f41297c5be6e",
+    "messages": [
+      {
+        "message": "a0b0a95a-76c6-4afa-a319-f41297c5be6e (Pipe_a0b0) does not have a parallel return asset with the name (Pipe_a0b0_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "f6779198-7d2a-456b-997b-58b9a02cdb2d",
+    "messages": [
+      {
+        "message": "f6779198-7d2a-456b-997b-58b9a02cdb2d (Joint_f677) does not have a parallel return asset with the name (Joint_f677_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "7aae2f5f-c3d4-4041-9577-d0a46124df09",
+    "messages": [
+      {
+        "message": "7aae2f5f-c3d4-4041-9577-d0a46124df09 (Joint_7aae) does not have a parallel return asset with the name (Joint_7aae_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  },
+  {
+    "assetID": "f5214b94-d097-4fa9-a86a-110a1386f884",
+    "messages": [
+      {
+        "message": "f5214b94-d097-4fa9-a86a-110a1386f884 (Joint_f521) does not have a parallel return asset with the name (Joint_f521_ret)",
+        "severity": "ERROR"
+      }
+    ]
+  }
+]
+```
+
 ## Status
 
 **work in progress**
