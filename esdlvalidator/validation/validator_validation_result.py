@@ -24,7 +24,7 @@ class ValidationResults:
             if not check.result.ok:
                 if isinstance(check.result.message, dict):
                     if check.result.message.get("message") and message not in check.result.message["message"]:
-                        check.result.message["message"] = "[ {0} ]: {1}".format(message, check.result.message["message"])
+                        check.result.message["message"] = "[ {0} ] {1}".format(message, check.result.message["message"])
                     results.append(check.result.message)
                 else:
                     results.append("{0}: {1}".format(message, check.result.message))

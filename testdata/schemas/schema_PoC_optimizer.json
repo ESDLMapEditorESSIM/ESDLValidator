@@ -1,0 +1,40 @@
+{
+    "name": "PoC extended schema to support optimizer requirements",
+    "description": "PoC extended schema to support optimizer asset attributes check",
+    "validations": [
+        {
+            "name": "supported_assets",
+            "description": "Report errors if the ESDL contains assets which are not included in the supported asset list.",
+            "type": "error",
+            "message": "Unsupported Asset",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["EnergyAsset"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "is_supported_types",
+                "dataset": "assets",
+                "args": {
+                    "types": [
+                        "HeatPump",
+                        "HeatProducer",
+                        "GeothermalSource",
+                        "ResidualHeatSource",
+                        "HeatingDemand",
+                        "HeatStorage",
+                        "ATES",
+                        "Pipe",
+                        "HeatExchange",
+                        "Joint"
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        }
+    ]
+}
