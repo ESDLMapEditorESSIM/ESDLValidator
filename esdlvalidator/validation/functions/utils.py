@@ -3,6 +3,38 @@ import builtins
 from pyecore.ecore import EValue
 
 
+def get_attr_or_ref_attr(obj, attr_path: str):
+    """
+    Retrieves an attribute value or a nested reference attribute value from an ESDL object.
+
+    Args:
+        obj: The ESDL object to query.
+        attr_path (str): A dot-separated string representing the attribute path.
+                         For instance, 'power' or 'costInformation.investmentCosts.value'.
+                         The attr_path string is case sensitive.
+
+    Returns:
+        The attribute value if found and set.
+        'Not found' if the attribute does not exist.
+        'Unset' if the attribute exists but is not set.
+    """
+    attr, *remaining = attr_path.split(".", 1)
+
+    not_found_keyword = "Not found"
+    if getattr(obj, attr, not_found_keyword) == not_found_keyword:
+        return not_found_keyword
+
+    if not obj.eIsSet(attr):
+        return "Unset"
+
+    value = obj.eGet(attr)
+
+    if not remaining:
+        return value
+
+    return get_attr_or_ref_attr(value, remaining[0])
+
+
 def has_attribute(obj, name: str) -> bool:
     # give a default "nothing_found" since None can be the actual returned value
     result = get_attribute(obj, name, "nothing_found")
