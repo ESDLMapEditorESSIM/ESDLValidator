@@ -70,8 +70,9 @@ class EsdlValidator:
         return datasets
 
     def __run_select(self, select, datasets):
-        select = FunctionFactory.create(FunctionType.SELECT, select["function"], alias=select["alias"],
-                                        datasets=datasets, args=select["args"])
+        select = FunctionFactory.create(
+            FunctionType.SELECT, select["function"], alias=select["alias"], datasets=datasets, args=select["args"]
+        )
         return select
 
     def __run_check(self, check, datasets):
@@ -86,61 +87,81 @@ class EsdlValidator:
 
         for entry in dataset:
             cleanCheck = copy.deepcopy(check)
-            checkResult = self.__run_get_check_result(cleanCheck, datasets, entry)
-            checkResults.append(checkResult)
-            logger.debug("check done, result: {0}".format(checkResult.result.ok))
+            check_results = self.__run_get_check_result(cleanCheck, datasets, entry)
+            checkResults.extend(check_results)
+            logger.debug("check done")
             logger.debug("-------------------------")
 
         return checkResults
 
     def __run_get_check_result(self, check, datasets, entry):
+        """
+        Return a list of checkResult(s) for the given check function.
+
+        Rules:
+        - If the check passes and no AND/OR → return [checkResult].
+        - If AND conditions fail and no OR → return failed AND results.
+        - If OR condition rescues → return [successful OR checkResult].
+        - If overall failure → return failed results (including base check, failed ANDs, failed ORs).
+        """
         functionName = check["function"]
         args = check["args"]
         logger.debug(
-            "check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args))
+            "check entry: {0}, function: '{1}', args: {2}".format(entry.__class__.__name__, functionName, args)
+        )
 
-        checkResult = FunctionFactory.create(FunctionType.CHECK, functionName, datasets=datasets, value=entry,
-                                             args=args)
-        andList = check["and"] if "and" in check else None
-        orList = check["or"] if "or" in check else None
+        checkResult = FunctionFactory.create(
+            FunctionType.CHECK, functionName, datasets=datasets, value=entry, args=args
+        )
+        andList = check.get("and", [])
+        orList = check.get("or", [])
 
-        # result is ok and no 'and' found
-        if checkResult.result.ok == True and andList is None:
-            logger.debug("result == True, and no 'and' options found")
-            return checkResult
-
-        # result is not ok and there is no or
-        if checkResult.result.ok == False and orList is None:
-            logger.debug("result == False, no 'or' options found, returning result")
-            return checkResult
-
-        # result is ok but there are more and's defined
-        if checkResult.result.ok == True and andList is not None:
-            logger.debug("result == True 'and' options found")
-            andFailed = False
-            for a in andList:
-                checkResult = self.__run_get_check_result(a, datasets, entry)
-                if checkResult.result.ok == False:
-                    andFailed = True
-                    break
-
-            # and resulted in ok == false and there is no or
-            if andFailed == True and orList is None:
-                logger.debug("and is not ok, no 'or' options found, returning result")
-                return checkResult
-
-        # result is not ok but there are or's defined
-        if checkResult.result.ok == False and orList is not None:
-            logger.debug("executing 'or' function")
-            orSuccess = False
+        # -----------------------
+        # Helper: evaluate OR
+        # -----------------------
+        def evaluate_or():
+            failed, success = [], None
             for o in orList:
-                checkResult = self.__run_get_check_result(o, datasets, entry)
-                if checkResult.result.ok == True:
-                    orSuccess = True
+                subResults = self.__run_get_check_result(o, datasets, entry)
+                for sr in subResults:
+                    if sr.result.ok:
+                        success = sr
+                        break
+                if success:
                     break
+                failed.extend(subResults)
+            return success, failed
 
-            if orSuccess == True:
-                logger.debug("result == True, returning result")
-                return checkResult
+        if checkResult.result.ok:
+            # Check ANDs
+            failed_and = []
+            for a in andList:
+                subResults = self.__run_get_check_result(a, datasets, entry)
+                failed_and.extend([sr for sr in subResults if not sr.result.ok])
 
-        return checkResult
+            if not failed_and and not orList:
+                return [checkResult]  # All good, no AND/OR
+            if failed_and and not orList:
+                return failed_and  # AND failed, no OR to rescue
+
+            # OR evaluation
+            or_success, failed_or = evaluate_or()
+            if or_success:
+                return [or_success]  # Rescued by OR
+            return failed_and + failed_or
+
+        else:  # checkResult failed
+            failed_results = [checkResult]
+
+            # OR evaluation
+            or_success, failed_or = evaluate_or()
+            if or_success:
+                return [or_success]  # Rescued by OR
+            failed_results.extend(failed_or)
+
+            # Check ANDs
+            for a in andList:
+                subResults = self.__run_get_check_result(a, datasets, entry)
+                failed_results.extend([sr for sr in subResults if not sr.result.ok])
+
+            return failed_results

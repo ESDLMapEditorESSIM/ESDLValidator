@@ -23,10 +23,19 @@ class ValidationResults:
         for check in checks:
             if not check.result.ok:
                 if isinstance(check.result.message, dict):
-                    if check.result.message.get("message") and message not in check.result.message["message"]:
-                        check.result.message["message"] = "[ {0} ] {1}".format(message, check.result.message["message"])
+                    if check.result.message.get("message"):
+                        check_msg = (
+                            check.result.message["message"]
+                            if type(check.result.message["message"]) == list
+                            else [check.result.message["message"]]
+                        )
+
+                        check.result.message["message"] = {
+                            "validation_message": message,
+                            "check_result_message": check_msg,
+                        }
                     results.append(check.result.message)
                 else:
-                    results.append("{0}: {1}".format(message, check.result.message))
+                    results.append("{0}: {1}".format(message, str(check.result.message)))
 
         return results
