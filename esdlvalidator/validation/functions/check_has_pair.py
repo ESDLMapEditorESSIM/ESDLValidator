@@ -23,11 +23,11 @@ class HasPair(FunctionCheck):
 
         property = self.args["property"]
         if not isinstance(property, str):
-            raise ValueError(f"Invalid function argument. Argument 'property' should be a string, got {type(property)}.")
+            raise TypeError(f"Invalid function argument. Argument 'property' should be a string, got {type(property)}.")
         
         keyword = self.args["keyword"]
         if not isinstance(keyword, str):
-            raise ValueError(f"Invalid function argument. Argument 'keyword' should be a string, got {type(keyword)}.")
+            raise TypeError(f"Invalid function argument. Argument 'keyword' should be a string, got {type(keyword)}.")
 
         properties = self.datasets.get("extracted_properties", {}).get(property)
         if properties is None:
@@ -35,7 +35,7 @@ class HasPair(FunctionCheck):
         
         p = utils.get_attribute(self.value, property)
         if p is None or not isinstance(p, str):
-            raise ValueError(f"Expect '{property}' to a string, got {type(p)}.")
+            raise TypeError(f"Expect '{property}' to a string, got {type(p)}.")
         
         msg = None
         if keyword in p:

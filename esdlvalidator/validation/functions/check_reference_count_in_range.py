@@ -24,18 +24,18 @@ class ReferenceCountInRange(FunctionCheck):
 
         referenceType = self.args["referenceType"]
         if not isinstance(referenceType, str):
-            raise ValueError(f"Invalid function argument. Argument 'referenceType' should be a string, got {type(referenceType)}")
+            raise TypeError(f"Invalid function argument. Argument 'referenceType' should be a string, got {type(referenceType)}")
         
         min = self.args["min"]
         max = self.args["max"]
         if not isinstance(min, int) or not isinstance(max, int):
-            raise ValueError(f"Invalid function argument. Argument 'min' or 'max' should be an integer, got {type(min)}, {type(max)}")
+            raise TypeError(f"Invalid function argument. Argument 'min' or 'max' should be an integer, got {type(min)}, {type(max)}")
 
         r = utils.get_attribute(self.value, referenceType)
         if r is None:
             raise ValueError(f"{self.value.id} ({self.value.name}) has no reference '{referenceType}'")
         if not isinstance(r, Iterable):
-            raise ValueError(f"Reference '{referenceType}' is not iterable")
+            raise TypeError(f"Reference '{referenceType}' is not iterable")
         
         msg = None
         if len(r) > max:

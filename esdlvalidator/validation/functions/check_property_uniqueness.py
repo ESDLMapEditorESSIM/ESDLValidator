@@ -20,7 +20,7 @@ class PropertyUniqueness(FunctionCheck):
 
         property = self.args["property"]
         if not isinstance(property, str):
-            raise ValueError(f"Invalid function argument. Argument 'property' should be a string, got {type(property)}")
+            raise TypeError(f"Invalid function argument. Argument 'property' should be a string, got {type(property)}")
 
         properties = self.datasets.get("extracted_properties", {}).get(property)
         if properties is None:
