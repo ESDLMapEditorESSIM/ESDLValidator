@@ -52,8 +52,8 @@ class AttributesNotSet(FunctionCheck):
             attr_value = utils.get_attr_or_ref_attr(value, attr)
             if attr_value == "Not found":
                 raise ValueError(f"Attribute [{attr}] not found.")
-            elif attr_value == "Unset":
-                results.append(f"[{attr}] value should be defined.")
+            if attr_value == "Unset":
+                results.append(f"[{attr}] should be defined, but is unset.")
             else:
                 # Handle the case when attribute value is set, but should still be considered as unset.
                 for nullValue in count_as_null:
@@ -65,7 +65,7 @@ class AttributesNotSet(FunctionCheck):
                         break
 
         if len(results) > 0:
-            if "resultMsgJSON" in self.args and self.args["resultMsgJSON"]:
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = results
                 return CheckResult(False, msg)
             else:
