@@ -1,4 +1,5 @@
 import json
+from typing import TypedDict, Optional
 
 from flask import request, Response
 from flask_restx import Resource
@@ -12,67 +13,113 @@ parser.add_argument("data", type=str, required=True)
 parser.add_argument("schemas", type=str, help="List of schema id's, comma separated", required=True)
 
 
-@app.ns_validation_to_msgs.route('/')
+class ValidationResult(TypedDict):
+    severity: str
+    validation_message: str
+    check_result_messages: list[str]
+
+
+class AssetMessage(TypedDict):
+    """AssetMessage messages contains a list of all ValidationResult that are associated with the assetID"""
+
+    assetID: str
+    messages: list[ValidationResult]
+
+
+@app.ns_validation_to_msgs.route("/")
 class ValidationToMessagesController(Resource):
 
-    @app.ns_validation_to_msgs.doc(description="Post a new validation schema", responses={
-        200: "Ok",
-        404: "Schema not found",
-        400: "Unknown filetype, Invalid ESDL"})
+    @app.ns_validation_to_msgs.doc(
+        description="Post a new validation schema",
+        responses={200: "Ok", 404: "Schema not found", 400: "Unknown filetype, Invalid ESDL"},
+    )
     @app.api.expect(parser, validate=True)
     def post(self):
-        """Validate an ESDL file against one or more validation schemas and return JSON"""
+        """Validate an ESDL file and return grouped validation messages per asset"""
+
         if request.data:
             # 'Contains the incoming request data as string in case it came with a mimetype Flask does not handle'
             # > Happens with requests from the mapeditor
-            file = request.data.decode('utf-8')
+            file = request.data.decode("utf-8")
         else:
             # with openapi
-            file = request.args['data']
+            file = request.args["data"]
 
         if "schemas" not in request.args:
             return "Bad Request: Required 'schemas' parameter missing", 400
-        schema_list = [id for id in request.args['schemas'].split(',')]
+
+        schema_list = [id for id in request.args["schemas"].split(",")]
+
         try:
             result = validationService.validateContents(file, schema_list)
         except SchemaNotFound as e:
-            return e.message, 400
+            return e.message, e.statusCode
 
-        json_result = []
+        json_result: list[AssetMessage] = []
 
-        if 'schemas' in result:
-            for schema in result['schemas']:
-                if 'validations' in schema:
-                    for validation in schema['validations']:
-                        if 'errors' in validation:
-                            for error in validation['errors']:
-                                if 'offending_asset' in error:
-                                    asset = error['offending_asset']
-                                    msgs = self.get_messages(json_result, asset)
-                                    msgs.append({'message': error['message'], 'severity': 'ERROR'})
-                                    json_result = self.set_messages(json_result, asset, msgs)
-                        if 'warnings' in validation:
-                            for warning in validation['warnings']:
-                                if 'offending_asset' in warning:
-                                    asset = warning['offending_asset']
-                                    msgs = self.get_messages(json_result, asset)
-                                    msgs.append({'message': warning['message'], 'severity': 'WARNING'})
-                                    json_result = self.set_messages(json_result, asset, msgs)
+        for schema in result["schemas"]:
+            if "validations" not in schema:
+                continue
 
-        return Response(response=json.dumps(json_result), status=200, mimetype='text/json')
+            for validation in schema["validations"]:
+                for severity_key in ["errors", "warnings"]:
+                    severity = severity_key.rstrip("s").upper()
+
+                    if severity_key in validation:
+                        for issue in validation[severity_key]:
+                            asset_id = issue.get("offending_asset")
+
+                            if asset_id is None:
+                                raise KeyError(
+                                    f"Can not associate message with an asset as 'offending_asset' key not found."
+                                )
+
+                            message = issue.get("message")
+                            if isinstance(message, dict):
+                                validation_msg = message.get("validation_message", "")
+                                check_msgs = message.get("check_result_message", [])
+                                if isinstance(check_msgs, str):
+                                    check_msgs = [check_msgs]
+                            else:
+                                validation_msg = ""
+                                check_msgs = [str(message)]
+
+                            asset_message = self.get_asset_message(asset_id, json_result)
+
+                            if asset_message is None:
+                                new_asset_message = AssetMessage(
+                                    assetID=asset_id,
+                                    messages=[
+                                        ValidationResult(
+                                            severity=severity,
+                                            validation_message=validation_msg,
+                                            check_result_messages=check_msgs,
+                                        )
+                                    ],
+                                )
+                                json_result.append(new_asset_message)
+
+                            else:
+                                # Try to find existing validation_message entry and extend its check_result_messages
+                                matched = False
+                                for v_result in asset_message["messages"]:
+                                    if v_result["validation_message"] == validation_msg:
+                                        v_result["check_result_messages"].extend(check_msgs)
+                                        matched = True
+                                        break
+
+                                if not matched:
+                                    asset_message["messages"].append(
+                                        ValidationResult(
+                                            severity=severity,
+                                            validation_message=validation_msg,
+                                            check_result_messages=check_msgs,
+                                        )
+                                    )
+
+        return Response(response=json.dumps(json_result), status=200, mimetype="text/json")
 
     @staticmethod
-    def get_messages(result, asset):
-        for element in result:
-            if element["assetID"] == asset:
-                return element["messages"]
-        return []
-
-    @staticmethod
-    def set_messages(result, asset, msgs):
-        for element in result:
-            if element["assetID"] == asset:
-                element["messages"] = msgs
-                return result
-        result.append({"assetID": asset, "messages": msgs})
-        return result
+    def get_asset_message(asset_id: str, assets_messages: list[AssetMessage]) -> Optional[AssetMessage]:
+        """Find and return the AssetMessage for a given asset ID"""
+        return next((m for m in assets_messages if m["assetID"] == asset_id), None)
