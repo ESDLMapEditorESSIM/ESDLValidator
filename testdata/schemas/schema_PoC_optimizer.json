@@ -73,14 +73,15 @@
         },
         {
             "name": "producers_required_attributes_are_set",
-            "description": "Report errors if the required attributes of producer assets are not set.",
+            "description": "Report errors if the required attributes of heat producer assets are not set. HeatProducer also includes GeothermalSource and ResidualHeatSource",
             "type": "error",
             "message": "Required Attribute Not Set",
             "selects": [{
                     "function": "get",
                     "alias": "producers",
                     "args": {
-                        "type": ["GeothermalSource", "ResidualHeatSource"]
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector"]
                     }
                 }
             ],
@@ -300,6 +301,242 @@
                     ],
                     "resultMsgJSON": true
                 }
+            }
+        },
+        {
+            "name": "investmentCosts_EUR_MW_or_kW_are_set",
+            "description": "Report errors if costInformation.investmentCosts [EUR/MW] or [EUR/kW] are not set or incorrectly set for the defined assets.",
+            "type": "error",
+            "message": "Investment Costs [EUR/MW] or [EUR/kW] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "HeatProducer", "ATES", "HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "WATT" },
+                                { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "investmentCosts_EUR_m3_are_set",
+            "description": "Report errors if costInformation.investmentCosts [EUR/m3] are not set or incorrectly set for the defined assets.",
+            "type": "error",
+            "message": "Investment Costs [EUR/m3] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatStorage"],
+                        "exclude_type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "CUBIC_METRE" },
+                                { "attribute": "perMultiplier", "count_as_valid": "Unset" },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "variableOperationalCosts_EUR_MWh_are_set",
+            "description": "Report errors if costInformation.variableOperationalCosts [EUR/MWh] are not set or incorrectly set for the defined assets.",
+            "type": "error",
+            "message": "Variable Operational Costs [EUR/MWh] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "HeatProducer"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.variableOperationalCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.variableOperationalCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "WATTHOUR" },
+                                { "attribute": "perMultiplier", "count_as_valid": "MEGA" },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "fixedOperationalCosts_are_set",
+            "description": "Report errors if costInformation.fixedOperationalCosts [EUR/MW] or [EUR/kW] are not set or incorrectly set for the defined assets.",
+            "type": "error",
+            "message": "Fixed Operational Costs [EUR/MW] or [EUR/kW] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange", "ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.fixedOperationalCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "WATT" },
+                                { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "marginalCosts_are_set",
+            "description": "Report errors if costInformation.marginalCosts [unitless] are not set or incorrectly set for the defined assets.",
+            "type": "warning",
+            "message": "Marginal Costs [unitless] used for priority assigment is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.marginalCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.marginalCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "Unset" },
+                                { "attribute": "perUnit", "count_as_valid": "Unset" },
+                                { "attribute": "perMultiplier", "count_as_valid": "Unset" },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "installationCosts_are_set",
+            "description": "Report warnings if costInformation.installationCosts [EUR] are not set or incorrectly set for the defined assets. TODO: this will be replaced with Fixed Installation Costs and Variable Installation Costs.",
+            "type": "warning",
+            "message": "Installation Costs [EUR] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "HeatProducer", "HeatStorage", "HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "assets",
+                "args": {
+                    "checks": [
+                        { "attribute": "costInformation.installationCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_are_valid",
+                        "args": {
+                            "reference_path": "costInformation.installationCosts.profileQuantityAndUnit",
+                            "checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "Unset" },
+                                { "attribute": "perMultiplier", "count_as_valid": "Unset" },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
             }
         }
     ]
