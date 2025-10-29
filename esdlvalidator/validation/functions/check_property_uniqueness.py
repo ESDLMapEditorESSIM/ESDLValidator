@@ -30,8 +30,8 @@ class PropertyUniqueness(FunctionCheck):
         if p is not None:
             counts = properties.count(p)
             if counts > 1:
-                msg = f"{self.value.id} has a non-unique '{property}' ({p}), it occurs {counts} times in this ESDL"
-                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                msg = f"{self.value.id} has a non-unique [{property}] ({p}), it occurs {counts} times in this ESDL"
+                if self.args.get("resultMsgJSON"):
                     result = { "offending_asset": self.value.id, "message": msg }
                     return CheckResult(False, result)
                 else:

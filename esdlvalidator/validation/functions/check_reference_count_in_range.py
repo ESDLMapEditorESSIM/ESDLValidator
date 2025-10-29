@@ -3,7 +3,6 @@ from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
-
 @FunctionFactory.register(FunctionType.CHECK, "reference_count_in_range")
 class ReferenceCountInRange(FunctionCheck):
 
@@ -39,12 +38,12 @@ class ReferenceCountInRange(FunctionCheck):
         
         msg = None
         if len(r) > max:
-            msg = f"{self.value.id} ({self.value.name}) has {len(r)} {referenceType}, more than the allowed maximum ({max})"
+            msg = f"{self.value.name} (id: {self.value.id}) has ({len(r)}) [{referenceType}], more than the allowed maximum ({max})"
         elif len(r) < min:
-            msg = f"{self.value.id} ({self.value.name}) has {len(r)} {referenceType}, less than the allowed minimum ({min})"
+            msg = f"{self.value.name} (id: {self.value.id}) has ({len(r)}) [{referenceType}], less than the allowed minimum ({min})"
 
         if msg:
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 result = { "offending_asset": self.value.id, "message": msg }
                 return CheckResult(False, result)
             else:

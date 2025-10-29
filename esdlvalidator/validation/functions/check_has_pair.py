@@ -41,17 +41,17 @@ class HasPair(FunctionCheck):
         if keyword in p:
             p_paired = p.replace(keyword, "")
             if p_paired not in properties:
-                msg = f"{self.value.id} ({self.value.name}) does not have a paired entity with '{property}' = '{p_paired}'"
+                msg = f"{self.value.name} (id: {self.value.id}) does not have a paired entity with [{property}] = '{p_paired}'"
         else:
             has_paired = any(
                 keyword in item and item.replace(keyword, "") == p 
                 for item in properties
             )
             if not has_paired:
-                msg = f"{self.value.id} ({self.value.name}) does not have a paired entity with '{property}' property containing: '{p}' and '{keyword}'"
+                msg = f"{self.value.name} (id: {self.value.id}) does not have a paired entity with [{property}] containing: '{p}' and '{keyword}'"
 
         if msg:
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 result = { "offending_asset": self.value.id, "message": msg }
                 return CheckResult(False, result)
             else:

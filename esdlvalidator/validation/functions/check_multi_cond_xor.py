@@ -24,14 +24,14 @@ class ContainsMultiConditionCheck(FunctionCheck):
         msg = {"offending_asset": self.value.id}
         if "properties" not in self.args or "violations" not in self.args:
             result = "Bad Schema: Either properties or violations missing from schema for this check"
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
                 return CheckResult(False, result)
         if len(self.args["properties"]) != len(self.args["violations"]):
             result = "Bad Schema: Number of properties don't match number of violations"
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
@@ -43,7 +43,7 @@ class ContainsMultiConditionCheck(FunctionCheck):
             v = self.args["violations"][i]
             if not utils.has_attribute(self.value, p):
                 result = "property {0} not found".format(p)
-                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                if self.args.get("resultMsgJSON"):
                     msg["message"] = result
                     return CheckResult(False, msg)
                 else:
@@ -56,9 +56,8 @@ class ContainsMultiConditionCheck(FunctionCheck):
             fail = True
 
         if fail:
-            result = "Only one of {} must be defined for asset {} ({})".format(" or ".join(self.args['properties']),
-                                                                               self.value.id, self.value.name)
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            result = f"One of {' or '.join(self.args['properties'])} must be defined for {self.value.__class__.__name__} (id: {self.value.id}, name: {self.value.name})"
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
