@@ -314,42 +314,6 @@
                         {
                             "attribute": "name",
                             "count_as_null": [""]
-                        },
-                        {
-                            "attribute": "aquiferTopDepth",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "aquiferThickness",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "aquiferMidTemperature",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "aquiferPorosity",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "aquiferPermeability",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "aquiferAnisotropy",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "salinity",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "wellCasingSize",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "wellDistance",
-                            "count_as_null": [0.0]
                         }
                     ],
                     "resultMsgJSON": true

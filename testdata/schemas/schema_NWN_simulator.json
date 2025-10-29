@@ -1,0 +1,70 @@
+{
+    "name": "Simulator validation schema",
+    "description": "Schema to validate simulator requirements",
+    "validations": [
+        {
+            "name": "ATES_required_attributes_are_set",
+            "description": "Report errors if the required attributes of ATES assets are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "ates",
+                    "args": {
+                        "type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_not_null",
+                "dataset": "ates",
+                "args": {
+                    "checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "aquiferTopDepth",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferThickness",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferMidTemperature",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferPorosity",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferPermeability",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "aquiferAnisotropy",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "salinity",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "wellCasingSize",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "wellDistance",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        }
+    ]
+}
