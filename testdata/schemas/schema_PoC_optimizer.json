@@ -388,14 +388,15 @@
         },
         {
             "name": "connected_as_producer",
-            "description": "Find if assets are connected as producers (Outport on supply network)",
+            "description": "Find if assets are connected as producers (Outport on supply network). HeatProducer also includes GeothermalSource and ResidualHeatSource",
             "type": "error",
             "message": "Asset is not connected as producer. Check if ports or carriers have been added properly (InPort with return carrier assigned; OutPort with supply carrier assigned; Temperature of OutPort should be greater than Temperature of InPort)",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["Producer", "GasHeater"]
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector"]
                     }
                 }
             ],
@@ -443,7 +444,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["Consumer", "HeatStorage"]
+                        "type": ["HeatingDemand", "HeatStorage"]
                     }
                 }
             ],
@@ -1002,6 +1003,45 @@
                     "property": "name",
                     "keyword": "_ret",
                     "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatingdemand_profile_is_set",
+            "description": "Report errors if HeatingDemand assets do not have InPort profile properly defined",
+            "type": "error",
+            "message": "InPort heating demand profile [Power in MW] or [Power in kW] is missing or incorrectly defined.",
+            "selects": [
+                {
+                    "function": "get_references",
+                    "alias": "heatingDemandInPorts",
+                    "args": {
+                        "assetType": "HeatingDemand",
+                        "referenceType": "InPort"
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "heatingDemandInPorts",
+                "args": {
+                    "ref": {
+                        "path": "profile",
+                        "ref_list_filter": {
+                            "is_type": "InfluxDBProfile"
+                        }
+                    },
+                    "null_checks": [
+                        { "attribute": "multiplier", "count_as_null": [0.0] },
+                        { "attribute": "profileQuantityAndUnit", "count_as_null": [] }
+                    ],
+                    "valid_checks": [
+                        { "attribute": "profileQuantityAndUnit.reference.physicalQuantity", "count_as_valid": "POWER" },
+                        { "attribute": "profileQuantityAndUnit.reference.unit", "count_as_valid": "WATT" },
+                        { "attribute": "profileQuantityAndUnit.reference.multiplier", "count_as_valid": ["MEGA", "KILO"] }
+                    ],
+                    "resultMsgJSON": true,
+                    "resultMsgAtParentNode": true
                 }
             }
         }

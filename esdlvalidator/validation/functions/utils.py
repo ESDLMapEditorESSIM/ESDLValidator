@@ -1,6 +1,7 @@
 import builtins
 
-from pyecore.ecore import EValue
+from esdlvalidator.core.esdl import utils as esdlUtils
+from pyecore.ecore import EValue, EOrderedSet
 
 
 def get_attr_or_ref_attr(obj, attr_path: str):
@@ -34,6 +35,31 @@ def get_attr_or_ref_attr(obj, attr_path: str):
 
     return get_attr_or_ref_attr(value, remaining[0])
 
+
+def get_ref(references: EOrderedSet, ref_filter: dict):
+    """
+    Filters a set of ESDL references to find the first entity matching the given type and attribute criteria.
+
+    Args:
+        references: A collection of ESDL entities.
+        ref_filter: A dictionary with keys:
+            - 'is_type': the expected ESDL type as a string.
+            - 'match': [optional] a dictionary of attribute names and expected values.
+
+    Returns:
+        The first matching entity, or None if no match is found.
+    """
+    ref_type = ref_filter["is_type"]
+    match_dict = ref_filter.get("match", {})
+    esdl_type = esdlUtils.get_esdl_class_from_string(ref_type)[0]
+
+    for entity in references:
+        if not isinstance(entity, esdl_type):
+            continue
+        if all(get_attr_or_ref_attr(entity, key) == value for key, value in match_dict.items()):
+            return entity
+
+    return None
 
 def has_attribute(obj, name: str) -> bool:
     # give a default "nothing_found" since None can be the actual returned value
