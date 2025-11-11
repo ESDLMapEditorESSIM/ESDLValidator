@@ -168,10 +168,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "heatpumps",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -185,6 +185,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -204,10 +205,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "producers",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -217,6 +218,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -235,10 +237,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "heatingdemands",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -248,6 +250,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -267,10 +270,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "heatstorages",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -288,6 +291,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -307,15 +311,16 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "ates",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -334,10 +339,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "pipes",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -351,6 +356,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -369,10 +375,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "heatexchanges",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -382,6 +388,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
@@ -498,20 +505,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.investmentCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATT" },
                                 { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
@@ -538,20 +549,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.investmentCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATT" },
                                 { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
@@ -578,20 +593,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.investmentCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "METRE" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },
@@ -619,20 +638,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.investmentCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.investmentCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.investmentCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "CUBIC_METRE" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },
@@ -658,20 +681,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.variableOperationalCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.variableOperationalCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.variableOperationalCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATTHOUR" },
                                 { "attribute": "perMultiplier", "count_as_valid": "MEGA" },
@@ -697,20 +724,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.installationCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.installationCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.installationCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "Unset" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },
@@ -736,20 +767,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.installationCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.installationCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.installationCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "Unset" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },
@@ -775,20 +810,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.fixedOperationalCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATT" },
                                 { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
@@ -814,20 +853,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.fixedOperationalCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATT" },
                                 { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
@@ -854,20 +897,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.fixedOperationalCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.fixedOperationalCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "CUBIC_METRE" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },
@@ -893,20 +940,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.fixedMaintenanceCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.fixedMaintenanceCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.fixedMaintenanceCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "WATT" },
                                 { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
@@ -933,20 +984,24 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "assets",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         { "attribute": "costInformation.fixedMaintenanceCosts.value", "count_as_null": [0.0] }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 },
                 "and": [
                     {
-                        "function": "attributes_are_valid",
+                        "function": "attributes_validation",
                         "args": {
-                            "reference_path": "costInformation.fixedMaintenanceCosts.profileQuantityAndUnit",
-                            "checks": [
+                            "ref": { 
+                                "path": "costInformation.fixedMaintenanceCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
                                 { "attribute": "unit", "count_as_valid": "EURO" },
                                 { "attribute": "perUnit", "count_as_valid": "CUBIC_METRE" },
                                 { "attribute": "perMultiplier", "count_as_valid": "Unset" },

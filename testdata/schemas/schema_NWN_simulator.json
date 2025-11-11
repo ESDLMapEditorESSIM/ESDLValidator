@@ -17,10 +17,10 @@
                 }
             ],
             "check": {
-                "function": "attributes_not_null",
+                "function": "attributes_validation",
                 "dataset": "ates",
                 "args": {
-                    "checks": [
+                    "null_checks": [
                         {
                             "attribute": "name",
                             "count_as_null": [""]
@@ -62,6 +62,7 @@
                             "count_as_null": [0.0]
                         }
                     ],
+                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }
