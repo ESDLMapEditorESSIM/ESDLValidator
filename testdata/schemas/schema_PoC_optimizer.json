@@ -395,9 +395,9 @@
         },
         {
             "name": "connected_as_producer",
-            "description": "Find if assets are connected as producers (Outport on supply network). HeatProducer also includes GeothermalSource and ResidualHeatSource",
+            "description": "Find if assets are connected as producers (InPort with return carrier assigned; OutPort with supply carrier assigned; Temperature of OutPort should be greater than Temperature of InPort). HeatProducer also includes GeothermalSource and ResidualHeatSource",
             "type": "error",
-            "message": "Asset is not connected as producer. Check if ports or carriers have been added properly (InPort with return carrier assigned; OutPort with supply carrier assigned; Temperature of OutPort should be greater than Temperature of InPort)",
+            "message": "Asset is not connected as a producer. Check if ports, carriers, and the associated supplyTemperature or returnTemperature have been configured properly.",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -420,19 +420,24 @@
                     {
                         "function": "compare_reference_attributes",
                         "args": {
-                            "ref": "port",
                             "left": {
-                                "ref_filter": {
-                                    "is_type": "OutPort",
-                                    "match": { "name": "Out" }
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "Out" }
+                                    }
                                 },
                                 "attribute": "carrier.supplyTemperature"
                             },
                             "operator": "greater_than",
                             "right": {
-                                "ref_filter": {
-                                    "is_type": "InPort",
-                                    "match": { "name": "In" }
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "In" }
+                                    }
                                 },
                                 "attribute": "carrier.returnTemperature"
                             },
@@ -444,9 +449,9 @@
         },
         {
             "name": "connected_as_consumer",
-            "description": "Find if assets are connected as consumers (InPort on supply network)",
+            "description": "Find if assets are connected as consumers (InPort with supply carrier assigned; OutPort with return carrier assigned; Temperature of InPort should be greater than Temperature of OutPort)",
             "type": "error",
-            "message": "Asset is not connected as consumer. Check if ports or carriers have been added properly (InPort with supply carrier assigned; OutPort with return carrier assigned; Temperature of InPort should be greater than Temperature of OutPort)",
+            "message": "Asset is not connected as a consumer. Check if ports, carriers, and the associated supplyTemperature or returnTemperature have been configured properly.",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -468,19 +473,24 @@
                     {
                         "function": "compare_reference_attributes",
                         "args": {
-                            "ref": "port",
                             "left": {
-                                "ref_filter": {
-                                    "is_type": "InPort",
-                                    "match": { "name": "In" }
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "In" }
+                                    }
                                 },
                                 "attribute": "carrier.supplyTemperature"
                             },
                             "operator": "greater_than",
                             "right": {
-                                "ref_filter": {
-                                    "is_type": "OutPort",
-                                    "match": { "name": "Out" }
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "Out" }
+                                    }
                                 },
                                 "attribute": "carrier.returnTemperature"
                             },
@@ -488,6 +498,130 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "heatpump_and_heatexchange_ports_are_configured_properly",
+            "description": "Report errors if HeatPump and HeatExchange ports are not properly configured",
+            "type": "error",
+            "message": "Asset ports are not properly configured. Check if ports or carriers of primary and secondary sides have been added properly",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 4,
+                    "max": 4,
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "PrimIn" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "PrimOut" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    },
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "SecOut" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "SecIn" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heatexchange_ports_and_carrier_temperature_are_configured_properly",
+            "description": "Report errors if HeatExchange ports and carrier temperature are not properly configured",
+            "type": "error",
+            "message": "HeatExchange is not connected properly between primary and secondary side.",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatexchanges",
+                    "args": {
+                        "type": ["HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "compare_reference_attributes",
+                "dataset": "heatexchanges",
+                "args": {
+                    "left": {
+                        "ref": {
+                            "path": "port",
+                            "ref_list_filter": {
+                                "is_type": "InPort",
+                                "match": { "name": "PrimIn" }
+                            }
+                        },
+                        "attribute": "carrier.supplyTemperature"
+                    },
+                    "operator": "greater_than",
+                    "right": {
+                        "ref": {
+                            "path": "port",
+                            "ref_list_filter": {
+                                "is_type": "OutPort",
+                                "match": { "name": "SecOut" }
+                            }
+                        },
+                        "attribute": "carrier.supplyTemperature"
+                    },
+                    "resultMsgJSON": true
+                }
             }
         },
         {

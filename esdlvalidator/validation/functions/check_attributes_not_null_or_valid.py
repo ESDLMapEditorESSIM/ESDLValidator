@@ -73,7 +73,7 @@ class AttributesValidation(FunctionCheck):
                         "type": "string",
                         "description": "Dot-separated reference path (e.g., costInformation.investmentCosts)",
                     },
-                    # To locate the target reference entity when reference is of EOrderedSet type.
+                    # To locate the target reference entity when reference is of EOrderedSet type (e.g., port).
                     "ref_list_filter": {
                         "type": "object",
                         "required": ["is_type"],
@@ -159,7 +159,7 @@ class AttributesValidation(FunctionCheck):
 
         return CheckResult(True)
 
-    def _resolve_reference(self, entity: any, ref: dict, results: list):
+    def _resolve_reference(self, entity: object, ref: dict, results: list):
         if not ref:
             return entity
 
