@@ -38,17 +38,18 @@ class HasPair(FunctionCheck):
             raise TypeError(f"Expect '{property}' to a string, got {type(p)}.")
         
         msg = None
+        entity_type = type(self.value).__name__
         if keyword in p:
             p_paired = p.replace(keyword, "")
             if p_paired not in properties:
-                msg = f"{self.value.name} (id: {self.value.id}) does not have a paired entity with [{property}] = '{p_paired}'"
+                msg = f"[{entity_type}] with [name] = '{self.value.name}' does not have a paired entity with [{property}] = '{p_paired}'"
         else:
             has_paired = any(
                 keyword in item and item.replace(keyword, "") == p 
                 for item in properties
             )
             if not has_paired:
-                msg = f"{self.value.name} (id: {self.value.id}) does not have a paired entity with [{property}] containing: '{p}' and '{keyword}'"
+                msg = f"[{entity_type}] with [name] = '{self.value.name}' does not have a paired entity with [{property}] containing: '{p}' and '{keyword}'"
 
         if msg:
             if self.args.get("resultMsgJSON"):

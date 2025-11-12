@@ -32,7 +32,7 @@ class ReferenceCountInRange(FunctionCheck):
 
         r = utils.get_attribute(self.value, referenceType)
         if r is None:
-            raise ValueError(f"{self.value.id} ({self.value.name}) has no reference '{referenceType}'")
+            raise ValueError(f"{self.value.name} (id: {self.value.id}) has no reference '{referenceType}'")
         if not isinstance(r, Iterable):
             raise TypeError(f"Reference '{referenceType}' is not iterable")
         

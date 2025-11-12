@@ -126,8 +126,8 @@ class CompareRefAttributes(FunctionCheck):
         left_entity = self._resolve_reference(entity, left_args.get("ref"), results)
         right_entity = self._resolve_reference(entity, right_args.get("ref"), results)
 
-        left_val = self._get_attribute_value(left_entity, left_args, results)
-        right_val = self._get_attribute_value(right_entity, right_args, results)
+        left_val = self._get_attribute_value(left_entity, left_args, results) if left_entity else None
+        right_val = self._get_attribute_value(right_entity, right_args, results) if right_entity else None
 
         if left_val is not None and right_val is not None:
             results.extend(self._compare_values(left_val, right_val, operator, left_args, right_args))

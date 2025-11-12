@@ -36,7 +36,7 @@ class IsSupportedTypes(FunctionCheck):
 
         if not supported_type:
             entity_type = type(self.value).__name__
-            result = f"{self.value.id} is of type {entity_type}, which is not included in the supported types [{', '.join(types)}]."
+            result = f"{self.value.name} is of type [{entity_type}], which is not included in the supported types [{', '.join(types)}]."
 
         if self.args.get("resultMsgJSON"):
             msg = {"offending_asset": self.value.id, "message": result}
