@@ -30,6 +30,11 @@ def get_attr_or_ref_attr(obj, attr_path: str):
 
     value = obj.eGet(attr)
 
+    # If the attribute is a reference object (e.g., QuantityAndUnitReference),
+    # try to resolve it to the actual target entity.
+    if hasattr(value, "reference") and value.reference:
+        value = value.reference
+
     if not remaining:
         return value
 

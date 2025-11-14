@@ -1064,7 +1064,7 @@
             "name": "optional_fixedMaintenanceCosts_are_set",
             "description": "Report warnings if costInformation.fixedMaintenanceCosts [EUR/MW/yr] or [[EUR/kW/yr] are not set or incorrectly set for the defined assets.",
             "type": "warning",
-            "message": "Fixed Maintenance Costs [EUR/MW/yr] or [[EUR/kW/yr] is incomplete or incorrect",
+            "message": "Fixed Maintenance Costs [EUR/MW/yr] or [EUR/kW/yr] is incomplete or incorrect",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -1225,9 +1225,9 @@
                         { "attribute": "profileQuantityAndUnit", "count_as_null": [] }
                     ],
                     "valid_checks": [
-                        { "attribute": "profileQuantityAndUnit.reference.physicalQuantity", "count_as_valid": "POWER" },
-                        { "attribute": "profileQuantityAndUnit.reference.unit", "count_as_valid": "WATT" },
-                        { "attribute": "profileQuantityAndUnit.reference.multiplier", "count_as_valid": ["MEGA", "KILO"] }
+                        { "attribute": "profileQuantityAndUnit.physicalQuantity", "count_as_valid": "POWER" },
+                        { "attribute": "profileQuantityAndUnit.unit", "count_as_valid": "WATT" },
+                        { "attribute": "profileQuantityAndUnit.multiplier", "count_as_valid": ["MEGA", "KILO"] }
                     ],
                     "resultMsgJSON": true,
                     "resultMsgAtParentNode": true
