@@ -363,9 +363,9 @@
         },
         {
             "name": "heatexchange_required_attributes_are_set",
-            "description": "Report errors if the required attributes of HeatExchange assets are not set.",
+            "description": "Report errors if the required attributes of HeatExchange assets are not set or incorrectly set.",
             "type": "error",
-            "message": "Required attribute not set",
+            "message": "Required attribute not set or invalid",
             "selects": [{
                     "function": "get",
                     "alias": "heatexchanges",
@@ -388,7 +388,15 @@
                             "count_as_null": [0.0]
                         }
                     ],
-                    "valid_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "efficiency",
+                            "in_range": {
+                                "min": 0.0,
+                                "max": 1.0
+                            }
+                        }
+                    ],
                     "resultMsgJSON": true
                 }
             }

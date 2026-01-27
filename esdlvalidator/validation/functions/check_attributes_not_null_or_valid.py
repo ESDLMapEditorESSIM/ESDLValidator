@@ -116,10 +116,18 @@ class AttributesValidation(FunctionCheck):
             },
             "validCheckItem": {
                 "type": "object",
-                "required": ["attribute", "count_as_valid"],
+                "required": ["attribute"],
                 "properties": {
                     "attribute": {"type": "string", "description": "Attribute name to validate"},
                     "count_as_valid": {"anyOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+                    "in_range": {
+                        "type": "object",
+                        "required": ["min", "max"],
+                        "properties": {
+                            "min": {"type": "number"},
+                            "max": {"type": "number"},
+                        }
+                    }
                 },
                 "additionalProperties": False,
             },
@@ -209,23 +217,43 @@ class AttributesValidation(FunctionCheck):
         results = []
         for check in checks:
             attr = check["attribute"]
-            valid_values = check["count_as_valid"]
-            valid_list = valid_values if isinstance(valid_values, list) else [valid_values]
-
             value = utils.get_attr_or_ref_attr(entity, attr)
 
             if value == self.NOT_FOUND:
                 raise ValueError(f"Attribute [{attr}] not found.")
+            
+            # Valid values check
+            valid_values = check.get("count_as_valid")
+            if valid_values:
+                valid_list = valid_values if isinstance(valid_values, list) else [valid_values]
 
-            if value == self.UNSET:
-                if self.UNSET not in valid_list:
+                if value == self.UNSET:
+                    if self.UNSET not in valid_list:
+                        results.append(
+                            f"[{attr}] should be {'one of ' if len(valid_list) > 1 else ''}[{', '.join(valid_list)}], but is unset."
+                        )
+                else:
+                    value_str = getattr(value, "name", str(value)).lower()
+                    if value_str not in [v.lower() for v in valid_list]:
+                        results.append(
+                            f"[{attr}] should be {'one of ' if len(valid_list) > 1 else ''}[{', '.join(valid_list)}], but found [{value_str}]."
+                        )
+
+            # Range check
+            in_range = check.get("in_range")
+            if in_range:
+                min = in_range["min"]
+                max = in_range["max"]
+
+                if value == self.UNSET:
                     results.append(
-                        f"[{attr}] should be {'one of ' if len(valid_list) > 1 else ''}[{', '.join(valid_list)}], but is unset."
+                        f"[{attr}] should be in range [{min}, {max}], but is unset."
                     )
-            else:
-                value_str = getattr(value, "name", str(value)).lower()
-                if value_str not in [v.lower() for v in valid_list]:
+                    break
+
+                if not (min <= value <= max):
                     results.append(
-                        f"[{attr}] should be {'one of ' if len(valid_list) > 1 else ''}[{', '.join(valid_list)}], but found [{value_str}]."
+                        f"[{attr}] should be in range [{min}, {max}], but found [{value}]."
                     )
+
         return results
