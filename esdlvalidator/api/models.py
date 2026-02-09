@@ -42,5 +42,7 @@ schema = app.api.model("schema", {
     "id": fields.String(required=False, description="ID of the validation schema", example="6027a402e658599189817ba2"),
     "name": fields.String(required=True, description="Name of the validation schema", example="My validation schema"),
     "description": fields.String(required=True, description="Description of the validation schema", example='The is a user defined validation schema'),
+    "pre_validation_schemas": fields.List(fields.String, required=False, description="An optional list of schema IDs or names to run before this schema", example=["Schema A"]),
+    "post_validation_schemas": fields.List(fields.String, required=False, description="An optional list of schema IDs or names to run after this schema", example=["Schema C"]),
     "validations": fields.List(fields.Nested(schema_validation), required=True, description="List of validations")
 })
