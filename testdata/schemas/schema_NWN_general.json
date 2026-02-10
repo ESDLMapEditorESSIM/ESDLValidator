@@ -1,0 +1,615 @@
+{
+    "name": "NWN general validation schema",
+    "description": "Schema to perform general validations according to the NWN project requirements",
+    "validations": [
+        {
+            "name": "supported_assets",
+            "description": "Report errors if the ESDL contains assets which are not included in the supported asset list.",
+            "type": "error",
+            "message": "Unsupported asset",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["EnergyAsset"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "is_supported_types",
+                "dataset": "assets",
+                "args": {
+                    "types": [
+                        "HeatPump",
+                        "HeatProducer",
+                        "GeothermalSource",
+                        "ResidualHeatSource",
+                        "HeatingDemand",
+                        "HeatStorage",
+                        "ATES",
+                        "Pipe",
+                        "HeatExchange",
+                        "Joint"
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heat_carriers",
+            "description": "Check if heat carriers are available and correctly configured.",
+            "type": "error",
+            "message": "Energy carrier is incorrectly defined",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatcarriers",
+                    "args": {
+                        "type": "HeatCommodity"
+                    }
+                }
+            ],
+            "check": {
+                "function": "multi_cond_xor",
+                "dataset": "heatcarriers",
+                "args": {
+                    "properties": ["supplyTemperature", "returnTemperature"],
+                    "violations": [0.0, 0.0],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "pipe_connected_to_pipe",
+            "description": "Check if no Pipes are erroneously connected to other Pipes",
+            "type": "error",
+            "message": "Pipe connected to another pipe",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": "Pipe"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_connected_to",
+                "dataset": "pipes",
+                "args": {
+                    "assetType": "Pipe",
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "asset_connected_to_joint",
+            "description": "Find if no assets other than pipes are connected to Joints",
+            "type": "error",
+            "message": "Asset connected to joint",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "energy_assets",
+                    "args": {
+                        "type": ["Producer", "Consumer", "Storage", "Conversion", "Joint"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_connected_to",
+                "dataset": "energy_assets",
+                "args": {
+                    "assetType": "Joint",
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "unconnected_port",
+            "description": "Check if any port is left unconnected",
+            "type": "error",
+            "message": "Unconnected port",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": "EnergyAsset"
+                    }
+                }
+            ],
+            "check": {
+                "function": "unconnected_port",
+                "dataset": "assets",
+                "args": {
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "number_ports",
+            "description": "Find if joint does not have exactly 2 ports",
+            "type": "error",
+            "message": "Number of ports incorrect",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": "Joint"
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 2,
+                    "max": 2,
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "non_unique_names",
+            "description": "The asset must have a unique name",
+            "type": "error",
+            "message": "Asset name should be unique",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "energy_assets",
+                    "args": {
+                        "type": ["EnergyAsset"],
+                        "property": ["name"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "property_uniqueness",
+                "dataset": "energy_assets",
+                "args": {
+                    "property": "name",
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "supply_return_combination",
+            "description": "Pipes, joints and heat commodities must have a name with +_ret for return network",
+            "type": "error",
+            "message": "Pipe, Joint, or HeatCommodity must have a paired entity. (A combination of supply and return parts, and with a suffix of _ret on the return entity name)",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes_joints",
+                    "args": {
+                        "type": ["Pipe", "Joint", "HeatCommodity"],
+                        "property": ["name"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "has_pair",
+                "dataset": "pipes_joints",
+                "args": {
+                    "property": "name",
+                    "keyword": "_ret",
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatpump_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatPump are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatpumps",
+                    "args": {
+                        "type": ["HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "heatpumps",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "COP",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "producers_required_attributes_are_set",
+            "description": "Report errors if the required attributes of heat producer assets are not set. HeatProducer also includes GeothermalSource and ResidualHeatSource",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "producers",
+                    "args": {
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "producers",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatingdemand_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatingDemand assets are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatingdemands",
+                    "args": {
+                        "type": ["HeatingDemand"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "heatingdemands",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatstorage_required_attributes_are_set",
+            "description": "Report errors if the required attributes of HeatStorage assets are not set. NOTE: excluding ATES here (also a kind of HeatStorage), which is checked separately below.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatstorages",
+                    "args": {
+                        "type": ["HeatStorage"],
+                        "exclude_type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "heatstorages",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "maxChargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "maxDischargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "volume",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "pipe_required_attributes_are_set",
+            "description": "Report errors if the required attributes of Pipe assets are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": ["Pipe"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "pipes",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "diameter",
+                            "count_as_null": ["VALUE_SPECIFIED"]
+                        },
+                        {
+                            "attribute": "length",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "connected_as_producer",
+            "description": "Find if assets are connected as producers (InPort with return carrier assigned; OutPort with supply carrier assigned; Temperature of OutPort should be greater than Temperature of InPort). HeatProducer also includes GeothermalSource and ResidualHeatSource",
+            "type": "error",
+            "message": "Asset is not connected as a producer. Check if ports, carriers, and the associated supplyTemperature or returnTemperature have been configured properly.",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 2,
+                    "max": 2,
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "Out" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "In" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "connected_as_consumer",
+            "description": "Find if assets are connected as consumers (InPort with supply carrier assigned; OutPort with return carrier assigned; Temperature of InPort should be greater than Temperature of OutPort)",
+            "type": "error",
+            "message": "Asset is not connected as a consumer. Check if ports, carriers, and the associated supplyTemperature or returnTemperature have been configured properly.",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatingDemand", "HeatStorage"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 2,
+                    "max": 2,
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "In" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "Out" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heatpump_and_heatexchange_ports_are_configured_properly",
+            "description": "Report errors if HeatPump and HeatExchange ports are not properly configured",
+            "type": "error",
+            "message": "Asset ports are not properly configured. Check if ports or carriers of primary and secondary sides have been added properly",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 4,
+                    "max": 4,
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "PrimIn" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "PrimOut" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    },
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "SecOut" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "SecIn" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heatexchange_ports_and_carrier_temperature_are_configured_properly",
+            "description": "Report errors if HeatExchange ports and carrier temperature are not properly configured",
+            "type": "error",
+            "message": "HeatExchange is not connected properly between primary and secondary side.",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatexchanges",
+                    "args": {
+                        "type": ["HeatExchange"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "compare_reference_attributes",
+                "dataset": "heatexchanges",
+                "args": {
+                    "left": {
+                        "ref": {
+                            "path": "port",
+                            "ref_list_filter": {
+                                "is_type": "InPort",
+                                "match": { "name": "PrimIn" }
+                            }
+                        },
+                        "attribute": "carrier.supplyTemperature"
+                    },
+                    "operator": "greater_than",
+                    "right": {
+                        "ref": {
+                            "path": "port",
+                            "ref_list_filter": {
+                                "is_type": "OutPort",
+                                "match": { "name": "SecOut" }
+                            }
+                        },
+                        "attribute": "carrier.supplyTemperature"
+                    },
+                    "resultMsgJSON": true
+                }
+            }
+        }
+    ]
+}
