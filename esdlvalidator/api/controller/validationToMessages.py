@@ -26,7 +26,7 @@ class AssetMessage(TypedDict):
     messages: list[ValidationResult]
 
 
-@app.ns_validation_to_msgs.route("/")
+@app.ns_validation_to_msgs.route("")
 class ValidationToMessagesController(Resource):
 
     @app.ns_validation_to_msgs.doc(

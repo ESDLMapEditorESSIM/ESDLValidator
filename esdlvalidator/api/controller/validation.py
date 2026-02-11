@@ -10,7 +10,7 @@ parser.add_argument("file", type=FileStorage, location="files", required=True)
 parser.add_argument("schemas", type=list, help="List of schema id's, comma separated", location="form", required=True)
 
 
-@app.ns_validation.route('/')
+@app.ns_validation.route('')
 class ValidationController(Resource):
     """Validate an ESDL file"""
 

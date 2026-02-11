@@ -10,18 +10,38 @@ from esdlvalidator.core.exceptions import SchemaNotFound
 logger = logging.getLogger(__name__)
 
 
-@app.ns_schema.route('/')
+@app.ns_schema.route('')
 class SchemaListController(Resource):
     """Get a list of validation schemas and add new schemas"""
 
-    @app.api.doc(description="Get a summary of validation schemas in the database", responses={
-        200: "Ok"})
+    @app.api.doc(
+        description="Get a summary of validation schemas in the database",
+        params={
+            "id": "Optional filter by one or more schema IDs (repeatable)",
+            "name": "Optional filter by one or more schema names (repeatable)"
+        },
+        responses={200: "Ok"})
     @app.ns_schema.doc(description='Get a list of validation schemas')
     @app.api.marshal_with(models.schema_summary)
     def get(self):
-        """Return a summary of all schemas in the database"""
+        """Return a summary of schemas, optionally filtered by ID or name"""
 
-        return schemaService.get_all(), 200
+        # Accept plural query params
+        ids = request.args.getlist("id")
+        names = request.args.getlist("name")
+
+        all_schemas = schemaService.get_all()
+
+        if not ids and not names:
+            return all_schemas, 200
+
+        filtered = []
+
+        for schema in all_schemas:
+            if schema["id"] in ids or schema["name"] in names:
+                filtered.append(schema)
+
+        return filtered, 200
 
     @app.ns_schema.doc(description="Post a new validation schema", responses={
         201: "Created",
@@ -35,7 +55,7 @@ class SchemaListController(Resource):
         return {"location": "/schema/{0}".format(schema_id)}, 201
 
 
-@app.ns_schema.route('/<string:schema_id_or_name>/')
+@app.ns_schema.route('/<string:schema_id_or_name>')
 class SchemaController(Resource):
     """GET/UPDATE/DELETE validation schemas"""
 
