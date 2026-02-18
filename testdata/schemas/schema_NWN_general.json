@@ -22,6 +22,8 @@
                 "args": {
                     "types": [
                         "HeatPump",
+                        "GasHeater",
+                        "ElectricBoiler",
                         "HeatProducer",
                         "GeothermalSource",
                         "ResidualHeatSource",
@@ -239,6 +241,47 @@
             }
         },
         {
+            "name": "gasheater_or_eboiler_required_attributes_are_set",
+            "description": "Report errors if the required attributes of GasHeater or ElectricBoiler are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["GasHeater", "ElectricBoiler"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "power",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [
+                        {
+                            "attribute": "efficiency",
+                            "in_range": {
+                                "min": 0.0,
+                                "max": 1.0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
             "name": "producers_required_attributes_are_set",
             "description": "Report errors if the required attributes of heat producer assets are not set. HeatProducer also includes GeothermalSource and ResidualHeatSource",
             "type": "error",
@@ -389,7 +432,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatProducer"],
+                        "type": ["HeatProducer", "GasHeater", "ElectricBoiler"],
                         "exclude_type": ["SolarCollector"]
                     }
                 }

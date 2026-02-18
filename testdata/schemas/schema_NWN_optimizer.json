@@ -82,7 +82,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatProducer", "ATES", "HeatExchange"]
+                        "type": ["HeatPump", "GasHeater", "ElectricBoiler", "HeatProducer", "ATES", "HeatExchange"]
                     }
                 }
             ],
@@ -250,7 +250,50 @@
             }
         },
         {
-            "name": "variableOperationalCosts_EUR_MWh_are_set",
+            "name": "required_variableOperationalCosts_EUR_m3_are_set",
+            "description": "Report errors if costInformation.variableOperationalCosts [EUR/m3] are not set or incorrectly set for the defined assets.",
+            "type": "error",
+            "message": "Variable Operational Costs [EUR/m3] is incomplete or incorrect",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["GasHeater"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [
+                        { "attribute": "costInformation.variableOperationalCosts.value", "count_as_null": [0.0] }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "attributes_validation",
+                        "args": {
+                            "ref": { 
+                                "path": "costInformation.variableOperationalCosts.profileQuantityAndUnit" 
+                            },
+                            "null_checks": [],
+                            "valid_checks": [
+                                { "attribute": "unit", "count_as_valid": "EURO" },
+                                { "attribute": "perUnit", "count_as_valid": "CUBIC_METRE" },
+                                { "attribute": "perMultiplier", "count_as_valid": "Unset" },
+                                { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+                            ],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "required_variableOperationalCosts_EUR_MWh_are_set",
             "description": "Report errors if costInformation.variableOperationalCosts [EUR/MWh] are not set or incorrectly set for the defined assets.",
             "type": "error",
             "message": "Variable Operational Costs [EUR/MWh] is incomplete or incorrect",
@@ -258,7 +301,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatProducer"]
+                        "type": ["HeatPump", "ElectricBoiler", "HeatProducer"]
                     }
                 }
             ],
@@ -301,7 +344,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatProducer", "HeatStorage", "HeatExchange"]
+                        "type": ["HeatPump", "GasHeater", "ElectricBoiler", "HeatProducer", "HeatStorage", "HeatExchange"]
                     }
                 }
             ],
@@ -430,7 +473,7 @@
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatProducer"]
+                        "type": ["HeatPump", "GasHeater", "ElectricBoiler", "HeatProducer"]
                     }
                 }
             ],
@@ -510,14 +553,14 @@
         },
         {
             "name": "optional_fixedMaintenanceCosts_are_set",
-            "description": "Report warnings if costInformation.fixedMaintenanceCosts [EUR/MW/yr] or [[EUR/kW/yr] are not set or incorrectly set for the defined assets.",
+            "description": "Report warnings if costInformation.fixedMaintenanceCosts [EUR/MW/yr] or [EUR/kW/yr] are not set or incorrectly set for the defined assets.",
             "type": "warning",
             "message": "Fixed Maintenance Costs [EUR/MW/yr] or [EUR/kW/yr] is incomplete or incorrect",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatProducer", "HeatingDemand", "ATES", "HeatExchange"]
+                        "type": ["HeatPump", "GasHeater", "ElectricBoiler", "HeatProducer", "HeatingDemand", "ATES", "HeatExchange"]
                     }
                 }
             ],
