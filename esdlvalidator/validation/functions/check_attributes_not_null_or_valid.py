@@ -181,15 +181,19 @@ class AttributesValidation(FunctionCheck):
             return None
 
         if isinstance(reference, EOrderedSet):
-            if len(reference) > 1 and ref.get("ref_list_filter"):
+            if len(reference) == 0:
+                entity_to_check = None
+            elif ref.get("ref_list_filter") is not None:
+                # NOTE: Only the first matching entity is returned.
                 entity_to_check = utils.get_ref(reference, ref["ref_list_filter"])
             else:
                 entity_to_check = reference[0]
 
             if entity_to_check is None:
                 match_str = ", ".join(f"[{k}] = '{v}'" for k, v in ref["ref_list_filter"].get("match", {}).items())
+                match_str = f" ({match_str})" if match_str else ""
                 results.append(
-                    f"[{ref_path}] should contain a [{ref['ref_list_filter']['is_type']}] ({match_str}), but not found."
+                    f"[{ref_path}] should contain a [{ref['ref_list_filter']['is_type']}]{match_str}, but not found."
                 )
             return entity_to_check
 
