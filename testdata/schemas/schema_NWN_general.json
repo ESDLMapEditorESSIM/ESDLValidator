@@ -180,30 +180,6 @@
             }
         },
         {
-            "name": "supply_return_combination",
-            "description": "Pipes, joints and heat commodities must have a name with +_ret for return network",
-            "type": "error",
-            "message": "Pipe, Joint, or HeatCommodity must have a paired entity. (A combination of supply and return parts, and with a suffix of _ret on the return entity name)",
-            "selects": [{
-                    "function": "get",
-                    "alias": "pipes_joints",
-                    "args": {
-                        "type": ["Pipe", "Joint", "HeatCommodity"],
-                        "property": ["name"]
-                    }
-                }
-            ],
-            "check": {
-                "function": "has_pair",
-                "dataset": "pipes_joints",
-                "args": {
-                    "property": "name",
-                    "keyword": "_ret",
-                    "resultMsgJSON": true
-                }
-            }
-        },
-        {
             "name": "heatpump_required_attributes_are_set",
             "description": "Report errors if the required attributes of HeatPump are not set.",
             "type": "error",

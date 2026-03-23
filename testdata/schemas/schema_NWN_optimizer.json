@@ -4,6 +4,59 @@
     "pre_validation_schemas": ["NWN general validation schema"],
     "validations": [
         {
+            "name": "supply_return_combination",
+            "description": "Heat commodities must have a name with '_ret' for the return part",
+            "type": "error",
+            "message": "HeatCommodity must have a paired entity. (A combination of supply and return parts, and with a suffix of _ret on the return entity name)",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heat_commodities",
+                    "args": {
+                        "type": ["HeatCommodity"],
+                        "property": ["name"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "has_pair",
+                "dataset": "heat_commodities",
+                "args": {
+                    "property": "name",
+                    "keyword": "_ret",
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "pipe_or_joint_supply_return_combination",
+            "description": "Report a warning if a pipe or joint does not have a (e.g., supply and return) related part specified",
+            "type": "warning",
+            "message": "The pipe or joint is missing a related supply or return entity.",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["Pipe", "Joint"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "related",
+                            "count_as_null": [""]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
             "name": "ATES_required_attributes_for_optimizer_use_are_set",
             "description": "Report errors if the required attributes of ATES assets for optimizer use are not set.",
             "type": "error",
@@ -660,7 +713,7 @@
                     "ref": {
                         "path": "profile",
                         "ref_list_filter": {
-                            "is_type": "InfluxDBProfile"
+                            "is_type": ["InfluxDBProfile", "DataTableProfile"]
                         }
                     },
                     "null_checks": [
