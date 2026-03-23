@@ -6,14 +6,13 @@ networks:
 
 services:
   esdl-validator:
-    build: ./
+#    build: ./
+    image: esdlmapeditoressim/esdlvalidator:0.0.17
     ports:
       - "5000:5000"
     environment:
       - MONGODB_HOST=mongo
       - MONGODB_PORT=27017
-      - PYTHONUNBUFFERED=1
-      - ESDLVALIDATOR_LOG_LEVEL=DEBUG
     volumes:
       - validator-storage:/storage
     networks:
