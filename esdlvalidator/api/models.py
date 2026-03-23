@@ -24,9 +24,9 @@ schema_validation_select = app.api.model("select", {
 })
 
 schema_validation_check = app.api.model("check", {
-    "function": fields.String(required=True, description="Name of the registered check function to run", enum=registered_check_funcs, example="not_null"),
+    "function": fields.String(required=True, description="Name of the registered check function to run", enum=registered_check_funcs, example="attributes_validation"),
     "dataset": fields.String(required=True, description="Dataset to check on, use an alias from the selects", example="areas"),
-    "args": fields.Raw(required=True, description="Arguments passed to the check function", example={"property": "scope", "counts_as_null": ["null"]}),
+    "args": fields.Raw(required=True, description="Arguments passed to the check function", example={"null_checks": [{"attribute": "power", "count_as_null": ["0.0"]}], "valid_checks": []}),
 })
 
 schema_validation = app.api.model("validation", {
