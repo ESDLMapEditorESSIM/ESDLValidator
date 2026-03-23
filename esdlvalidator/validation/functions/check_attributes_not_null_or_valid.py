@@ -78,7 +78,15 @@ class AttributesValidation(FunctionCheck):
                         "type": "object",
                         "required": ["is_type"],
                         "properties": {
-                            "is_type": {"type": "string"},
+                            "is_type": {
+                                "anyOf": [
+                                    {"type": "string"},
+                                    {
+                                        "type": "array",
+                                        "items": {"type": "string"}
+                                    }
+                                ]
+                            },
                             "match": {
                                 "type": "object",
                                 "description": "Optional attribute filters",
@@ -192,8 +200,17 @@ class AttributesValidation(FunctionCheck):
             if entity_to_check is None:
                 match_str = ", ".join(f"[{k}] = '{v}'" for k, v in ref["ref_list_filter"].get("match", {}).items())
                 match_str = f" ({match_str})" if match_str else ""
+                
+                ref_type = ref['ref_list_filter']['is_type']
+                type_list = ref_type if isinstance(ref_type, list) else [ref_type]
+                # Join with " or " for readability
+                if len(type_list) == 1:
+                    type_str = type_list[0]
+                else:
+                    type_str = " or ".join(type_list)
+                
                 results.append(
-                    f"[{ref_path}] should contain a [{ref['ref_list_filter']['is_type']}]{match_str}, but not found."
+                    f"[{ref_path}] should contain a [{type_str}]{match_str}, but not found."
                 )
             return entity_to_check
 

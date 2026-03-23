@@ -54,12 +54,21 @@ def get_ref(references: EOrderedSet, ref_filter: dict):
     Returns:
         The first matching entity, or None if no match is found.
     """
-    ref_type = ref_filter["is_type"]
+    raw_types = ref_filter["is_type"]
     match_dict = ref_filter.get("match", {})
-    esdl_type = esdlUtils.get_esdl_class_from_string(ref_type)[0]
+
+    if isinstance(raw_types, str):
+        type_list = [raw_types]
+    else:
+        type_list = list(raw_types)
+
+    esdl_classes = []
+    for t in type_list:
+        esdl_cls = esdlUtils.get_esdl_class_from_string(t)[0]
+        esdl_classes.append(esdl_cls)
 
     for entity in references:
-        if not isinstance(entity, esdl_type):
+        if not any(isinstance(entity, cls) for cls in esdl_classes):
             continue
         if all(get_attr_or_ref_attr(entity, key) == value for key, value in match_dict.items()):
             return entity

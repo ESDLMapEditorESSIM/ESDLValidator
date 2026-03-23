@@ -431,7 +431,7 @@ and return a result (for every entry) which will be returned by the service, che
 errors based on how the check is configured in the validation schema. New functions can be added easily, by
 adding ```@FunctionFactory.register``` to the class, giving it a name and extending the appropriate function type the
 function will be discovered automatically by the FunctionFactory. To use a function simply reference the function by
-it's name in the validation schema i.e ```"function": "not_null"```
+it's name in the validation schema i.e ```"function": "attributes_validation"```
 
 #### Select
 

@@ -156,6 +156,7 @@ class CompareRefAttributes(FunctionCheck):
 
         if isinstance(reference, EOrderedSet):
             if len(reference) > 1 and ref.get("ref_list_filter"):
+                # NOTE: Only the first matching entity is returned.
                 entity_to_check = utils.get_ref(reference, ref["ref_list_filter"])
             else:
                 entity_to_check = reference[0]
