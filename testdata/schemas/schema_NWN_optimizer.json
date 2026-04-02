@@ -28,16 +28,16 @@
             }
         },
         {
-            "name": "pipe_or_joint_supply_return_combination",
-            "description": "Report a warning if a pipe or joint does not have a (e.g., supply and return) related part specified",
+            "name": "pipe_supply_return_combination",
+            "description": "Report a warning if a pipe does not have a (e.g., supply and return) related part specified",
             "type": "warning",
-            "message": "The pipe or joint is missing a related supply or return entity.",
+            "message": "The pipe is missing a related supply or return entity.",
             "selects": [
                 {
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["Pipe", "Joint"]
+                        "type": ["Pipe"]
                     }
                 }
             ],
