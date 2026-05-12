@@ -130,10 +130,11 @@ class AttributesValidation(FunctionCheck):
                     "count_as_valid": {"anyOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
                     "in_range": {
                         "type": "object",
-                        "required": ["min", "max"],
                         "properties": {
-                            "min": {"type": "number"},
-                            "max": {"type": "number"},
+                            "min": {"type": ["number", "null"]},
+                            "max": {"type": ["number", "null"]},
+                            "min_exclusive": { "type": ["number", "null"] },
+                            "max_exclusive": { "type": ["number", "null"] }
                         }
                     }
                 },
@@ -260,21 +261,45 @@ class AttributesValidation(FunctionCheck):
                             f"[{attr}] should be {'one of ' if len(valid_list) > 1 else ''}[{', '.join(valid_list)}], but found [{value_str}]."
                         )
 
-            # Range check
+            # Range check; Also support lower bound and upper bound only check
             in_range = check.get("in_range")
             if in_range:
-                min = in_range["min"]
-                max = in_range["max"]
+                min_val = in_range.get("min")
+                max_val = in_range.get("max")
+                min_ex = in_range.get("min_exclusive")
+                max_ex = in_range.get("max_exclusive")
+
+                parts = []
+                if min_val is not None:
+                    parts.append(f">= {min_val}")
+                if min_ex is not None:
+                    parts.append(f"> {min_ex}")
+                if max_val is not None:
+                    parts.append(f"<= {max_val}")
+                if max_ex is not None:
+                    parts.append(f"< {max_ex}")
+
+                range_desc = " and ".join(parts) if parts else "no constraints"
 
                 if value == self.UNSET:
                     results.append(
-                        f"[{attr}] should be in range [{min}, {max}], but is unset."
+                        f"[{attr}] should satisfy {range_desc}, but is unset."
                     )
-                    break
+                    continue
 
-                if not (min <= value <= max):
+                violation = False
+                if min_val is not None and value < min_val:
+                    violation = True
+                if min_ex is not None and value <= min_ex:
+                    violation = True
+                if max_val is not None and value > max_val:
+                    violation = True
+                if max_ex is not None and value >= max_ex:
+                    violation = True
+
+                if violation:
                     results.append(
-                        f"[{attr}] should be in range [{min}, {max}], but found [{value}]."
+                        f"[{attr}] should satisfy {range_desc}, but found [{value}]."
                     )
 
         return results

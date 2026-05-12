@@ -183,7 +183,7 @@
             "name": "heatpump_required_attributes_are_set",
             "description": "Report errors if the required attributes of HeatPump are not set.",
             "type": "error",
-            "message": "Required attribute not set",
+            "message": "Required attribute not set or invalid",
             "selects": [
                 {
                     "function": "get",
@@ -203,15 +203,18 @@
                             "count_as_null": [""]
                         },
                         {
-                            "attribute": "power",
-                            "count_as_null": [0.0]
-                        },
-                        {
                             "attribute": "COP",
                             "count_as_null": [0.0]
                         }
                     ],
-                    "valid_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "power",
+                            "in_range": {
+                                "min_exclusive": 0.0
+                            }
+                        }
+                    ],
                     "resultMsgJSON": true
                 }
             }
@@ -220,7 +223,7 @@
             "name": "gasheater_or_eboiler_required_attributes_are_set",
             "description": "Report errors if the required attributes of GasHeater or ElectricBoiler are not set.",
             "type": "error",
-            "message": "Required attribute not set",
+            "message": "Required attribute not set or invalid",
             "selects": [
                 {
                     "function": "get",
@@ -238,18 +241,20 @@
                         {
                             "attribute": "name",
                             "count_as_null": [""]
-                        },
-                        {
-                            "attribute": "power",
-                            "count_as_null": [0.0]
                         }
                     ],
                     "valid_checks": [
                         {
                             "attribute": "efficiency",
                             "in_range": {
-                                "min": 0.0,
+                                "min_exclusive": 0.0,
                                 "max": 1.0
+                            }
+                        },
+                        {
+                            "attribute": "power",
+                            "in_range": {
+                                "min_exclusive": 0.0
                             }
                         }
                     ],
@@ -261,7 +266,7 @@
             "name": "producers_required_attributes_are_set",
             "description": "Report errors if the required attributes of heat producer assets are not set. HeatProducer also includes GeothermalSource and ResidualHeatSource",
             "type": "error",
-            "message": "Required attribute not set",
+            "message": "Required attribute not set or invalid",
             "selects": [{
                     "function": "get",
                     "alias": "producers",
@@ -279,13 +284,16 @@
                         {
                             "attribute": "name",
                             "count_as_null": [""]
-                        },
-                        {
-                            "attribute": "power",
-                            "count_as_null": [0.0]
                         }
                     ],
-                    "valid_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "power",
+                            "in_range": {
+                                "min_exclusive": 0.0
+                            }
+                        }
+                    ],
                     "resultMsgJSON": true
                 }
             }

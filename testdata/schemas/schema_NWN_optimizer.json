@@ -57,6 +57,34 @@
             }
         },
         {
+            "name": "pipe_diameter_validation",
+            "description": "Report warnings if the Pipe diameter is not valid",
+            "type": "warning",
+            "message": "For OPTIONAL pipes, the minimum diameter is DN150. This limit does not apply when the pipe state is ENABLED.",
+            "selects": [{
+                    "function": "get",
+                    "alias": "pipes",
+                    "args": {
+                        "type": ["Pipe"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "pipes",
+                "args": {
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "diameter",
+                            "count_as_valid": ["DN150", "DN200", "DN250", "DN300", "DN350", "DN400", "DN450", "DN500", "DN600", "DN650", "DN700", "DN800", "DN900", "DN1000", "DN1100", "DN1200"]
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
             "name": "ATES_required_attributes_for_optimizer_use_are_set",
             "description": "Report errors if the required attributes of ATES assets for optimizer use are not set.",
             "type": "error",
@@ -116,7 +144,7 @@
                         {
                             "attribute": "efficiency",
                             "in_range": {
-                                "min": 0.0,
+                                "min_exclusive": 0.0,
                                 "max": 1.0
                             }
                         }
