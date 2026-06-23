@@ -60,12 +60,15 @@
             "name": "pipe_diameter_validation",
             "description": "Report warnings if the Pipe diameter is not valid",
             "type": "warning",
-            "message": "For OPTIONAL pipes, the minimum diameter is DN150. This limit does not apply when the pipe state is ENABLED.",
+            "message": "For a pipe with an OPTIONAL state, the minimum diameter should be at least DN150.",
             "selects": [{
                     "function": "get",
                     "alias": "pipes",
                     "args": {
-                        "type": ["Pipe"]
+                        "type": ["Pipe"],
+                        "filter": [
+                            {"attribute": "state", "match": ["OPTIONAL"]}
+                        ]
                     }
                 }
             ],

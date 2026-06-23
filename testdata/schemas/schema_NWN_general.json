@@ -354,14 +354,6 @@
                             "count_as_null": [""]
                         },
                         {
-                            "attribute": "maxChargeRate",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "maxDischargeRate",
-                            "count_as_null": [0.0]
-                        },
-                        {
                             "attribute": "volume",
                             "count_as_null": [0.0]
                         }
@@ -515,16 +507,16 @@
             }
         },
         {
-            "name": "heatpump_and_heatexchange_ports_are_configured_properly",
-            "description": "Report errors if HeatPump and HeatExchange ports are not properly configured",
+            "name": "heatexchange_ports_are_configured_properly",
+            "description": "Report errors if HeatExchange ports are not properly configured",
             "type": "error",
-            "message": "Asset ports are not properly configured. Check if ports or carriers of primary and secondary sides have been added properly",
+            "message": "HeatExchange ports are not properly configured. Check if ports or carriers of primary and secondary sides have been added properly",
             "selects": [
                 {
                     "function": "get",
                     "alias": "assets",
                     "args": {
-                        "type": ["HeatPump", "HeatExchange"]
+                        "type": ["HeatExchange"]
                     }
                 }
             ],
@@ -565,6 +557,183 @@
                             "resultMsgJSON": true
                         }
                     },
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "SecOut" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "SecIn" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heatpump_port_count",
+            "description": "Report errors if a HeatPump does not have exactly 2 ports (air-to-water) or 4 ports (water-to-water).",
+            "type": "error",
+            "message": "HeatPump has an invalid number of ports. Expected 2 (air-to-water system) or 4 (water-to-water system).",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "allowed_counts": [2, 4],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "water_to_water_heatpump_ports_are_configured_properly",
+            "description": "Report errors if Water-to-Water HeatPump ports are not properly configured. TODO: get rid of this temporary fix (filter based on the number of port) after the Water-to-Water heatpump becomes an official ESDL asset",
+            "type": "error",
+            "message": "This error applies when the HeatPump is configured as a water-to-water system. Check if ports or carriers of primary and secondary sides have been added properly",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump"],
+                        "filter": [
+                            {  
+                                "attribute": "port",
+                                "count": {
+                                    "min": 4,
+                                    "max": 4
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 4,
+                    "max": 4,
+                    "resultMsgJSON": true
+                },
+                "and": [
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "PrimIn" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "PrimOut" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    },
+                    {
+                        "function": "compare_reference_attributes",
+                        "args": {
+                            "left": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "OutPort",
+                                        "match": { "name": "SecOut" }
+                                    }
+                                },
+                                "attribute": "carrier.supplyTemperature"
+                            },
+                            "operator": "greater_than",
+                            "right": {
+                                "ref": {
+                                    "path": "port",
+                                    "ref_list_filter": {
+                                        "is_type": "InPort",
+                                        "match": { "name": "SecIn" }
+                                    }
+                                },
+                                "attribute": "carrier.returnTemperature"
+                            },
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "air_to_water_heatpump_ports_are_configured_properly",
+            "description": "Report errors if Air-to-Water HeatPump ports are not properly configured. TODO: get rid of this temporary fix (filter based on the number of port) after the Air-to-Water heatpump becomes an official ESDL asset",
+            "type": "error",
+            "message": "This error applies when the HeatPump is configured as an air-to-water system. Check if ports, carriers, and the associated supplyTemperature or returnTemperature are configured correctly.",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump"],
+                        "filter": [
+                            {  
+                                "attribute": "port",
+                                "count": {
+                                    "min": 2,
+                                    "max": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "reference_count_in_range",
+                "dataset": "assets",
+                "args": {
+                    "referenceType": "port",
+                    "min": 2,
+                    "max": 2,
+                    "resultMsgJSON": true
+                },
+                "and": [
                     {
                         "function": "compare_reference_attributes",
                         "args": {
