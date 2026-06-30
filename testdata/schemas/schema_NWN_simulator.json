@@ -23,18 +23,6 @@
                 "args": {
                     "null_checks": [
                         {
-                            "attribute": "name",
-                            "count_as_null": [""]
-                        },
-                        {
-                            "attribute": "maxChargeRate",
-                            "count_as_null": [0.0]
-                        },
-                        {
-                            "attribute": "maxDischargeRate",
-                            "count_as_null": [0.0]
-                        },
-                        {
                             "attribute": "aquiferTopDepth",
                             "count_as_null": [0.0]
                         },

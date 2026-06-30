@@ -332,7 +332,7 @@
         },
         {
             "name": "heatstorage_required_attributes_are_set",
-            "description": "Report errors if the required attributes of HeatStorage assets are not set. NOTE: excluding ATES here (also a kind of HeatStorage), which is checked separately below.",
+            "description": "Report errors if the required attributes of HeatStorage assets are not set. NOTE: excluding ATES here (a subtype of HeatStorage), which is checked separately.",
             "type": "error",
             "message": "Required attribute not set",
             "selects": [{
@@ -355,6 +355,76 @@
                         },
                         {
                             "attribute": "volume",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "heatstorage_optional_attributes_are_set",
+            "description": "Report warnings if the optional attributes of HeatStorage assets are not set. NOTE: excluding ATES here (a subtype of HeatStorage), which is checked separately.",
+            "type": "warning",
+            "message": "Optional attribute not set",
+            "selects": [{
+                    "function": "get",
+                    "alias": "heatstorages",
+                    "args": {
+                        "type": ["HeatStorage"],
+                        "exclude_type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "heatstorages",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "maxChargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "maxDischargeRate",
+                            "count_as_null": [0.0]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "ATES_required_attributes_are_set",
+            "description": "Report errors if the required attributes of ATES assets are not set.",
+            "type": "error",
+            "message": "Required attribute not set",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "ates",
+                    "args": {
+                        "type": ["ATES"]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "ates",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "name",
+                            "count_as_null": [""]
+                        },
+                        {
+                            "attribute": "maxChargeRate",
+                            "count_as_null": [0.0]
+                        },
+                        {
+                            "attribute": "maxDischargeRate",
                             "count_as_null": [0.0]
                         }
                     ],
@@ -615,7 +685,7 @@
             "name": "water_to_water_heatpump_ports_are_configured_properly",
             "description": "Report errors if Water-to-Water HeatPump ports are not properly configured. TODO: get rid of this temporary fix (filter based on the number of port) after the Water-to-Water heatpump becomes an official ESDL asset",
             "type": "error",
-            "message": "This error applies when the HeatPump is configured as a water-to-water system. Check if ports or carriers of primary and secondary sides have been added properly",
+            "message": "This error applies when the HeatPump is configured as a water-to-water system. Check if ports, carriers, and the associated supplyTemperature or returnTemperature of primary and secondary sides are configured correctly.",
             "selects": [
                 {
                     "function": "get",

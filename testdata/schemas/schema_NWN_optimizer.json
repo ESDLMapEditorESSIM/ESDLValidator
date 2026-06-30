@@ -88,35 +88,6 @@
             }
         },
         {
-            "name": "ATES_required_attributes_for_optimizer_use_are_set",
-            "description": "Report errors if the required attributes of ATES assets for optimizer use are not set.",
-            "type": "error",
-            "message": "Required attribute not set",
-            "selects": [
-                {
-                    "function": "get",
-                    "alias": "ates",
-                    "args": {
-                        "type": ["ATES"]
-                    }
-                }
-            ],
-            "check": {
-                "function": "attributes_validation",
-                "dataset": "ates",
-                "args": {
-                    "null_checks": [
-                        {
-                            "attribute": "name",
-                            "count_as_null": [""]
-                        }
-                    ],
-                    "valid_checks": [],
-                    "resultMsgJSON": true
-                }
-            }
-        },
-        {
             "name": "heatexchange_required_attributes_for_optimizer_use_are_set",
             "description": "Report errors if the required attributes of HeatExchange assets for optimizer use are not set or incorrectly set.",
             "type": "error",
