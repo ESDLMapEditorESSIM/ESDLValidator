@@ -379,44 +379,6 @@ The black format settings can be found under `[tool.black]` in the `pyproject.to
 black .
 ```
 
-### Set up Git hooks
-
-The `pre-push` git hook should be installed to avoid **project-specific** validation functions (which should be defined and stored under `esdlvalidator/validation/functions/projects/`) from being pushed to an open GitHub repository. 
-
-This does not affect when pushing changes to the internal gitlab repository (both project-specific or generic functions can be pushed to remotes).
-
-At the project root, run the command in a bash terminal to set up git hooks.
-
-```bash
-./.githooks/.setup-hooks.sh
-```
-
-You should see the logs below after the successful setup. 
-
-```
-Setting up Git hooks...
-✅ Git hook installed: .git/hooks/pre-push
-```
-
-#### Examples
-
-When pushing to the internal gitlab repository with `git push`, you would see message like below and then proceed.
-
-```
-Pre-push hook triggered for remote https://ci.tno.nl/gitlab/warmingup/chess-preprocessor.git
-...
-```
-
-When pushing to the open GitHub repository with `git push`, and if there are any files and changes made under `esdlvalidator/validation/functions/projects/`, the push action is aborted with the following message.
-
-```
-Pre-push hook triggered for remote https://github.com/ESDLMapEditorESSIM/ESDLValidator.git
-Pushing to GitHub. Checking files under esdlvalidator/validation/functions/projects/ ...
-❌ Push to GitHub rejected! The following files are in the blocked 'esdlvalidator/validation/functions/projects/' directory:
-esdlvalidator/validation/functions/projects/nwn/test.py
-➡️ These files must not be pushed to GitHub. Push to GitLab is allowed.
-```
-
 
 ## Validation
 
@@ -440,3 +402,14 @@ ToDo: Instructions on the select function and how to add new ones
 #### Check
 
 ToDo: Instructions on the check function and how to add new ones
+
+
+git push github Extend_PoC_validator
+
+git tag {version}
+
+git push github {version}
+
+# To be included in example
+
+- attributes_validation
