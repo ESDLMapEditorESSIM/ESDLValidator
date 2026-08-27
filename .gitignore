@@ -145,3 +145,5 @@ cython_debug/
 # Idea project files
 .idea/
 *.iml
+
+%LOCALAPPDATA%/

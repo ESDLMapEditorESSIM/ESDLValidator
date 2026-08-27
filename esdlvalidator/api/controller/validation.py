@@ -10,11 +10,11 @@ parser.add_argument("file", type=FileStorage, location="files", required=True)
 parser.add_argument("schemas", type=list, help="List of schema id's, comma separated", location="form", required=True)
 
 
-@app.ns_validation.route('/')
+@app.ns_validation.route('')
 class ValidationController(Resource):
     """Validate an ESDL file"""
 
-    @app.ns_validation.doc(description="Post a new validation schema", responses={
+    @app.ns_validation.doc(deprecated=True, description="Post a new validation schema", responses={
         200: "Ok",
         404: "Schema not found",
         400: "Unknown filetype, Invalid ESDL"})

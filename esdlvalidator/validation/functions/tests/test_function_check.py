@@ -3,11 +3,12 @@ import unittest
 from esdlvalidator.core.esdl import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionType
 
+testESDL = "testdata/esdls/ameland_energie_2015.esdl"
 
 class TestFunctionCheck(unittest.TestCase):
     """Tests for check functions"""
 
-    def test_check_not_null(self):
+    def test_check_attributes_validation(self):
         """Test if get_esdl_class_from_string returns the correct classes and exceptions"""
 
         datasets = self.get_test_datasets()
@@ -16,13 +17,13 @@ class TestFunctionCheck(unittest.TestCase):
 
         heatingDemandNameNullCount = 0
         for entry in hdGet.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "not_null", datasets=datasets, value=entry, args={"property": "name"})
+            check = FunctionFactory.create(FunctionType.CHECK, "attributes_validation", datasets=datasets, value=entry, args={"null_checks": [{"attribute": "name", "count_as_null": [""]}], "valid_checks": []})
             if not check.result.ok:
                 heatingDemandNameNullCount += 1
 
         powerNullCount = 0
         for entry in ghGet.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "not_null", datasets=datasets, value=entry, args={"property": "power", "counts_as_null": [0, 0.0]})
+            check = FunctionFactory.create(FunctionType.CHECK, "attributes_validation", datasets=datasets, value=entry, args={"null_checks": [{"attribute": "power", "count_as_null": [0, 0.0]}], "valid_checks": []})
             if not check.result.ok:
                 powerNullCount += 1
 
@@ -50,5 +51,5 @@ class TestFunctionCheck(unittest.TestCase):
         self.assertEqual(notOkCount, 1, "There should be 1 not in range")
 
     def get_test_datasets(self):
-        esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
+        esh = utils.get_esh_from_file(testESDL)
         return {"resource": esh.resource}

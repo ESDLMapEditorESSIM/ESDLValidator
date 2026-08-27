@@ -3,14 +3,13 @@ from esdlvalidator.validation.functions import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
     ArgDefinition, FunctionType, CheckResult
 
-
-@FunctionFactory.register(FunctionType.CHECK, "multi_cond")
+@FunctionFactory.register(FunctionType.CHECK, "multi_cond_xor")
 class ContainsMultiConditionCheck(FunctionCheck):
 
     def get_function_definition(self):
         return FunctionDefinition(
-            "multi_cond",
-            "Check if a combination of properties of an asset are in violation (AND-condition)",
+            "multi_cond_xor",
+            "Check if a combination of properties of an asset are in violation (XOR-condition)",
             [
                 ArgDefinition("properties", "The properties that need to checked", True),
                 ArgDefinition("violations", "The property values to check against", True),
@@ -25,36 +24,40 @@ class ContainsMultiConditionCheck(FunctionCheck):
         msg = {"offending_asset": self.value.id}
         if "properties" not in self.args or "violations" not in self.args:
             result = "Bad Schema: Either properties or violations missing from schema for this check"
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
                 return CheckResult(False, result)
         if len(self.args["properties"]) != len(self.args["violations"]):
             result = "Bad Schema: Number of properties don't match number of violations"
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:
                 return CheckResult(False, result)
 
-        fail = True
+        fails = 0
         for i in range(0, len(self.args["properties"])):
             p = self.args["properties"][i]
             v = self.args["violations"][i]
             if not utils.has_attribute(self.value, p):
                 result = "property {0} not found".format(p)
-                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+                if self.args.get("resultMsgJSON"):
                     msg["message"] = result
                     return CheckResult(False, msg)
                 else:
                     return CheckResult(False, result)
-            value = utils.get_attribute(self.value, p)
-            fail = fail and ((isinstance(v, str) and str(v).lower() == str(value).lower()) or (v == value))
+            if utils.get_attribute(self.value, p) == v:
+                fails += 1
+
+        fail = False
+        if fails != len(self.args["properties"])-1:
+            fail = True
 
         if fail:
-            result = "One of {} must be defined".format(" or ".join(self.args['properties']))
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
+            result = f"One of {' or '.join(self.args['properties'])} must be defined for {self.value.__class__.__name__} (id: {self.value.id}, name: {self.value.name})"
+            if self.args.get("resultMsgJSON"):
                 msg["message"] = result
                 return CheckResult(False, msg)
             else:

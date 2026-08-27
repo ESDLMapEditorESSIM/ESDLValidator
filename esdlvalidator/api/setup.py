@@ -1,8 +1,11 @@
 import environ
 import logging
 
+from dotenv import load_dotenv
 from flask import Blueprint
 from flask_restx import Api
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +19,9 @@ class Settings:
     description = environ.var("API for validating ESDL files", name="ESDLVALIDATOR_DESCRIPTION")
     endpointPrefix = environ.var("", name="ESDLVALIDATOR_ENDPOINT_PREFIX")
     useDefaultCors = environ.var(False, converter=bool, name="ESDLVALIDATOR_DEFAULT_CORS")
-    dbLocation = environ.var("schemas.db", name="ESDLVALIDATOR_DB_LOCATION")
     logLevel = environ.var("INFO", name="ESDLVALIDATOR_LOG_LEVEL")
+    mongoHost = environ.var("localhost", name="MONGODB_HOST")
+    mongoPort = environ.var("27017", name="MONGODB_PORT")
 
 
 def setup_logger(logLevel: str):
@@ -31,7 +35,11 @@ def setup_logger(logLevel: str):
     werkzeug.setLevel(logLevel)
     waitress.setLevel(logLevel)
 
-    logging.basicConfig(level=logLevel, format="%(asctime)s | %(name)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%dT%H:%M:%S%z")
+    logging.basicConfig(
+        level=logLevel,
+        format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S%z"
+    )
 
 
 class AppConfig:
@@ -47,8 +55,8 @@ class AppConfig:
 
         # Setup flask/restx, namespaces
         self.apiBlueprint = Blueprint("api", __name__)
-        self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title, description=self.settings.description)
+        self.api = Api(self.apiBlueprint, version=self.settings.version, title=self.settings.title,
+                       description=self.settings.description)
         self.ns_validation = self.api.namespace("validation", "ESDL validation endpoint")
-        self.ns_validation_to_notes = self.api.namespace("validationToNotes", "ESDL-aas validation endpoint")
-        self.ns_validation_to_msgs = self.api.namespace("validationToMessages", "ESDL-aas validation endpoint to return JSON")
+        self.ns_validation_to_msgs = self.api.namespace("validationToMessages", "ESDL validation endpoint to return JSON")
         self.ns_schema = self.api.namespace("schema", "Validation schema endpoint")

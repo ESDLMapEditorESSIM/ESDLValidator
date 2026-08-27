@@ -1,7 +1,11 @@
-import json
-
-from esdlvalidator.validation.functions.function import FunctionFactory, FunctionCheck, FunctionDefinition, \
-    ArgDefinition, FunctionType, CheckResult
+from esdlvalidator.validation.functions.function import (
+    FunctionFactory,
+    FunctionCheck,
+    FunctionDefinition,
+    ArgDefinition,
+    FunctionType,
+    CheckResult,
+)
 
 
 @FunctionFactory.register(FunctionType.CHECK, "unconnected_port")
@@ -10,31 +14,30 @@ class ContainsNotConnectedTo(FunctionCheck):
     def get_function_definition(self):
         return FunctionDefinition(
             "unconnected_port",
-            "Check if a port in any asset is left unconnected",
+            "Check if ports in any asset are left unconnected",
             [
                 ArgDefinition("resultMsgJSON", "Display output in JSON format", False)
-            ]
+            ],
         )
 
     def before_execute(self):
         pass
 
     def execute(self):
-        msg = {"offending_asset": self.value.id}
+        results = []
+
         if len(self.value.port) == 0:
-            result = "{} has no ports".format(self.value.id)
-            if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
-                msg["message"] = result
+            results.append(f"{self.value.id} has no ports.")
+        else:
+            for port in self.value.port:
+                if len(port.connectedTo) == 0:
+                    results.append(f"{port.__class__.__name__} (name: {port.name}) is unconnected.")
+
+        if len(results) > 0:
+            if self.args.get("resultMsgJSON"):
+                msg = {"offending_asset": self.value.id, "message": results}
                 return CheckResult(False, msg)
             else:
-                return CheckResult(False, result)
-        for port in self.value.port:
-            if len(port.connectedTo) == 0:
-                result = "{}'s {} is unconnected".format(self.value.id, port.__class__.__name__)
-                if 'resultMsgJSON' in self.args and self.args['resultMsgJSON']:
-                    msg["message"] = result
-                    return CheckResult(False, msg)
-                else:
-                    return CheckResult(False, result)
-
-        return CheckResult(True)
+                return CheckResult(False, results)
+        else:
+            return CheckResult(True)

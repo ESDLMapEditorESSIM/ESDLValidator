@@ -17,13 +17,16 @@
                 }
             ],
             "check": {
-                "function": "not_null",
+                "function": "attributes_validation",
                 "dataset": "areas",
                 "args": {
-                    "property": "scope",
-                    "counts_as_null": [
-                        "null"
-                    ]
+                    "null_checks": [
+                        {
+                            "attribute": "scope",
+                            "count_as_null": ["null"]
+                        }
+                    ],
+                    "valid_checks": []
                 }
             }
         }
