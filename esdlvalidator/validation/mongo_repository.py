@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -9,8 +8,6 @@ from pymongo import MongoClient
 from esdlvalidator.core.exceptions import NameAlreadyExists, InvalidJSON, SchemaNotFound
 from esdlvalidator.validation.abstract_repository import SchemaRepository
 
-MONGODB_HOST = "MONGODB_HOST"
-MONGODB_PORT = "MONGODB_PORT"
 SCHEMA_DB = "ESDLValidationSchemas"
 SCHEMA_COLLECTION = "schemaCollection"
 log = logging.getLogger(__name__)
@@ -19,10 +16,9 @@ log = logging.getLogger(__name__)
 class MongoSchemaRepository(SchemaRepository):
     """Repository for retrieving, adding, deleting validation schemas"""
 
-    def __init__(self):
-        mongo_host = os.getenv(MONGODB_HOST, default="localhost")
-        mongo_port = os.getenv(MONGODB_PORT, default="27017")
-        self.mongo_client = MongoClient('mongodb://{}:{}/'.format(mongo_host, mongo_port))
+    def __init__(self, host: str = "localhost", port: str = "27017"):
+        log.info("Connecting to MongoDB at {}:{}".format(host, port))
+        self.mongo_client = MongoClient('mongodb://{}:{}/'.format(host, port))
         self.collection = self.mongo_client.get_database(SCHEMA_DB).get_collection(SCHEMA_COLLECTION)
 
     def get_all(self):

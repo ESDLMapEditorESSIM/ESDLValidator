@@ -6,8 +6,7 @@ networks:
 
 services:
   esdl-validator:
-#    build: ./
-    image: esdlmapeditoressim/esdlvalidator:0.0.17
+    image: esdlmapeditoressim/esdlvalidator:latest
     ports:
       - "5000:5000"
     environment:

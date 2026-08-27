@@ -1,8 +1,11 @@
 import environ
 import logging
 
+from dotenv import load_dotenv
 from flask import Blueprint
 from flask_restx import Api
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +20,8 @@ class Settings:
     endpointPrefix = environ.var("", name="ESDLVALIDATOR_ENDPOINT_PREFIX")
     useDefaultCors = environ.var(False, converter=bool, name="ESDLVALIDATOR_DEFAULT_CORS")
     logLevel = environ.var("INFO", name="ESDLVALIDATOR_LOG_LEVEL")
+    mongoHost = environ.var("localhost", name="MONGODB_HOST")
+    mongoPort = environ.var("27017", name="MONGODB_PORT")
 
 
 def setup_logger(logLevel: str):
