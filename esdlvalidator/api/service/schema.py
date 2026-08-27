@@ -1,7 +1,7 @@
 import json
 
 from esdlvalidator.validation.abstract_repository import SchemaRepository
-from esdlvalidator.validation.file_repository import FileSchemaRepository
+from esdlvalidator.core.exceptions import SchemaNotFound
 
 
 class SchemaService:
@@ -18,14 +18,16 @@ class SchemaService:
         """
 
         schemas = self.repo.get_all()
-        return [{"id": str(schema["id"]), "name": schema["name"], "description": schema["description"]} for schema in
-                schemas]
+        return [
+            {"id": str(schema["id"]), "name": schema["name"], "description": schema["description"]}
+            for schema in schemas
+        ]
 
-    def get_by_id(self, id: int):
+    def get_by_id(self, id: str):
         """Get a schema by schema id
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
 
         Returns:
             schema (Document): Schema for given id
@@ -51,6 +53,44 @@ class SchemaService:
 
         return self.repo.get_by_name(name)
 
+    def get_by_id_or_name(self, ids_or_names: list[str]):
+        """
+        Resolve a list of schema identifiers (IDs or names) into full schema objects.
+
+        Args:
+            ids_or_names: List of schema IDs or names, e.g. ["123", "Schema A"]
+
+        Returns:
+            List of schema objects
+
+        Raises:
+            SchemaNotFound: If any schema cannot be resolved
+        """
+        resolved = []
+
+        for value in ids_or_names:
+            schema = None
+
+            # Try ID
+            try:
+                schema = self.get_by_id(value)
+            except Exception:
+                pass
+
+            # Try name
+            if schema is None:
+                try:
+                    schema = self.get_by_name(value)
+                except Exception:
+                    pass
+
+            if schema is None:
+                raise SchemaNotFound(f"Schema '{value}' not found")
+
+            resolved.append(schema)
+
+        return resolved
+
     def insert(self, schema: str):
         """Insert a schema into the database
 
@@ -58,7 +98,7 @@ class SchemaService:
             schema (str): schema as JSON string
 
         Returns:
-            id (int): ID assigned to the document by the database
+            id (str): ID assigned to the document by the database
 
         Raises:
             InvalidJSON: If json is not a valid json string or schema name already exist
@@ -67,11 +107,11 @@ class SchemaService:
 
         return self.repo.insert(json.dumps(schema))
 
-    def delete(self, id: int):
+    def delete(self, id: str):
         """Remove schema by ID
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
 
         Returns:
             schemaID: schema id when found
@@ -82,11 +122,11 @@ class SchemaService:
 
         return self.repo.remove_by_id(id)
 
-    def update(self, id: int, schema: str):
+    def update(self, id: str, schema: str):
         """Update schema by id
 
         Args:
-            id (int): Schema id
+            id (str): Schema id
             shema: schema
 
         Returns:

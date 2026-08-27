@@ -5,7 +5,7 @@ from esdlvalidator.validation.functions.function import FunctionFactory, Functio
 
 
 @FunctionFactory.register(FunctionType.SELECT, "filter_has_property")
-class SelectWhereHasProperty(FunctionSelect):
+class SelectGet(FunctionSelect):
 
     def get_function_definition(self):
         return FunctionDefinition(

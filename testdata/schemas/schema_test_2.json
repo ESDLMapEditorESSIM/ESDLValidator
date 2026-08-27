@@ -1,0 +1,182 @@
+{
+    "name": "Test validation schema 2",
+    "description": "Test validation schema 2 contains a real world scenario with multiple validations, containing 'and' 'or' definitions in the check",
+    "validations": [
+        {
+            "name": "producer_power_cost_or_profile",
+            "description": "An asset of type producer must have a power attribute (asset.power) with marginal cost specified (asset.costInformation.marginalCosts) OR have an energy profile connected to it's outPort (asset.port.profile)",
+            "type": "error",
+            "message": "Consumer missing power and marginal costs or no energy profile connected",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "producers",
+                    "args": {
+                        "type": "Producer"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "producers",
+                "args": {
+                    "property": "power",
+                    "counts_as_null": [
+                        0.0
+                    ]
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "costinformation.marginalcosts.value",
+                            "counts_as_null": [
+                                0.0
+                            ]
+                        }
+                    }
+                ],
+                "or": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "port.profile",
+                            "counts_as_null": ["EOrderedSet()"]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "storage_capacity_and_controlstrategy",
+            "description": "A storage asset needs to have a filled in capacity attribute and a StorageStrategy with charge and discharge costs",
+            "type": "error",
+            "message": "Storage missing capacity or StoreStrategy including 2 marginal costs",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "storages",
+                    "args": {
+                        "type": "storage"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "storages",
+                "args": {
+                    "property": "capacity",
+                    "counts_as_null": [
+                        0.0
+                    ]
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlstrategy.marginalChargeCosts"
+                        }
+                    },
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlstrategy.marginalDischargeCosts"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "gas_heater_marginal_costs_and_driven_by_demand",
+            "description": "Check if a gas heater has marginal cost and driven by demand",
+            "type": "warning",
+            "message": "Gas heater has no marginal cost defined or no driven by demand found",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "gasheaters",
+                    "args": {
+                        "type": "GasHeater"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "gasheaters",
+                "args": {
+                    "property": "costinformation.marginalcosts"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlStrategy"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "heat_pump_marginal_costs_and_driven_by_demand",
+            "description": "Check if a heat pump has marginal cost and driven by demand",
+            "type": "warning",
+            "message": "Heat pump has no marginal cost defined or no driven by demand found",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "heatpumps",
+                    "args": {
+                        "type": "HeatPump"
+                    }
+                }
+            ],
+            "check": {
+                "function": "not_null",
+                "dataset": "heatpumps",
+                "args": {
+                    "property": "costinformation.marginalcosts"
+                },
+                "and": [
+                    {
+                        "function": "not_null",
+                        "args": {
+                            "property": "controlStrategy"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "marginal_cost_in_range",
+            "description": "Check all assets containing costinformation.marginalcosts if the value is in range of 0 and 1",
+            "type": "warning",
+            "message": "Marginalcost not in range",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": "Asset"
+                    }
+                },
+                {
+                    "function": "filter_has_property",
+                    "alias": "assets_with_marginalcosts",
+                    "args": {
+                        "dataset": "assets",
+                        "property": "costinformation.marginalcosts"
+                    }
+                }
+            ],
+            "check": {
+                "function": "in_range",
+                "dataset": "assets_with_marginalcosts",
+                "args": {
+                    "property": "costInformation.marginalCosts.value",
+                    "min": 0,
+                    "max": 1
+                }
+            }
+        }
+    ]
+}

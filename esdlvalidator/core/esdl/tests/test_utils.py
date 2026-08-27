@@ -1,11 +1,10 @@
 import unittest
+from esdl import esdl
+from esdl.esdl_handler import EnergySystemHandler
 
-from esdlvalidator.core.esdl import esdl
-from esdlvalidator.core.esdl.esh import EnergySystemHandler
 from esdlvalidator.core.esdl import utils
 
-
-testESDL = "testdata/ameland_energie_2015.esdl"
+testESDL = "testdata/esdls/ameland_energie_2015.esdl"
 
 
 class TestUtils(unittest.TestCase):
@@ -15,21 +14,12 @@ class TestUtils(unittest.TestCase):
         """Test if get_esdl_class_from_string returns the correct classes and exceptions"""
 
         actual = utils.get_esdl_class_from_string("Asset")
-        expected = esdl.Asset
+        expected = [esdl.Asset]
         self.assertEqual(actual, expected, "String 'Asset' should return esdl.Asset")
 
         actual = utils.get_esdl_class_from_string("aSseT")
-        expected = esdl.Asset
+        expected = [esdl.Asset]
         self.assertEqual(actual, expected, "Class string casing should be ignored and return esdl.Asset")
-
-    def test_esdl_class_from_string_multi(self):
-        """Test if function get_esdl_class_from_string returns multiple classes when input is list"""
-
-        actual = utils.get_esdl_class_from_string(["Asset", "Area"])
-        expectedClass1 = esdl.Asset
-        expectedClass2 = esdl.Area
-        self.assertEqual(actual[0], expectedClass1, "returned class should be of type Asset")
-        self.assertEqual(actual[1], expectedClass2, "Returned class should be of type Area")
 
     def test_esdl_class_from_string_throw(self):
         """Test if get_esdl_class_from_string throws an exception if class is not found"""

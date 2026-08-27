@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class FileSchemaRepository(SchemaRepository):
-    """Repository for retrieving, adding, deleting validation schemas"""
+    """
+    Repository for retrieving, adding, deleting validation schemas
+    """
 
     def __init__(self, location: str):
         """Create a repository and initialize the 'database' from the given file"""
@@ -50,8 +52,6 @@ class FileSchemaRepository(SchemaRepository):
             SchemaNotFound: Validation schema was not found
         """
 
-        id = self.__id_to_int(id)
-
         if not self.table.contains(doc_id=id):
             raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))
 
@@ -72,7 +72,6 @@ class FileSchemaRepository(SchemaRepository):
 
         schemas = []
         for id in ids:
-            id = self.__id_to_int(id)
             if not self.table.contains(doc_id=id):
                 raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))
 
@@ -144,8 +143,6 @@ class FileSchemaRepository(SchemaRepository):
             SchemaNotFound: Validation schema was not found
         """
 
-        id = self.__id_to_int(id)
-
         if not self.table.contains(doc_id=id):
             raise SchemaNotFound(msg="Unable to remove, no schema found for id: {0}".format(id))
 
@@ -167,8 +164,6 @@ class FileSchemaRepository(SchemaRepository):
             SchemaNotFound: Validation schema was not found
         """
 
-        id = self.__id_to_int(id)
-
         if not self.table.contains(doc_id=id):
             raise SchemaNotFound
 
@@ -179,9 +174,3 @@ class FileSchemaRepository(SchemaRepository):
 
         self.table.update(document, doc_ids=[id])
         return id
-
-    def __id_to_int(self, id):
-        try:
-            return int(id)
-        except:
-            raise SchemaNotFound(msg="Requested schema with id {0} not found".format(id))

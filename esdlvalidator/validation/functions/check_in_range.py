@@ -21,7 +21,7 @@ class ContainsNotNull(FunctionCheck):
 
     def execute(self):
         self.set_values()
-        msg = utils.create_offending_asset_msg(self.value)
+        msg = {"offending_asset": self.value.id}
 
         if not utils.has_attribute(self.value, self.property):
             result = "Property {0} not found".format(self.property)

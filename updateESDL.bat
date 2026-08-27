@@ -1,1 +1,0 @@
-pyecoregen -e https://raw.githubusercontent.com/EnergyTransition/ESDL/master/esdl/model/esdl.ecore -o esdlvalidator/core --auto-register-package

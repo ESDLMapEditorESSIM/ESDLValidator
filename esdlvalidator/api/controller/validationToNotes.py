@@ -2,45 +2,40 @@ import uuid
 from datetime import datetime as dt
 from math import cos, sin, atan2, sqrt, radians, degrees
 
+from esdl import Notes, Line, Point, Polygon, Note
+from esdl.esdl_handler import StringURI
 from flask import request, Response
 from flask_restx import Resource
-from pyecore.resources import ResourceSet
-from pyecore.resources.resource import HttpURI
 
 from esdlvalidator.api import app
 from esdlvalidator.api.controller import validationService
-from esdlvalidator.core.esdl import EnergySystemInformation, Notes, Line, Point, Polygon, Note
-from esdlvalidator.core.esdl.esh import StringURI
-from esdlvalidator.core.esdl.resources.xmlresource import XMLResource
 from esdlvalidator.core.exceptions import SchemaNotFound
 from esdlvalidator.validation.functions import utils
-from esdlvalidator.core.esdl import utils as coreutils
 
 parser = app.api.parser()
 
 
-@app.ns_validation_to_notes.route('/')
+@app.ns_validation.route('/validationToNotes')
 class ValidationToNotesController(Resource):
-    """Validate an ESDL file and return an ESDL with notes"""
 
-    @app.ns_validation_to_notes.doc(description="Post a new validation schema", responses={
+    @app.ns_validation.doc(deprecated=True, description="Post a new validation schema", responses={
         200: "Ok",
         404: "Schema not found",
         400: "Unknown filetype, Invalid ESDL"})
     @app.api.expect(parser, validate=True)
     def post(self):
-        """Validate an ESDL file against one or more validation schemas"""
+        """Validate an ESDL file against one or more validation schemas and return an ESDL with notes"""
 
         file = request.data.decode('utf-8')
         if "schemas" not in request.args:
             return "Bad Request: Required 'schemas' parameter missing", 400
         schema_list = [id for id in request.args['schemas'].split(',')]
         try:
-            result = validationService.validateContents(file, schema_list, False)
+            result = validationService.validateContents(file, schema_list)
         except SchemaNotFound as e:
             return e.message, 400
 
-        esdl_resource = coreutils.get_esh_from_string(file).resource
+        esdl_resource = validationService.esdl
         notes = self.update_esdl(esdl_resource, result)
         uri = StringURI('to_string.esdl')
         esdl_resource.remove(esdl_resource.contents[0])
@@ -57,8 +52,7 @@ class ValidationToNotesController(Resource):
         notes.id = str(uuid.uuid4())
         notes.name = "Validation Notes"
 
-        esdlValidation = results['esdlValidation']
-        for schema in esdlValidation['schemas']:
+        for schema in results['schemas']:
             for validation in schema['validations']:
                 if "errors" in validation:
                     for error in validation['errors']:

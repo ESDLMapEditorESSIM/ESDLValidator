@@ -1,16 +1,13 @@
 import json
 import logging
-import os
 
 from bson import ObjectId
 from bson.errors import InvalidId
 from pymongo import MongoClient
 
-from esdlvalidator.core.exceptions import SchemaNotFound
+from esdlvalidator.core.exceptions import NameAlreadyExists, InvalidJSON, SchemaNotFound
 from esdlvalidator.validation.abstract_repository import SchemaRepository
 
-MONGODB_HOST = "ESDLVALIDATOR_MONGODB_HOST"
-MONGODB_PORT = "ESDLVALIDATOR_MONGODB_PORT"
 SCHEMA_DB = "ESDLValidationSchemas"
 SCHEMA_COLLECTION = "schemaCollection"
 log = logging.getLogger(__name__)
@@ -19,10 +16,9 @@ log = logging.getLogger(__name__)
 class MongoSchemaRepository(SchemaRepository):
     """Repository for retrieving, adding, deleting validation schemas"""
 
-    def __init__(self):
-        mongo_host = os.getenv(MONGODB_HOST, default="localhost")
-        mongo_port = os.getenv(MONGODB_PORT, default="27017")
-        self.mongo_client = MongoClient('mongodb://{}:{}/'.format(mongo_host, mongo_port))
+    def __init__(self, host: str = "localhost", port: str = "27017"):
+        log.info("Connecting to MongoDB at {}:{}".format(host, port))
+        self.mongo_client = MongoClient('mongodb://{}:{}/'.format(host, port))
         self.collection = self.mongo_client.get_database(SCHEMA_DB).get_collection(SCHEMA_COLLECTION)
 
     def get_all(self):
@@ -61,8 +57,30 @@ class MongoSchemaRepository(SchemaRepository):
         return document
 
     def insert(self, jsonString: str):
+        """Insert a new schema
+
+        Args:
+            json (string): The schema JSON string
+
+        Returns:
+            schemaID: The created id for the schema, can be used to retrieve the schema
+
+        Raises:
+            InvalidJSON: If json is not a valid json string or schema name already exist
+            NameAlreadyExists: If database already contains a document with the same name
+        """
+
         log.debug("Inserting {}".format(jsonString))
-        document = json.loads(jsonString)
+
+        try:
+            document = json.loads(jsonString)
+        except:
+            raise InvalidJSON
+        
+        doc = self.collection.find_one({'name': document["name"]})
+        if doc is not None:
+            raise NameAlreadyExists
+        
         return self.collection.insert_one(document).inserted_id
 
     def remove_by_id(self, id: str):

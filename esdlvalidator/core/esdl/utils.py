@@ -2,11 +2,10 @@ import inspect
 
 from pathlib import Path
 
-from esdlvalidator.core.esdl import esdl
-from esdlvalidator.core.esdl.esh import EnergySystemHandler
+import esdl
+from esdl.esdl_handler import EnergySystemHandler
 from esdlvalidator.core.exceptions import InvalidESDL
 from esdlvalidator.validation.functions import utils
-
 
 def get_esdl_class_from_string(names):
     """Retrieve an ESDL class based on its name
@@ -15,7 +14,7 @@ def get_esdl_class_from_string(names):
         name (str): String of the ESDL class to retrieve
 
     Returns:
-        class: The ESDL classes matching the input string
+        class: The ESDL class matching the input string
 
     Raises:
         ValueError: If class is not found
@@ -27,16 +26,13 @@ def get_esdl_class_from_string(names):
     classes = []
     if not isinstance(names, list):
         names = [names]
-
     classNames = get_esdl_class_names()
-    for name in names:
-        for className in classNames:
+    for className in classNames:
+        for name in names:
             if className.lower() == name.lower():
                 classes.append(eval("esdl." + className))
 
-    if len(classes) == 1:
-        return classes[0]
-    elif len(classes) > 1:
+    if len(classes) > 0:
         return classes
     else:
         raise ValueError("ESDL classes not found: {0}".format(names))
@@ -97,7 +93,7 @@ def get_esh_from_string(esdlString: str):
 
     try:
         esh.load_from_string(esdlString)
-    except Exception as e:
+    except:
         raise InvalidESDL
 
     return esh
@@ -115,9 +111,6 @@ def get_entities_from_esdl_resource_by_type(esdlSource, esdlType):
     """
 
     esdlClasses = get_esdl_class_from_string(esdlType)
-    if not isinstance(esdlClasses, list):
-        esdlClasses = [esdlClasses]
-
     entities = []
 
     for uuid in esdlSource.uuid_dict:
@@ -145,12 +138,6 @@ def get_references_from_assets_by_type(assets, referenceType):
     entities = []
     esdlClasses = get_esdl_class_from_string(referenceType)
 
-    if not isinstance(assets, list):
-        assets = [assets]
-
-    if not isinstance(esdlClasses, list):
-        esdlClasses = [esdlClasses]
-
     for asset in assets:
         for ref in asset.eAllContents():
             for esdlClass in esdlClasses:
@@ -159,27 +146,3 @@ def get_references_from_assets_by_type(assets, referenceType):
 
     return entities
 
-
-def get_entities_from_esdl_resource_but_for_type(esdlSource, esdlType):
-    """Loop trough all loaded ESDL entities and return entities except given type
-
-    Args:
-        esdlSource (pyecore.resource): resource of a loaded ESDL
-        esdlType (str): String of the ESDL entity type to retrieve
-
-    Returns:
-        list: list of all ESDL entities except given type
-    """
-
-    esdlClasses = get_esdl_class_from_string(esdlType)
-    entities = []
-
-    for uuid in esdlSource.uuid_dict:
-        conditions = []
-        esdlObject = esdlSource.uuid_dict[uuid]
-        for esdlClass in esdlClasses:
-            conditions.append(not isinstance(esdlObject, esdlClass))
-        if any(conditions):
-            entities.append(esdlObject)
-
-    return entities

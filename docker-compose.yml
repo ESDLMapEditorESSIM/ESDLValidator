@@ -1,28 +1,35 @@
-version: '3'
-
 networks:
   esdl_val_net:
 
+# Docker images are published to https://hub.docker.com/r/esdlmapeditoressim/esdlvalidator
 services:
-  esdl-validator:
+  esdl_validator:
+    image: esdlmapeditoressim/esdlvalidator:latest
     build: .
     ports:
       - "3011:5000"
     environment:
-      - ESDLVALIDATOR_REPOSITORY_TYPE=MONGO
-      - ESDLVALIDATOR_MONGODB_HOST=mongo
-      - ESDLVALIDATOR_MONGODB_PORT=27017
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
     volumes:
       - validator-storage:/storage
     networks:
       - esdl_val_net
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   mongo:
-    image: mongo:latest
+    image: mvertes/alpine-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-storage:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
     networks:
       - esdl_val_net
 

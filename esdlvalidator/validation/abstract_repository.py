@@ -7,7 +7,7 @@ class SchemaRepository(ABC):
         # return list([dict])
         pass
 
-    def get_by_id(self, id: int):
+    def get_by_id(self, id: str):
         # return dict
         pass
 
@@ -23,10 +23,10 @@ class SchemaRepository(ABC):
         # return ID
         pass
 
-    def remove_by_id(self, id: int):
+    def remove_by_id(self, id: str):
         # return dict
         pass
 
-    def update(self, id: int, jsonString: str):
+    def update(self, id: str, jsonString: str):
         # return ID
         pass

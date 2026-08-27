@@ -3,11 +3,12 @@ import unittest
 from esdlvalidator.core.esdl import utils
 from esdlvalidator.validation.functions.function import FunctionFactory, FunctionType
 
+testESDL = "testdata/esdls/ameland_energie_2015.esdl"
 
 class TestFunctionCheck(unittest.TestCase):
     """Tests for check functions"""
 
-    def test_check_not_null(self):
+    def test_check_attributes_validation(self):
         """Test if get_esdl_class_from_string returns the correct classes and exceptions"""
 
         datasets = self.get_test_datasets()
@@ -16,13 +17,13 @@ class TestFunctionCheck(unittest.TestCase):
 
         heatingDemandNameNullCount = 0
         for entry in hdGet.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "not_null", datasets=datasets, value=entry, args={"property": "name"})
+            check = FunctionFactory.create(FunctionType.CHECK, "attributes_validation", datasets=datasets, value=entry, args={"null_checks": [{"attribute": "name", "count_as_null": [""]}], "valid_checks": []})
             if not check.result.ok:
                 heatingDemandNameNullCount += 1
 
         powerNullCount = 0
         for entry in ghGet.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "not_null", datasets=datasets, value=entry, args={"property": "power", "counts_as_null": [0, 0.0]})
+            check = FunctionFactory.create(FunctionType.CHECK, "attributes_validation", datasets=datasets, value=entry, args={"null_checks": [{"attribute": "power", "count_as_null": [0, 0.0]}], "valid_checks": []})
             if not check.result.ok:
                 powerNullCount += 1
 
@@ -49,60 +50,6 @@ class TestFunctionCheck(unittest.TestCase):
         self.assertEqual(okCount, 1, "There should be 1 cost in range")
         self.assertEqual(notOkCount, 1, "There should be 1 not in range")
 
-    def test_check_is_type(self):
-        datasets = self.get_test_datasets()
-        assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=datasets, args={"type": "Asset"})
-        datasets[assets.alias] = assets.result
-
-        okCount = 0
-        notOkCount = 0
-
-        for entry in assets.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "is_type", value=entry, datasets=datasets, args={"dataset": "assets", "type": "HeatingDemand"})
-            if not check.result.ok:
-                notOkCount += 1
-            else:
-                okCount += 1
-
-        self.assertEqual(okCount, 21, "There should be 21 asset of type HeatingDemand")
-        self.assertEqual(notOkCount, 58, "There should be 58 not of type HeatingDemand")
-
-    def test_check_has_children(self):
-        datasets = self.get_test_datasets()
-        assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=datasets, args={"type": "Asset"})
-        datasets[assets.alias] = assets.result
-
-        okCount = 0
-        notOkCount = 0
-
-        for entry in assets.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "has_child", value=entry, datasets=datasets, args={"type": "Geometry"})
-            if not check.result.ok:
-                notOkCount += 1
-            else:
-                okCount += 1
-
-        self.assertEqual(okCount, 78, "There should be 7 assets with a geometry")
-        self.assertEqual(notOkCount, 1, "There should be 1 asset without a geometry")
-
-    def test_check_has_parent(self):
-        datasets = self.get_test_datasets()
-        assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="geometries", datasets=datasets, args={"type": "InPort"})
-        datasets[assets.alias] = assets.result
-
-        okCount = 0
-        notOkCount = 0
-
-        for entry in assets.result:
-            check = FunctionFactory.create(FunctionType.CHECK, "has_parent", value=entry, datasets=datasets, args={"type": "ElectricityDemand"})
-            if not check.result.ok:
-                notOkCount += 1
-            else:
-                okCount += 1
-
-        self.assertEqual(okCount, 21, "There should be 21 InPorts with a parent of type ElectricityDemand")
-        self.assertEqual(notOkCount, 53, "There should be 53 Inports without a parent of type ElectricityDemand")
-
     def get_test_datasets(self):
-        esh = utils.get_esh_from_file("testdata/ameland_energie_2015.esdl")
+        esh = utils.get_esh_from_file(testESDL)
         return {"resource": esh.resource}

@@ -1,311 +1,502 @@
-# ESDL-Validator
-Service for validating [Energy System Description Language](https://energytransition.gitbook.io/esdl/) (ESDL) files against XSD and user defined validation schemas  
+# ESDL Validator
 
-# ToDo
-- [x] Handle 'and', 'or' in checks - working, need some more thoroughly testing
-- [x] Add xsd validation
-- [x] More select functions
-- [x] More check functions
-- [x] More interesting validation rules to test with
-- [x] Postman example file
-- [ ] Waitress logging passed to the logger
-- [ ] Better output messages for current checks (include entity id if exists)
-- [ ] Add type filter to get function, for instance to be able to select SingleValue of type marginalCosts, Subselect with filter on all assets is now needed (schema_test_2.json)
-- [ ] Option to log to file instead of stdout
-- [ ] Accept multiple types in get function so a check can be done on multiple entities but not the parent, for example GasHeater and HeatPump 
-- [ ] Versioning, check posted ESDL version and check against the correct XSD and pyecore generated code?
-- [ ] More unit test, currently no test for api package
-- [ ] Endpoint for getting an overview of registered functions
+A REST service for validating [Energy System Description Language](https://energytransition.gitbook.io/esdl/) (ESDL) files against user-defined validation schemas.
+
+ESDL Validator allows you to define flexible validation rules (schemas) and run them against ESDL files via a REST API. It is designed to be extensible — new validation functions can be added easily using a plugin-based architecture.
+
+## Quick Start
+
+Start the service with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This pulls the [published image](https://hub.docker.com/r/esdlmapeditoressim/esdlvalidator) and starts the service with a MongoDB instance. The service will be available at `http://localhost:3011`. Navigate to the root URL to see the Swagger documentation.
+
+### Basic workflow
+
+1. **Upload a validation schema** — `POST /schema` with a JSON schema definition (see [Validation Schema](#validation-schema) below).
+2. **List available schemas** — `GET /schema` returns a summary of all uploaded schemas.
+3. **Run a validation** — `POST /validationToMessages` with an ESDL string and one or more schema IDs/names.
 
 ## Endpoints
-Swagger documentation of the endpoints can be viewed by navigating to the root of the service. The services does not contain authentication/authorization, this can be done within your own setup with something like traefik.
 
-### schema
-The schema endpoint can be used to manage the validation schemas. Validation schemas are used to validate an ESDL document.
+Swagger documentation is auto-generated and can be viewed by navigating to the root of the service. Note that the service does not include authentication/authorization, but can be handled in your own setup.
 
-| Endpoints |  Operation  | Description |
-| ------------- |:-------------| :-----|
-| /schema | GET | Get a summary of schemas |
-| /schema | POST | Post a new schema |
-| /schema/{id} | GET | Get a schema by id |
-| /schema/{id} | PUT | Update a schema by id |
-| /schema/{id} | DELETE | Delete a schema by id |
+### Schema
 
-### validation
-Validation endpoint expects multipart/form-data since we want to send an ESDL file with extra request parameters such as schema id's, posting json with the ESDL as base64 string will have too much overhead with larger ESDL files.
+Manage validation schemas stored in the database.
 
-| Endpoints |  Operation  | Description |
-| ------------- |:-------------| :-----|
-| /validation | POST | Validate an ESDL against given schemas and xsd |
-
-### Settings
-The esdl-validator service can be configured using the following environment variables.
-
-| Variable | Description | default  |
-| ------------- |:-------------| :-----|
-| ESDLVALIDATOR_HOSTNAME | Hostname to run the service on | localhost |
-| ESDLVALIDATOR_PORT | Port to run the service on | 5000 |
-| ESDLVALIDATOR_TITLE | Title of the service, shown in swagger | ESDL-Validator |
-| ESDLVALIDATOR_DESCRIPTION | Description of the service, shown in swagger | API for validating ESDL files |
-| ESDLVALIDATOR_ENDPOINT_PREFIX | Prefix of the endpoint, for example /api | - |
-| ESDLVALIDATOR_DB_LOCATION | location and name of database | schemas.db |
-| ESDLVALIDATOR_DEFAULT_CORS | Enable the default CORS, accepting everything | False |
-| ESDLVALIDATOR_LOG_LEVEL | Set the log level: CRITICAL, ERROR, WARNING, INFO, DEBUG | INFO |
-| ESDLVALIDATOR_REPOSITORY_TYPE | Set the repository type, options FILE, MONGO | FILE |
-| ESDLVALIDATOR_MONGODB_HOST | Hostname of MongoDB, only set when using Mongo | localhost |
-| ESDLVALIDATOR_MONGODB_PORT | Port of MongoDB, only set when using Mongo | 27017 |
-
-## Local development
-Setup a development environment using virtual environment and install the dependencies. For Visual Studio Code a default settings.json can be found under ```.vscode/settings.json.default``` paste these settings into a new file ```.vscode/settings.json```. Make sure the ```python.pythonPath``` is pointing to python in your virtual env. The default settings file excludes some unwanted files and folders, styling and discovery and settings for unit tests.
-
-### Virtual environment
-Install virtual environment if not installed yet
-```
-python -m pip install --user virtualenv
-```
-
-Create a virtual environment
-```
-python -m venv env
-```
-
-Enable virtual environment with one of the following commands
-```
-source env/bin/activate    (Linux)
-env\Scripts\activate.ps1 (Windows Powershell)
-env\Scripts\activate.bat (Windows CMD)
-```
-
-### Install project dependencies
-```
-pip install -r requirements.txt
-```
-
-### Testing
-Use the 'Test' tab is vscode or execute one of the following commands from the root folder.
-```
-python -m unittest discover ./
-```
-
-### Run ESDL-validator in develop/debug mode
-To run the service in debug mode using the build-in flask development server.
-```
-python app.py
-```
-
-### Run ESDL-validator using waitress
-An example how to start the service using waitress.
-```
-waitress-serve --listen="*:8080" --call "esdlvalidator.api.manage:create_app"
-```
-
-### Update static ESDL metamodel code
-To update the ESDL code to work with the latest version of the ESDL ecore model, update esdl.ecore to the latest version and run
-```
-pip install pyecoregen
-pyecoregen -e esdl.ecore -o ./esdlvalidator/core/esdl
-```
-
-## Postman
-A Postman collection with some examples how to use the ESDLValidator can be found at ```testdata/ESDLValidator.postman_collection.json``` This collection can be imported into Postman using the ```import``` button in the top left corner of the application. All requests start with {{host}} this is a variable declared in the collection and is set to ```127.0.0.1:5000``` When running the ESDLValidator service somewhere else, update the ```host``` variable in the collection or add and use a [Postman environment](https://learning.postman.com/docs/sending-requests/managing-environments/) with a ```host``` variable.  
-
-For the request ```validation/POST validation``` make sure to update the file value in the body tab with your own ESDL or the test ESDL ```testdata/hybrid_hp_with_pv_storage.esdl``` which can be found in this repo. 
-
-## Docker
-
-Build example
-```
-docker build -t esdl-validator .
-```
-
-The docker image is by default configured to create/read the database file from /storage/schemas.db, this can be updated by setting ESDLVALIDATOR_DB_LOCATION
-
-Run example for esdl-validator with logging set to DEBUG and the database file stored and read outside of the container.
-```
-docker run -p 8080:5000 -v C:\temp:/storage -e ESDLVALIDATOR_LOG_LEVEL=DEBUG esdl-validator
-```
-
-The service should now be accesible on ```localhost:8080```
-
-## Validation Schema
-The ESDL-Validator service can validate ESDL files against XSD and user defined validation schemas, the service can be extended easily with new functions and endpoints if the current features lack the ability to suit your needs. When a validation request is send to the service it will get validated against the given schema (or multiple schemas). A validation schema contains name, description and an array of validations.
-
-```
-{
-    "name": "my_schema",
-    "description": "Example validation schema",
-    "validations": [...]
-}
-```
+| Endpoint              | Method | Description                                                     |
+|-----------------------|--------|-----------------------------------------------------------------|
+| `/schema`             | GET    | Get a summary of schemas. Supports optional `id` and `name` query params for filtering. |
+| `/schema`             | POST   | Upload a new validation schema                                  |
+| `/schema/{id_or_name}`| GET    | Get a schema by ID or name                                      |
+| `/schema/{id_or_name}`| PUT    | Update a schema by ID                                           |
+| `/schema/{id_or_name}`| DELETE | Delete a schema by ID                                           |
 
 ### Validation
-A validation contains a name, description, type, message, a list of select functions and a check function. The type can be ```error``` or ```warning``` to describe if the validation generates warnings or errors. The message is a text that will be prefixed to generated warning or error message. 
 
-```
-"validations": [
-    {
-        "name": "my_validation_1",
-        "description": "Example validation 1",
-        "type": "warning",
-        "message": "my_validation_1 warning",
-        "selects": [
-            { "GET FUNCTION" }
-        ],
-        "check": { "CHECK FUNCTION }
+Run validations and get results grouped per asset.
+
+| Endpoint                 | Method | Description                                                                 |
+|--------------------------|--------|-----------------------------------------------------------------------------|
+| `/validationToMessages`  | POST   | Validate an ESDL against one or more schemas. Returns messages grouped by asset ID. |
+
+**Request parameters:**
+
+- `data` — ESDL file content as a string
+- `schemas` — Comma-separated list of schema IDs or names
+
+**Example response:**
+
+```json
+[
+  {
+    "assetID": "6f45c6f8-e8e2-4378-a910-45140337b9dd",
+    "messages": [
+      {
+        "severity": "ERROR",
+        "validation_message": "Required attribute not set or invalid",
+        "check_result_messages": ["[power] should satisfy > 0.0, but found [0.0]."]
+      }
+    ]
+  }
 ]
 ```
 
-### Functions
-There are 2 types of functions: select and check. Select functions are used to generate a 'dataset' which can be used in a check functions. In one validation schema multiple selects can be defined to select data from the esdl, filter out data or generate new data such for example calculating an average. Check functions test every entry in the given dataset and return a result (for every entry) which will be returned by the service, check function can generate warnings or errors based on how the check is configured in the validation schema. New functions can be added easily, by adding ```@FunctionFactory.register``` to the class, giving it a name and extending the appropriate function type the function will be discovered automatically by the FunctionFactory. To use a function simply reference the function by it's name in the validation schema i.e ```"function": "not_null"``` All current functions can be found under esdlvalidator/validation/functions, the arguments and their description that can be set for each function can be found in their .py file, it should also be possible to make an endpoint to describe all registered functions, this is not yet implemented.
+## Validation Schema
 
-#### Select
-Example selecting Producer Assets and storing it in a 'producers' dataset which can be used in other select or check functions. "function": "get" will execute the select_get.py since this function is registered as "get".
+A validation schema defines a set of rules to validate an ESDL file. It consists of a name, description, and a list of validations.
 
-```
-"selects": [
-    {
-        "function": "get",
-        "alias": "producers",
-        "args": {
-            "type": "Producer"
-        }
-    }
-],
-```
-
-Example getting the average power of gasheaters in an ESDL
-```
-"selects": [
-    {
-        "function": "get",
-        "alias": "gasheaters",
-        "args": {
-            "type": "GasHeater"
-        }
-    },
-    {
-        "function": "avg",
-        "alias": "avg_gasheater_power",
-        "args": {
-            "property": "power",
-            "dataset": "gasheaters"
-        }
-    }
-],
-```
-
-#### Check
-Example check function, this example checks if every GasHeater has a propery costinformation.marginalcosts filled in. The "dataset" is set to "gasheaters" which means use the dataset with the alias "gasheaters" which should be a result of a previous select function, see the example above.
-
-```
-"check": {
-    "function": "not_null",
-    "dataset": "gasheaters",
-    "args": {
-        "property": "costinformation.marginalcosts"
-    }
-}
-```
-
-Every check can also contain and + or functions, example to check if producers has a power and costinformation.marginalcosts.value or else contains a port.profile
-
-```
-"check": {
-    "function": "not_null",
-    "dataset": "producers",
-    "args": {
-        "property": "power",
-        "counts_as_null": [
-            0.0
-        ]
-    },
-    "and": [
-        {
-            "function": "not_null",
-            "args": {
-                "property": "costinformation.marginalcosts.value",
-                "counts_as_null": [
-                    0.0
-                ]
-            }
-        }
-    ],
-    "or": [
-        {
-            "function": "not_null",
-            "args": {
-                "property": "port.profile"
-            }
-        }
-    ]
-}
-```
-
-More complete examples can be found under the folder testdata
-```
-schema_test_1.json
-schema_test_2.json
-schema_vesta_bronnen.json
-schema_vesta_nieuwbouw.json
-```
-
-
-### Validation result
-The validation result send back from the validation endpoint consists of xsdValidation and esdlValidation where xsdValidation is the result of the validation of the ESDL file against the latest ESDL XSD schema and esdlValidation the result of the user defined schemas. Below is an example validation result for buurt_maatregelen.esdl using the schema_vesta_bronnen.json. The XSD is invalid, apparently the ESDL can be read but the XSD did not expect an area element on line 5. buurt_maatregelen.esdl is also not valid for schema "vesta_heatsource" since it found 3 errors.
-
-```
+```json
 {
-  "xsdValidation": {
-    "valid": false,
-    "version": "v2101-dev",
-    "errors": [
-      "ERROR ON LINE 5: Element 'area': This element is not expected."
-    ]
-  },
-  "esdlValidation": {
-    "valid": false,
-    "errorCount": 15,
-    "warningCount": 55,
-    "schemas": [
-      {
-        "name": "vesta_heatsource",
-        "description": "VESTA validation example for Heatsource ESDL files",
-        "validations": [
-          {
-            "name": "contains_not_supported_assets",
-            "description": "Check if areas contain assets other than ResidualHeatSource",
-            "checked": 555,
-            "warnings": [
-              "Unsupported Asset found: Object 6d0e8488-e5ad-45cf-bf0c-53889463266f is not of type ResidualHeatSource",
-              "Unsupported Asset found: Object addbc1ea-6f3b-412a-8ff5-93c74060dd59 is not of type ResidualHeatSource",
-              "Unsupported Asset found: Object 3e073b05-af55-4df6-8a98-a1f0a76cf5d6 is not of type ResidualHeatSource",
-              ............
-            ]
-          },
-          {
-            "name": "check_residual_heat_source_valid",
-            "description": "Check if all ResidialHeatSource assets are valid for VESTA, ResidualHeatSource should contain a name, power and geometry",
-            "checked": 514,
-            "errors": [
-              "Invalid ResidualHeatSource: power cannot be null for entity dca3dccd-d24f-4488-9a43-a1be76e07f15",
-              "Invalid ResidualHeatSource: power cannot be null for entity aea162b9-11c5-41de-ae5b-a50d073c0739",
-              "Invalid ResidualHeatSource: property geometry value is None",
-              ............
-            ]
-          },
-          {
-            "name": "check_residual_heat_source_dates",
-            "description": "Check if all ResidialHeatSource assets have a commissioningDate and decommissioningDate",
-            "checked": 514,
-            "warnings": [
-              "ResidualHeatSource missing commissioningDate or DecommissioningDate: property commissioningDate value is None",
-              "ResidualHeatSource missing commissioningDate or DecommissioningDate: property commissioningDate value is None",
-              ............
-            ]
-          }
-        ]
+  "name": "My validation schema",
+  "description": "Schema to validate heat network assets",
+  "pre_validation_schemas": ["General checks"],
+  "post_validation_schemas": [],
+  "validations": [...]
+}
+```
+
+| Field                      | Required | Description                                                      |
+|----------------------------|----------|------------------------------------------------------------------|
+| `name`                     | Yes      | Name of the schema (must be unique)                              |
+| `description`              | Yes      | Description of the schema                                        |
+| `pre_validation_schemas`   | No       | List of schema IDs or names to run **before** this schema        |
+| `post_validation_schemas`  | No       | List of schema IDs or names to run **after** this schema         |
+| `validations`              | Yes      | List of validation rules                                         |
+
+### Validation rule
+
+Each validation contains a name, description, severity type, a message, select functions, and a check function.
+
+```json
+{
+  "name": "heatpump_required_attributes_are_set",
+  "description": "Report errors if the required attributes of HeatPump are not set.",
+  "type": "error",
+  "message": "Required attribute not set or invalid",
+  "selects": [
+    {
+      "function": "get",
+      "alias": "heatpumps",
+      "args": {
+        "type": ["HeatPump"]
       }
+    }
+  ],
+  "check": {
+    "function": "attributes_validation",
+    "dataset": "heatpumps",
+    "args": {
+      "null_checks": [
+        { "attribute": "name", "count_as_null": [""] },
+        { "attribute": "COP", "count_as_null": [0.0] }
+      ],
+      "valid_checks": [
+        {
+          "attribute": "power",
+          "in_range": { "min_exclusive": 0.0 }
+        }
+      ],
+      "resultMsgJSON": true
+    }
+  }
+}
+```
+
+| Field         | Required | Description                                                              |
+|---------------|----------|--------------------------------------------------------------------------|
+| `name`        | Yes      | Name of the validation rule                                              |
+| `description` | Yes      | Description of the validation rule                                       |
+| `type`        | Yes      | Severity: `"error"` or `"warning"`                                       |
+| `message`     | Yes      | Message prefix for generated results                                     |
+| `selects`     | Yes      | List of select functions to generate datasets                            |
+| `check`       | Yes      | Check function to run against the selected dataset                       |
+
+## Functions
+
+There are two types of functions: **select** and **check**.
+
+- **Select functions** generate a dataset from the ESDL. Multiple selects can be chained — each subsequent select can use the results of previous ones.
+- **Check functions** test every entity in a dataset and return pass/fail results. Failed checks produce warnings or errors based on the validation's `type` field.
+
+Functions are auto-discovered at startup. To reference a function in a schema, use its registered name (e.g., `"function": "get"`).
+
+### Example select function: `get`
+
+Select all HeatPump assets with a filter on port count:
+
+```json
+{
+  "function": "get",
+  "alias": "heatpumps",
+  "args": {
+    "type": ["HeatPump"],
+    "filter": [
+      { "attribute": "port", "count": { "min": 4, "max": 4 } }
     ]
   }
 }
 ```
+
+### Example check function: `attributes_validation`
+
+This is the most commonly used check function. It supports null checks and validity/range checks on entity attributes or nested references.
+
+```json
+{
+  "function": "attributes_validation",
+  "dataset": "assets",
+  "args": {
+    "null_checks": [
+      { "attribute": "name", "count_as_null": [""] }
+    ],
+    "valid_checks": [
+      {
+        "attribute": "efficiency",
+        "in_range": { "min_exclusive": 0.0, "max": 1.0 }
+      },
+      {
+        "attribute": "power",
+        "in_range": { "min_exclusive": 0.0 }
+      }
+    ],
+    "resultMsgJSON": true
+  }
+}
+```
+
+It also supports checking attributes on nested references via the optional `ref` argument:
+
+```json
+{
+  "function": "attributes_validation",
+  "dataset": "assets",
+  "args": {
+    "ref": { 
+      "path": "costInformation.investmentCosts.profileQuantityAndUnit" 
+    },
+    "null_checks": [],
+    "valid_checks": [
+        { "attribute": "unit", "count_as_valid": "EURO" },
+        { "attribute": "perUnit", "count_as_valid": "WATT" },
+        { "attribute": "perMultiplier", "count_as_valid": ["MEGA", "KILO"] },
+        { "attribute": "perTimeUnit", "count_as_valid": "Unset" }
+    ],
+    "resultMsgJSON": true
+  }
+}
+```
+
+### Example check function: `compare_reference_attributes`
+
+Used to compare attribute values between two reference paths on the same entity. For example, validating temperature relationships between ports.
+
+```json
+{
+  "function": "compare_reference_attributes",
+  "dataset": "assets",
+  "args": {
+    "left": {
+      "ref": {
+        "path": "port",
+        "ref_list_filter": { "is_type": "OutPort", "match": { "name": "Out" } }
+      },
+      "attribute": "carrier.supplyTemperature"
+    },
+    "operator": "greater_than",
+    "right": {
+      "ref": {
+        "path": "port",
+        "ref_list_filter": { "is_type": "InPort", "match": { "name": "In" } }
+      },
+      "attribute": "carrier.returnTemperature"
+    },
+    "resultMsgJSON": true
+  }
+}
+```
+
+Supported operators: `greater_than`, `less_than`, `equal`.
+
+<!-- ### And / Or logic
+
+Checks can be composed with `and` and `or` clauses for complex conditional validations. Sub-checks are evaluated recursively on the same entity and can themselves contain nested `and`/`or`.
+
+**Evaluation logic:**
+
+1. Run the **main check**.
+2. If main passes, run all **AND** checks. If all AND checks also pass → **entity passes**.
+3. If main or any AND check fails, run **OR** checks. If any OR check passes → **entity passes** (rescued by OR).
+4. If nothing passes → **entity fails**. All failed results (main, AND, OR) are reported.
+
+In short: `(main AND all_and) OR any_or`.
+
+#### Example: AND only
+
+Check that a producer has exactly 2 ports AND the supply temperature on OutPort is greater than the return temperature on InPort:
+
+```json
+"check": {
+  "function": "reference_count_in_range",
+  "dataset": "assets",
+  "args": {
+    "referenceType": "port",
+    "min": 2,
+    "max": 2,
+    "resultMsgJSON": true
+  },
+  "and": [
+    {
+      "function": "compare_reference_attributes",
+      "args": {
+        "left": {
+          "ref": {
+            "path": "port",
+            "ref_list_filter": { "is_type": "OutPort", "match": { "name": "Out" } }
+          },
+          "attribute": "carrier.supplyTemperature"
+        },
+        "operator": "greater_than",
+        "right": {
+          "ref": {
+            "path": "port",
+            "ref_list_filter": { "is_type": "InPort", "match": { "name": "In" } }
+          },
+          "attribute": "carrier.returnTemperature"
+        },
+        "resultMsgJSON": true
+      }
+    }
+  ]
+}
+```
+
+#### Example: AND + OR
+
+Check that an asset has `power` set AND `marginalCosts` defined, OR has a `profile` on its port:
+
+```json
+"check": {
+  "function": "attributes_validation",
+  "dataset": "producers",
+  "args": {
+    "null_checks": [
+      { "attribute": "power", "count_as_null": [0.0] }
+    ],
+    "valid_checks": []
+  },
+  "and": [
+    {
+      "function": "attributes_validation",
+      "args": {
+        "null_checks": [
+          { "attribute": "costInformation.marginalCosts.value", "count_as_null": [0.0] }
+        ],
+        "valid_checks": []
+      }
+    }
+  ],
+  "or": [
+    {
+      "function": "attributes_validation",
+      "args": {
+        "null_checks": [
+          { "attribute": "port.profile", "count_as_null": [] }
+        ],
+        "valid_checks": []
+      }
+    }
+  ]
+}
+```
+
+> **Known issue:** when `(main AND all_and)` passes but an `or` list is also present and all OR checks fail, the current implementation incorrectly reports the OR failures instead of returning success. A fix is tracked in the TODO below. -->
+
+### Complete schema example
+
+For a full real-world example, see [`testdata/schemas/schema_NWN_general.json`](testdata/schemas/schema_NWN_general.json) which validates a heat network topology including asset types, port configurations, carrier temperatures, and attribute requirements.
+
+## Adding Custom Functions
+
+New functions can be added by creating a Python file in `esdlvalidator/validation/functions/`. The function will be auto-discovered at startup.
+
+### Adding a new check function
+
+1. Create a file in `esdlvalidator/validation/functions/`, e.g. `check_my_custom.py`
+2. Register the function with the `@FunctionFactory.register` decorator
+3. Inherit from `FunctionCheck` and implement `execute()`
+
+```python
+from esdlvalidator.validation.functions.function import (
+    FunctionFactory, FunctionCheck, FunctionDefinition,
+    ArgDefinition, FunctionType, CheckResult,
+)
+from esdlvalidator.validation.functions import utils
+
+
+@FunctionFactory.register(FunctionType.CHECK, "my_custom_check")
+class MyCustomCheck(FunctionCheck):
+
+    def get_function_definition(self):
+        return FunctionDefinition(
+            "my_custom_check",
+            "Description of what this check does",
+            [ArgDefinition("my_arg", "Description of the argument", True)],
+        )
+
+    def execute(self):
+        entity = self.value          # The current entity being checked
+        my_arg = self.args["my_arg"] # Arguments from the schema
+
+        # Your validation logic here
+        if some_condition_fails:
+            return CheckResult(False, "Error message")
+
+        return CheckResult(True)
+```
+
+### Adding a new select function
+
+Same pattern, but inherit from `FunctionSelect` and register with `FunctionType.SELECT`:
+
+```python
+from esdlvalidator.validation.functions.function import (
+    FunctionFactory, FunctionSelect, FunctionDefinition,
+    ArgDefinition, FunctionType,
+)
+
+
+@FunctionFactory.register(FunctionType.SELECT, "my_custom_select")
+class MyCustomSelect(FunctionSelect):
+
+    def get_function_definition(self):
+        return FunctionDefinition(
+            "my_custom_select",
+            "Description of what this select does",
+            [ArgDefinition("my_arg", "Description of the argument", True)],
+        )
+
+    def execute(self):
+        dataset = self.datasets.get("resource")
+        # Your selection logic here
+        return selected_entities
+```
+
+Once added, reference the function by name in any validation schema: `"function": "my_custom_check"`.
+
+## Local Development
+
+### Prerequisites
+
+- Python >= 3.10
+- [uv](https://docs.astral.sh/uv/) — project and package manager
+- MongoDB instance (for schema storage)
+
+### Install uv
+
+```bash
+# Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+```powershell
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Setup
+
+```bash
+uv sync
+```
+
+This installs all dependencies and automatically creates a `.venv` if one doesn't exist.
+
+Copy `.env.template` to `.env` and adjust values as needed:
+
+```bash
+cp .env.template .env
+```
+
+### Managing dependencies
+
+```bash
+uv add <package>       # Add a dependency
+uv remove <package>    # Remove a dependency
+uv pip list            # Check installed packages
+```
+
+### Updating pyESDL
+
+Update the `pyesdl` version constraint in `pyproject.toml` and run `uv sync`.
+
+### Running in debug mode
+
+ESDL Validator requires a MongoDB instance for schema storage. The host and port can be configured via `MONGODB_HOST` and `MONGODB_PORT` in `.env`.
+
+```bash
+uv run app.py
+```
+
+The service starts on `http://localhost:5000` by default.
+
+### Running with waitress
+
+```bash
+uv run waitress-serve --listen="*:5000" --call "esdlvalidator.api.manage:create_app"
+```
+
+### Docker
+
+To build and run from local source instead of the published image:
+
+```bash
+docker-compose up --build
+```
+
+To build the image separately:
+
+```bash
+docker build -t esdl-validator .
+```
+
+## Testing
+
+```bash
+uv run pytest
+```
+
+## Integration with ESDL MapEditor
+
+For integrating ESDL Validator into the [ESDL MapEditor](https://github.com/ESDLMapEditorESSIM) toolsuite, see `docker-compose-toolsuite.yml` as a reference for connecting to the shared MapEditor network.
+
+## TODOs
+
+- [ ] Fix, update, and re-enable commented-out tests (`test_validator.py`)
+- [ ] Improve test coverage for newer check functions (`compare_reference_attributes`, etc.)
+- [ ] Clean up legacy schemas and select/check functions
+<!-- - [ ] Fix And/Or logic bug: when `(main AND all_and)` passes but `or` list is present and all OR checks fail, failures are incorrectly reported (`validator.py`) -->

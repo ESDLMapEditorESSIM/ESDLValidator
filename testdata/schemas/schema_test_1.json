@@ -1,0 +1,34 @@
+{
+    "name": "Test validation schema 1",
+    "description": "Test validation schema 1, used in esdl-validator unit tests",
+    "validations": [
+        {
+            "name": "check_area_scope_notnull",
+            "description": "Check if all Areas have a scope",
+            "type": "warning",
+            "message": "Area does not have a scope",
+            "selects": [
+                {
+                    "function": "get",
+                    "alias": "areas",
+                    "args": {
+                        "type": "Area"
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "areas",
+                "args": {
+                    "null_checks": [
+                        {
+                            "attribute": "scope",
+                            "count_as_null": ["null"]
+                        }
+                    ],
+                    "valid_checks": []
+                }
+            }
+        }
+    ]
+}
