@@ -1,0 +1,296 @@
+{
+    "name": "Optimizer asset constraint validation schema",
+    "description": "Schema to validate optimizer asset constraint requirements",
+    "pre_validation_schemas": [],
+    "validations": [
+        {
+            "name": "enabled_asset_power_required",
+            "description": "A HeatProducer (including subclasses such as ResidualHeatSource), HeatPump, GasHeater or ElectricBoiler with state ENABLED, must have a power greater than 0.0",
+            "type": "error",
+            "message": "power must be greater than 0.0 when state is ENABLED",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatProducer", "HeatPump", "GasHeater", "ElectricBoiler"],
+                        "exclude_type": ["SolarCollector", "GeothermalSource"],
+                        "filter": [
+                            {"attribute": "state", "match": ["ENABLED", "Unset"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "power",
+                            "in_range": {
+                                "min_exclusive": 0.0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "enabled_asset_aggregation_count_required",
+            "description": "An enabled GeothermalSource, or ATES asset must have an aggregation count set.",
+            "type": "error",
+            "message": "An aggregation count should be set when state is ENABLED",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["GeothermalSource", "ATES"],
+                        "filter": [
+                            {"attribute": "state", "match": ["ENABLED", "Unset"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "aggregationCount",
+                            "in_range": {
+                                "min": 1,
+                                "allow_unset": true
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "enabled_heat_storage_asset_volume_required",
+            "description": "An enabled HeatStorage (tank storage) asset must have a volume set.",
+            "type": "error",
+            "message": "A volume must be greater than 0.0 when state is ENABLED",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatStorage"],
+                        "exclude_type": ["ATES"],
+                        "filter": [
+                            {"attribute": "state", "match": ["ENABLED", "Unset"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "volume",
+                            "in_range": {
+                                "min_exclusive": 0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "enabled_heat_exchange_asset_capacity_required",
+            "description": "An enabled HeatExchange asset must have a capacity set.",
+            "type": "error",
+            "message": "A capacity must be greater than 0.0 when state is ENABLED",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatExchange"],
+                        "filter": [
+                            {"attribute": "state", "match": ["ENABLED", "Unset"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "capacity",
+                            "in_range": {
+                                "min_exclusive": 0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "enabled_pipe_asset_diameter_required",
+            "description": "An enabled Pipe asset must have a diameter set.",
+            "type": "error",
+            "message": "A diameter must be set when state is ENABLED",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["Pipe"],
+                        "filter": [
+                            {"attribute": "state", "match": ["ENABLED", "Unset"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "null_checks": [
+                         {
+                            "attribute": "diameter",
+                            "count_as_null": ["VALUE_SPECIFIED"]
+                        }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "optional_heatproducer_constraint_required",
+            "description": "An OPTIONAL HeatProducer (including subclasses such as ResidualHeatSource) must have either a RangedConstraint (with range.maxValue set) or a ProfileConstraint (with maximum profile set)",
+            "type": "error",
+            "message": "Either a RangedConstraint with range.maxValue, or a ProfileConstraint with a maximum profile, is required when state is OPTIONAL",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatProducer"],
+                        "exclude_type": ["SolarCollector", "GeothermalSource"],
+                        "filter": [
+                            {"attribute": "state", "match": ["OPTIONAL"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "ref": {
+                        "path": "constraint",
+                        "ref_list_filter": { "is_type": "RangedConstraint" }
+                    },
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "range.maxValue",
+                            "in_range": {
+                                "min_exclusive": 0.0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                },
+                "or": [
+                    {
+                        "function": "attributes_validation",
+                        "args": {
+                            "ref": {
+                                "path": "constraint",
+                                "ref_list_filter": { "is_type": "ProfileConstraint" }
+                            },
+                            "null_checks": [
+                                { "attribute": "maximum", "count_as_null": [] }
+                            ],
+                            "valid_checks": [],
+                            "resultMsgJSON": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "optional_asset_rangedconstraint_required",
+            "description": "An OPTIONAL HeatPump, GasHeater, ElectricBoiler, GeothermalSource, HeatStorage (including ATES), or HeatExchange must have a RangedConstraint with range.maxValue set.",
+            "type": "error",
+            "message": "A RangedConstraint with range.maxValue is required when state is OPTIONAL",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["HeatPump", "GasHeater", "ElectricBoiler", "GeothermalSource", "HeatStorage", "HeatExchange"],
+                        "filter": [
+                            {"attribute": "state", "match": ["OPTIONAL"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "ref": {
+                        "path": "constraint",
+                        "ref_list_filter": { "is_type": "RangedConstraint" }
+                    },
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "range.maxValue",
+                            "in_range": {
+                                "min_exclusive": 0.0
+                            }
+                        }
+                    ],
+                    "resultMsgJSON": true
+                }
+            }
+        },
+        {
+            "name": "optional_pipe_diameter_asset_PipeDiameterConstraint_required",
+            "description": "An OPTIONAL Pipe asset must have a PipeDiameterConstraint with maximum diameter set.",
+            "type": "error",
+            "message": "A PipeDiameterConstraint with maximum diameter is required when state is OPTIONAL",
+            "selects": [{
+                    "function": "get",
+                    "alias": "assets",
+                    "args": {
+                        "type": ["Pipe"],
+                        "filter": [
+                            {"attribute": "state", "match": ["OPTIONAL"]}
+                        ]
+                    }
+                }
+            ],
+            "check": {
+                "function": "attributes_validation",
+                "dataset": "assets",
+                "args": {
+                    "ref": {
+                        "path": "constraint",
+                        "ref_list_filter": { "is_type": "PipeDiameterConstraint" }
+                    },
+                    "null_checks": [
+                        { "attribute": "maximum", "count_as_null": [] }
+                    ],
+                    "valid_checks": [],
+                    "resultMsgJSON": true
+                }
+            }
+        }
+    ]
+}

@@ -78,7 +78,8 @@ class SelectGet(FunctionSelect):
                             {"type": "string"},
                             {"type": "array", "items": {"type": "string"}},
                         ],
-                        "description": "Case-insensitive string/enum equality. Entity is kept only if attribute matches any of the given values.",
+                        "description": "Case-insensitive string/enum equality. Entity is kept only if attribute matches any of the given values. "
+                        "Include 'Unset' in the list to also match entities where the attribute was never explicitly set (e.g. an enum's implicit default).",
                     },
                     "contains": {
                         "anyOf": [
@@ -176,6 +177,11 @@ class SelectGet(FunctionSelect):
             if value == self.NOT_FOUND:
                 raise ValueError(f"Filter attribute [{attr}] not found on entity type.")
             if value == self.UNSET:
+                # Allow "Unset" to be listed explicitly in 'match', e.g. to also catch an enum's implicit default.
+                match_values = cond.get("match")
+                match_list = [match_values] if isinstance(match_values, str) else match_values
+                if match_list is not None and any(v.lower() == self.UNSET.lower() for v in match_list):
+                    continue
                 return False
 
             count_cond = cond.get("count")

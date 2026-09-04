@@ -42,14 +42,16 @@ class AttributesValidation(FunctionCheck):
                     "null_checks",
                     "A list of dictionaries with keys:"
                     " - attribute: the attribute name to check"
-                    " - count_as_null: list of values considered null (e.g., 0.0).",
+                    " - count_as_null: list of values considered null (e.g., 0.0)."
+                    " - allow_unset: [optional] if True, an unset attribute passes instead of being flagged.",
                     True,
                 ),
                 ArgDefinition(
                     "valid_checks",
                     "A list of dictionaries with keys: "
                     " - attribute: the attribute name to validate"
-                    " - count_as_valid: either a string or list of strings considered valid",
+                    " - count_as_valid: either a string or list of strings considered valid (include 'Unset' to accept an unset attribute)"
+                    " - in_range: numeric bounds; set 'allow_unset' within it to True to accept an unset attribute.",
                     True,
                 ),
                 ArgDefinition("resultMsgJSON", "If True, returns results in structured JSON format.", False),
@@ -119,6 +121,10 @@ class AttributesValidation(FunctionCheck):
                         "items": {"anyOf": [{"type": "string"}, {"type": "number"}]},
                         "description": "Values considered null; can be empty",
                     },
+                    "allow_unset": {
+                        "type": "boolean",
+                        "description": "If True, an unset attribute is treated as passing this check instead of being flagged (e.g. when the ESDL model's implicit default is already acceptable).",
+                    },
                 },
                 "additionalProperties": False,
             },
@@ -134,7 +140,11 @@ class AttributesValidation(FunctionCheck):
                             "min": {"type": ["number", "null"]},
                             "max": {"type": ["number", "null"]},
                             "min_exclusive": { "type": ["number", "null"] },
-                            "max_exclusive": { "type": ["number", "null"] }
+                            "max_exclusive": { "type": ["number", "null"] },
+                            "allow_unset": {
+                                "type": "boolean",
+                                "description": "If True, an unset attribute is treated as passing this range check instead of being flagged (e.g. when the ESDL model's implicit default is already acceptable).",
+                            }
                         }
                     }
                 },
@@ -227,7 +237,8 @@ class AttributesValidation(FunctionCheck):
             if value == self.NOT_FOUND:
                 raise ValueError(f"Attribute [{attr}] not found.")
             if value == self.UNSET:
-                results.append(f"[{attr}] should be defined, but is unset.")
+                if not check.get("allow_unset"):
+                    results.append(f"[{attr}] should be defined, but is unset.")
             else:
                 for null_val in null_values:
                     if (isinstance(null_val, str) and str(null_val).lower() == str(value).lower()) or null_val == value:
@@ -282,9 +293,10 @@ class AttributesValidation(FunctionCheck):
                 range_desc = " and ".join(parts) if parts else "no constraints"
 
                 if value == self.UNSET:
-                    results.append(
-                        f"[{attr}] should satisfy {range_desc}, but is unset."
-                    )
+                    if not in_range.get("allow_unset"):
+                        results.append(
+                            f"[{attr}] should satisfy {range_desc}, but is unset."
+                        )
                     continue
 
                 violation = False
