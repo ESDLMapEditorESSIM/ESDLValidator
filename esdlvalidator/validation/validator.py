@@ -139,8 +139,8 @@ class EsdlValidator:
                 subResults = self.__run_get_check_result(a, datasets, entry)
                 failed_and.extend([sr for sr in subResults if not sr.result.ok])
 
-            if not failed_and and not orList:
-                return [checkResult]  # All good, no AND/OR
+            if not failed_and:
+                return [checkResult]  # Base check (and ANDs, if any) already passed; OR only rescues failures
             if failed_and and not orList:
                 return failed_and  # AND failed, no OR to rescue
 

@@ -20,6 +20,14 @@ jobs:
 
       - name: Build the container image
         run: |
-          docker build . --tag esdlmapeditoressim/esdlvalidator:latest --tag esdlmapeditoressim/esdlvalidator:${{ github.ref_name}}
-          docker push esdlmapeditoressim/esdlvalidator:latest
-          docker push esdlmapeditoressim/esdlvalidator:${{ github.ref_name}}
+          TAG="${{ github.ref_name }}"
+          docker build . --tag esdlmapeditoressim/esdlvalidator:$TAG
+          docker push esdlmapeditoressim/esdlvalidator:$TAG
+
+          # Only stable releases (e.g. 1.2.3) update :latest; pre-release tags (e.g. 1.2.3-rc.1) do not.
+          if [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            docker tag esdlmapeditoressim/esdlvalidator:$TAG esdlmapeditoressim/esdlvalidator:latest
+            docker push esdlmapeditoressim/esdlvalidator:latest
+          else
+            echo "Skipping :latest update for pre-release tag '$TAG'"
+          fi

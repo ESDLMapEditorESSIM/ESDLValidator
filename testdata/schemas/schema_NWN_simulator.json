@@ -2,6 +2,7 @@
     "name": "Simulator validation schema",
     "description": "Schema to validate simulator requirements",
     "pre_validation_schemas": ["NWN general validation schema"],
+    "post_validation_schemas": ["Optimizer asset constraint validation schema"],
     "validations": [
         {
             "name": "ATES_required_attributes_for_simulator_use_are_set",

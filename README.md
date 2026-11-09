@@ -242,7 +242,7 @@ Used to compare attribute values between two reference paths on the same entity.
 
 Supported operators: `greater_than`, `less_than`, `equal`.
 
-<!-- ### And / Or logic
+### And / Or logic
 
 Checks can be composed with `and` and `or` clauses for complex conditional validations. Sub-checks are evaluated recursively on the same entity and can themselves contain nested `and`/`or`.
 
@@ -333,8 +333,6 @@ Check that an asset has `power` set AND `marginalCosts` defined, OR has a `profi
   ]
 }
 ```
-
-> **Known issue:** when `(main AND all_and)` passes but an `or` list is also present and all OR checks fail, the current implementation incorrectly reports the OR failures instead of returning success. A fix is tracked in the TODO below. -->
 
 ### Complete schema example
 
@@ -499,4 +497,3 @@ For integrating ESDL Validator into the [ESDL MapEditor](https://github.com/ESDL
 - [ ] Fix, update, and re-enable commented-out tests (`test_validator.py`)
 - [ ] Improve test coverage for newer check functions (`compare_reference_attributes`, etc.)
 - [ ] Clean up legacy schemas and select/check functions
-<!-- - [ ] Fix And/Or logic bug: when `(main AND all_and)` passes but `or` list is present and all OR checks fail, failures are incorrectly reported (`validator.py`) -->
