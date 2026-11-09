@@ -13,7 +13,7 @@
                     "alias": "assets",
                     "args": {
                         "type": ["HeatProducer", "HeatPump", "GasHeater", "ElectricBoiler"],
-                        "exclude_type": ["SolarCollector", "GeothermalSource"],
+                        "exclude_type": ["SolarCollector"],
                         "filter": [
                             {"attribute": "state", "match": ["ENABLED", "Unset"]}
                         ]
@@ -262,9 +262,9 @@
         },
         {
             "name": "optional_pipe_diameter_asset_PipeDiameterConstraint_required",
-            "description": "An OPTIONAL Pipe asset must have a PipeDiameterConstraint with maximum diameter set.",
+            "description": "An OPTIONAL Pipe asset must have a PipeDiameterConstraint with maximum diameter set to DN150 or larger.",
             "type": "error",
-            "message": "A PipeDiameterConstraint with maximum diameter is required when state is OPTIONAL",
+            "message": "A PipeDiameterConstraint with maximum diameter of at least DN150 is required when state is OPTIONAL",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -284,10 +284,13 @@
                         "path": "constraint",
                         "ref_list_filter": { "is_type": "PipeDiameterConstraint" }
                     },
-                    "null_checks": [
-                        { "attribute": "maximum", "count_as_null": [] }
+                    "null_checks": [],
+                    "valid_checks": [
+                        {
+                            "attribute": "maximum",
+                            "count_as_valid": ["DN150", "DN200", "DN250", "DN300", "DN350", "DN400", "DN450", "DN500", "DN600", "DN650", "DN700", "DN800", "DN900", "DN1000", "DN1100", "DN1200"]
+                        }
                     ],
-                    "valid_checks": [],
                     "resultMsgJSON": true
                 }
             }

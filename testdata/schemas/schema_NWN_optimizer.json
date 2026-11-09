@@ -2,6 +2,7 @@
     "name": "Optimizer validation schema",
     "description": "Schema to validate optimizer requirements",
     "pre_validation_schemas": ["NWN general validation schema"],
+    "post_validation_schemas": ["Optimizer asset constraint validation schema"],
     "validations": [
         {
             "name": "supply_return_combination",
@@ -57,37 +58,6 @@
             }
         },
         {
-            "name": "pipe_diameter_validation",
-            "description": "Report warnings if the Pipe diameter is not valid",
-            "type": "warning",
-            "message": "For a pipe with an OPTIONAL state, the minimum diameter should be at least DN150.",
-            "selects": [{
-                    "function": "get",
-                    "alias": "pipes",
-                    "args": {
-                        "type": ["Pipe"],
-                        "filter": [
-                            {"attribute": "state", "match": ["OPTIONAL"]}
-                        ]
-                    }
-                }
-            ],
-            "check": {
-                "function": "attributes_validation",
-                "dataset": "pipes",
-                "args": {
-                    "null_checks": [],
-                    "valid_checks": [
-                        {
-                            "attribute": "diameter",
-                            "count_as_valid": ["DN150", "DN200", "DN250", "DN300", "DN350", "DN400", "DN450", "DN500", "DN600", "DN650", "DN700", "DN800", "DN900", "DN1000", "DN1100", "DN1200"]
-                        }
-                    ],
-                    "resultMsgJSON": true
-                }
-            }
-        },
-        {
             "name": "heatexchange_required_attributes_for_optimizer_use_are_set",
             "description": "Report errors if the required attributes of HeatExchange assets for optimizer use are not set or incorrectly set.",
             "type": "error",
@@ -108,10 +78,6 @@
                         {
                             "attribute": "name",
                             "count_as_null": [""]
-                        },
-                        {
-                            "attribute": "capacity",
-                            "count_as_null": [0.0]
                         }
                     ],
                     "valid_checks": [
