@@ -1,9 +1,9 @@
 [project]
 name = "esdl-validator"
-version = "0.0.9"
+version = "0.1.2"
 description = "ESDL Validator"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 
 dependencies = [
     "autodiscover>=0.0.4",

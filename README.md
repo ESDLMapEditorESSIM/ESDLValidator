@@ -410,7 +410,7 @@ Once added, reference the function by name in any validation schema: `"function"
 
 ### Prerequisites
 
-- Python >= 3.10
+- Python >= 3.12
 - [uv](https://docs.astral.sh/uv/) — project and package manager
 - MongoDB instance (for schema storage)
 
