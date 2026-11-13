@@ -30,6 +30,33 @@ class TestFunctionCheck(unittest.TestCase):
         self.assertEqual(heatingDemandNameNullCount, 1, "There should be one HeatingDemand with no name set")
         self.assertEqual(powerNullCount, 1, "There should be 1 power with a null value (0.0)")
 
+    def test_check_attributes_validation_optional_ref(self):
+        """An 'optional' ref is skipped when absent, but still validated when present"""
+
+        import esdl
+
+        args = {
+            "ref": {"path": "constraint", "ref_list_filter": {"is_type": "ProfileConstraint"}},
+            "null_checks": [{"attribute": "maximum", "count_as_null": []}],
+            "valid_checks": [],
+        }
+        optionalArgs = {**args, "ref": {**args["ref"], "optional": True}}
+
+        def check(asset, checkArgs):
+            return FunctionFactory.create(FunctionType.CHECK, "attributes_validation", datasets={}, value=asset, args=checkArgs).result
+
+        noConstraint = esdl.HeatProducer(id="a", name="a")
+        self.assertFalse(check(noConstraint, args).ok, "missing reference is an error by default")
+        self.assertTrue(check(noConstraint, optionalArgs).ok, "missing optional reference is skipped")
+
+        profileWithoutMax = esdl.HeatProducer(id="b", name="b")
+        profileWithoutMax.constraint.append(esdl.ProfileConstraint(id="c"))
+        self.assertFalse(check(profileWithoutMax, optionalArgs).ok, "present optional reference is still validated")
+
+        profileWithMax = esdl.HeatProducer(id="d", name="d")
+        profileWithMax.constraint.append(esdl.ProfileConstraint(id="e", maximum=esdl.InfluxDBProfile(id="p")))
+        self.assertTrue(check(profileWithMax, optionalArgs).ok)
+
     def test_check_in_range(self):
         datasets = self.get_test_datasets()
         assets = FunctionFactory.create(FunctionType.SELECT, "get", alias="assets", datasets=datasets, args={"type": "Asset"})

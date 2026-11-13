@@ -35,7 +35,8 @@ class AttributesValidation(FunctionCheck):
                 ArgDefinition(
                     "ref",
                     "An optional dictionary specifying the reference path (Dot-separated string. For instance costInformation.investmentCosts), "
-                    "an optional filter can be specified to locate the target reference entity when reference is of EOrderedSet type.",
+                    "an optional filter can be specified to locate the target reference entity when reference is of EOrderedSet type. "
+                    "Set 'optional' to True to skip the checks (instead of reporting an error) when the reference is unset or no matching entity is found.",
                     False,
                 ),
                 ArgDefinition(
@@ -74,6 +75,10 @@ class AttributesValidation(FunctionCheck):
                     "path": {
                         "type": "string",
                         "description": "Dot-separated reference path (e.g., costInformation.investmentCosts)",
+                    },
+                    "optional": {
+                        "type": "boolean",
+                        "description": "If True, the checks are skipped when the reference is unset or no matching entity is found.",
                     },
                     # To locate the target reference entity when reference is of EOrderedSet type (e.g., port).
                     "ref_list_filter": {
@@ -196,7 +201,8 @@ class AttributesValidation(FunctionCheck):
         if reference == self.NOT_FOUND:
             raise ValueError(f"[{ref_path}] not found.")
         if reference == self.UNSET:
-            results.append(f"[{ref_path}] should be defined, but is unset.")
+            if not ref.get("optional"):
+                results.append(f"[{ref_path}] should be defined, but is unset.")
             return None
 
         if isinstance(reference, EOrderedSet):
@@ -208,7 +214,7 @@ class AttributesValidation(FunctionCheck):
             else:
                 entity_to_check = reference[0]
 
-            if entity_to_check is None:
+            if entity_to_check is None and not ref.get("optional"):
                 match_str = ", ".join(f"[{k}] = '{v}'" for k, v in ref["ref_list_filter"].get("match", {}).items())
                 match_str = f" ({match_str})" if match_str else ""
                 
