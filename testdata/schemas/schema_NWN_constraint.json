@@ -1,6 +1,6 @@
 {
-    "name": "Optimizer asset constraint validation schema",
-    "description": "Schema to validate optimizer asset constraint requirements",
+    "name": "NWN asset constraint validation schema",
+    "description": "Schema to validate asset constraint requirements according to asset state",
     "pre_validation_schemas": [],
     "validations": [
         {
@@ -171,9 +171,9 @@
         },
         {
             "name": "optional_heatproducer_constraint_required",
-            "description": "An OPTIONAL HeatProducer (including subclasses such as ResidualHeatSource) must have either a RangedConstraint (with range.maxValue set) or a ProfileConstraint (with maximum profile set)",
+            "description": "An OPTIONAL HeatProducer (including subclasses such as ResidualHeatSource) must have a RangedConstraint (with range.maxValue set) defined. A ProfileConstraint is optional, but if specified, its maximum profile must be set.",
             "type": "error",
-            "message": "Either a RangedConstraint with range.maxValue, or a ProfileConstraint with a maximum profile, is required when state is OPTIONAL",
+            "message": "A RangedConstraint with range.maxValue is required when state is OPTIONAL. A ProfileConstraint with maximum profile can be specified optionally.",
             "selects": [{
                     "function": "get",
                     "alias": "assets",
@@ -205,13 +205,14 @@
                     ],
                     "resultMsgJSON": true
                 },
-                "or": [
+                "and": [
                     {
                         "function": "attributes_validation",
                         "args": {
                             "ref": {
                                 "path": "constraint",
-                                "ref_list_filter": { "is_type": "ProfileConstraint" }
+                                "ref_list_filter": { "is_type": "ProfileConstraint" },
+                                "optional": true
                             },
                             "null_checks": [
                                 { "attribute": "maximum", "count_as_null": [] }
