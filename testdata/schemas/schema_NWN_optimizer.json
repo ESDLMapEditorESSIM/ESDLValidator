@@ -2,7 +2,7 @@
     "name": "Optimizer validation schema",
     "description": "Schema to validate optimizer requirements",
     "pre_validation_schemas": ["NWN general validation schema"],
-    "post_validation_schemas": ["Optimizer asset constraint validation schema"],
+    "post_validation_schemas": ["NWN asset constraint validation schema"],
     "validations": [
         {
             "name": "supply_return_combination",
